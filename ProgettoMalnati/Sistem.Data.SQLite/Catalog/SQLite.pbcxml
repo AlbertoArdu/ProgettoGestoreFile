@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CatalogFile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" RequiredVersion="6.00" xsi:schemaLocation="urn:Microsoft.PlatformBuilder/Catalog PbcXml600.xsd" xmlns="urn:Microsoft.PlatformBuilder/Catalog">
+  <FileInformation Id="FileInformation:SQLite2013CatalogFile">
+    <Title>SQLite2013 Catalog File Build only</Title>
+    <Description>Native build of SQLite for SQLite: Build only</Description>
+    <Vendor>Embedded101</Vendor>
+    <OSVersion>8.00</OSVersion>
+    <FileVersion>2.0.0.0</FileVersion>
+  </FileInformation>
+  <Item Id="Item:CEContentWiz_Embedded101:SQLite2013:2">
+    <Title>SQLite2013  DLL</Title>
+    <Description>Native build of SQLite for SQLite</Description>
+    <Comment>Build dll only.</Comment>
+    <SysgenVariable>SYSGEN_SQLITE2013</SysgenVariable>
+    <ChooseOneGroup>false</ChooseOneGroup>
+    <Project>C:\WINCE800\3rdParty\CESQLite2013\SQLite\SQLite.PBPXML</Project>
+    <Location ConditionLocation="">\Embedded101\SQLite\Native Components</Location>
+    <SourceCode>
+      <Title>C:\WINCE800\3rdParty\CESQLite2013\SQLite</Title>
+      <Path>C:\WINCE800\3rdParty\CESQLite2013\SQLite</Path>
+    </SourceCode>
+  </Item>
+</CatalogFile>

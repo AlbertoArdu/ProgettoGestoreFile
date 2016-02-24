@@ -1,0 +1,41 @@
+WINCEREL=1
+RELEASETYPE=LOCAL
+_ISVINCPATH=$(_WINCEROOT)\public\common\sdk\inc;
+_OEMINCPATH=$(_WINCEROOT)\public\common\oak\inc;$(_WINCEROOT)\public\common\sdk\inc;
+
+TARGETNAME=SQLiteADONET
+
+FILE_VIEW_ROOT_FOLDER= \
+  ReadMe.txt \
+  prelink.bat \
+  postlink.bat \
+
+FILE_VIEW_RESOURCE_FOLDER= \
+ .\Resources\SQLite2013.inf \
+ .\Resources\ARMV7\SQLite.Interop.091.dll \
+ .\Resources\x86\SQLite.Interop.091.dll \
+ .\Resources\System.Data.SQLite.dll \
+ .\Resources\System.Data.SQLite.dll.config \
+ .\Resources\System.Data.SQLite.xml \
+
+
+
+
+FILE_VIEW_INCLUDES_FOLDER= \
+
+SOURCES= \
+
+TARGETTYPE=NOTARGET
+PRECOMPILED_CXX=1
+TARGETLIBS= \
+
+
+POSTLINK_PASS_CMD=postlink.bat
+PRELINK_PASS_CMD=prelink.bat
+
+FILE_VIEW_PARAMETER_FOLDER= \
+  SQLiteADONET.bib \
+  SQLiteADONET.reg \
+  SQLiteADONET.dat \
+  SQLiteADONET.db \
+  ProjSysgen.bat 
