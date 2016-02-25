@@ -1,0 +1,7 @@
+\\homes\ardusso\Visual Studio 2010\Projects\ProgettoMalnati\ProgettoMalnati\obj\x86\Debug\ProgettoMalnati.csprojResolveAssemblyReference.cache
+\\homes\ardusso\Visual Studio 2010\Projects\ProgettoMalnati\ProgettoMalnati\bin\Debug\ProgettoMalnati.exe
+\\homes\ardusso\Visual Studio 2010\Projects\ProgettoMalnati\ProgettoMalnati\bin\Debug\ProgettoMalnati.pdb
+\\homes\ardusso\Visual Studio 2010\Projects\ProgettoMalnati\ProgettoMalnati\bin\Debug\SQLite.NET.dll
+\\homes\ardusso\Visual Studio 2010\Projects\ProgettoMalnati\ProgettoMalnati\bin\Debug\System.Data.SQLite.dll
+\\homes\ardusso\Visual Studio 2010\Projects\ProgettoMalnati\ProgettoMalnati\obj\x86\Debug\ProgettoMalnati.exe
+\\homes\ardusso\Visual Studio 2010\Projects\ProgettoMalnati\ProgettoMalnati\obj\x86\Debug\ProgettoMalnati.pdb

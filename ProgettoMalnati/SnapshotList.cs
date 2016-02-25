@@ -1,15 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 using System.Text;
 
 namespace ProgettoMalnati
 {
-    class SnapshotList: IEnumerable<Snapshot>
+    class SnapshotList : db_interface, IEnumerable
     {
         //Attributi
         private string __nome_utente;
-        private int[] __list_ids_files;
+        private System.Collections.Generic.List<int> __list_ids_files = { };
+        static private string sql_get_file_ids_of_user = "SELECT id FROM snapshots WHERE nome_utente = @nome_utente;";
         //Proprieta
         public string NomeUtente
         {
@@ -24,18 +25,35 @@ namespace ProgettoMalnati
             }
             set { }
         }
+
         //Costruttori
         public SnapshotList(string nome_utente)
         {
             //Leggere gli id dei file di questo utente e metterli in __list_ids_files
+            string[][] parameters = new string[1][];
+            parameters[0] = new string[2] { "@nome_utente", nome_utente };
 
+            this.ExecuteQuery(sql_get_file_ids_of_user, parameters);
+            //Get the data
+            foreach (int i in this.GetResults())
+            {
+                this.__list_ids_files.Add((int)(this.ResultGetValue("id")));
+            }
         }
+
         //Distruttore
         //Metodi
-        public IEnumerator<Snapshot> GetEnumerator() 
+        /// <summary>
+        ///     Usata per ciclare sui file di un utente.
+        ///     Non carica tutti i file in una volta
+        /// </summary>
+        /// <returns>
+        ///     Un iteratore per il costrutto "foreach".
+        /// </returns>
+        public IEnumerator GetEnumerator()
         {
             int index;
-            for (index = 0; index < this.__list_ids_files.Length; index++)
+            for (index = 0; index < this.__list_ids_files.Count; index++)
             {
                 yield return new Snapshot(this.__nome_utente, __list_ids_files[index]);
             }
