@@ -41,35 +41,39 @@ namespace ProgettoMalnati
                         "INSERT INTO utenti(nome, password, path_monitorato) VALUES ('cesare', 'abbecedario','C:\\user\\Documents');"
                                                     };
         static private string[] file_di_test = {
-                         "INSERT INTO utenti(id, nome_utente, nome_file, path_relativo, sha1_contenuto) VALUES (1, 'tizio', 'cose_importanti.txt', '\\.', '1f8a690b7366a2323e2d5b045120da7e93896f47')",
-                         "INSERT INTO utenti(id, nome_utente, nome_file, path_relativo, sha1_contenuto) VALUES (2, 'tizio', 'cose_importanti.txt', '\\Scuola', '1f8a690b7366a2323e2d5b045120da7e93896f47')",
-                         "INSERT INTO utenti(id, nome_utente, nome_file, path_relativo, sha1_contenuto) VALUES (3, 'tizio', 'robette.exe', '\\Scuola', '1f8a690b7366a2323e2d5b045120da7e93896f47')",
-                         "INSERT INTO utenti(id, nome_utente, nome_file, path_relativo, sha1_contenuto) VALUES (4, 'tizio', 'non_aprire.dll', '\\\\Scuola\\Programmi', '1f8a690b7366a2323e2d5b045120da7e93896f47')",
-                         "INSERT INTO utenti(id, nome_utente, nome_file, path_relativo, sha1_contenuto) VALUES (5, 'caio', 'robette.exe', '', '1f8a690b7366a2323e2d5b045120da7e93896f47')",
-                         "INSERT INTO utenti(id, nome_utente, nome_file, path_relativo, sha1_contenuto) VALUES (6, 'caio', '1234', '\\lkjhgfd', '1f8a690b7366a2323e2d5b045120da7e93896f47')",
-                         "INSERT INTO utenti(id, nome_utente, nome_file, path_relativo, sha1_contenuto) VALUES (7, 'caio', 'liste.lst', '\\mnbvdt\\fgvcdr', '1f8a690b7366a2323e2d5b045120da7e93896f47')",
-                         "INSERT INTO utenti(id, nome_utente, nome_file, path_relativo, sha1_contenuto) VALUES (8, 'caio', 'parcella.doc', '\\Economica', '1f8a690b7366a2323e2d5b045120da7e93896f47')",
-                         "INSERT INTO utenti(id, nome_utente, nome_file, path_relativo, sha1_contenuto) VALUES (9, 'sempronio', 'doc1.doc', '\\.', '1f8a690b7366a2323e2d5b045120da7e93896f47')",
-                         "INSERT INTO utenti(id, nome_utente, nome_file, path_relativo, sha1_contenuto) VALUES (10, 'sempronio', 'robette.exe', '\\Altro', '1f8a690b7366a2323e2d5b045120da7e93896f47')",
-                         "INSERT INTO utenti(id, nome_utente, nome_file, path_relativo, sha1_contenuto) VALUES (11, 'sempronio', 'doc2.doc', '\\Cose', '1f8a690b7366a2323e2d5b045120da7e93896f47')",
-                         "INSERT INTO utenti(id, nome_utente, nome_file, path_relativo, sha1_contenuto) VALUES (12, 'sempronio', 'doc3.doc', '\\Scuola', '1f8a690b7366a2323e2d5b045120da7e93896f47')",
-                         "INSERT INTO utenti(id, nome_utente, nome_file, path_relativo, sha1_contenuto) VALUES (13, 'cesare', 'armate.xls', '\\Utilita', '1f8a690b7366a2323e2d5b045120da7e93896f47')",
-                         "INSERT INTO utenti(id, nome_utente, nome_file, path_relativo, sha1_contenuto) VALUES (14, 'cesare', 'colosseo.jpg', '\\Scuola', '1f8a690b7366a2323e2d5b045120da7e93896f47')",
-                         "INSERT INTO utenti(id, nome_utente, nome_file, path_relativo, sha1_contenuto) VALUES (15, 'cesare', 'pompeo.jpg', '\\.', '1f8a690b7366a2323e2d5b045120da7e93896f47')",
-                         "INSERT INTO utenti(id, nome_utente, nome_file, path_relativo, sha1_contenuto) VALUES (16, 'cesare', 'galliche.log', '\\.', '1f8a690b7366a2323e2d5b045120da7e93896f47')",
+                         "INSERT INTO snapshots(id, nome_utente, nome_file, path_relativo, sha1_contenuto) VALUES (1, 'tizio', 'cose_importanti.txt', '\\.', '1f8a690b7366a2323e2d5b045120da7e93896f47')",
+                         "INSERT INTO snapshots(id, nome_utente, nome_file, path_relativo, sha1_contenuto) VALUES (2, 'tizio', 'cose_importanti.txt', '\\Scuola', '1f8a690b7366a2323e2d5b045120da7e93896f47')",
+                         "INSERT INTO snapshots(id, nome_utente, nome_file, path_relativo, sha1_contenuto) VALUES (3, 'tizio', 'robette.exe', '\\Scuola', '1f8a690b7366a2323e2d5b045120da7e93896f47')",
+                         "INSERT INTO snapshots(id, nome_utente, nome_file, path_relativo, sha1_contenuto) VALUES (4, 'tizio', 'non_aprire.dll', '\\\\Scuola\\Programmi', '1f8a690b7366a2323e2d5b045120da7e93896f47')",
+                         "INSERT INTO snapshots(id, nome_utente, nome_file, path_relativo, sha1_contenuto) VALUES (5, 'caio', 'robette.exe', '', '1f8a690b7366a2323e2d5b045120da7e93896f47')",
+                         "INSERT INTO snapshots(id, nome_utente, nome_file, path_relativo, sha1_contenuto) VALUES (6, 'caio', '1234', '\\lkjhgfd', '1f8a690b7366a2323e2d5b045120da7e93896f47')",
+                         "INSERT INTO snapshots(id, nome_utente, nome_file, path_relativo, sha1_contenuto) VALUES (7, 'caio', 'liste.lst', '\\mnbvdt\\fgvcdr', '1f8a690b7366a2323e2d5b045120da7e93896f47')",
+                         "INSERT INTO snapshots(id, nome_utente, nome_file, path_relativo, sha1_contenuto) VALUES (8, 'caio', 'parcella.doc', '\\Economica', '1f8a690b7366a2323e2d5b045120da7e93896f47')",
+                         "INSERT INTO snapshots(id, nome_utente, nome_file, path_relativo, sha1_contenuto) VALUES (9, 'sempronio', 'doc1.doc', '\\.', '1f8a690b7366a2323e2d5b045120da7e93896f47')",
+                         "INSERT INTO snapshots(id, nome_utente, nome_file, path_relativo, sha1_contenuto) VALUES (10, 'sempronio', 'robette.exe', '\\Altro', '1f8a690b7366a2323e2d5b045120da7e93896f47')",
+                         "INSERT INTO snapshots(id, nome_utente, nome_file, path_relativo, sha1_contenuto) VALUES (11, 'sempronio', 'doc2.doc', '\\Cose', '1f8a690b7366a2323e2d5b045120da7e93896f47')",
+                         "INSERT INTO snapshots(id, nome_utente, nome_file, path_relativo, sha1_contenuto) VALUES (12, 'sempronio', 'doc3.doc', '\\Scuola', '1f8a690b7366a2323e2d5b045120da7e93896f47')",
+                         "INSERT INTO snapshots(id, nome_utente, nome_file, path_relativo, sha1_contenuto) VALUES (13, 'cesare', 'armate.xls', '\\Utilita', '1f8a690b7366a2323e2d5b045120da7e93896f47')",
+                         "INSERT INTO snapshots(id, nome_utente, nome_file, path_relativo, sha1_contenuto) VALUES (14, 'cesare', 'colosseo.jpg', '\\Scuola', '1f8a690b7366a2323e2d5b045120da7e93896f47')",
+                         "INSERT INTO snapshots(id, nome_utente, nome_file, path_relativo, sha1_contenuto) VALUES (15, 'cesare', 'pompeo.jpg', '\\.', '1f8a690b7366a2323e2d5b045120da7e93896f47')",
+                         "INSERT INTO snapshots(id, nome_utente, nome_file, path_relativo, sha1_contenuto) VALUES (16, 'cesare', 'galliche.log', '\\.', '1f8a690b7366a2323e2d5b045120da7e93896f47')",
                                                      };
         public db_interface()
         {
+            Console.Write("\tCostruttore db_interface\n");
             if (sql_con == null)
             {
+                Console.Write("\tConnetto al db\n");
                 String s = "Data Source=";
                 s += nome_file_db + ";Versione=3;";
                 if (!File.Exists(nome_file_db))
                 {
+                    Console.Write("\tDB non esistente. Devo crearlo\n");
                     //SQLiteConnection.CreateFile("MyDatabase.sqlite");
                     db_interface.sql_con = new SQLiteConnection(s);
                     db_interface.sql_con.Open();
                     Crea_DB();
+                    Console.Write("\tDB creato\n");
                 }
                 else
                 {
@@ -78,16 +82,18 @@ namespace ProgettoMalnati
                 }
             }
             count_ref++;
+            Console.Write("Connesso. Su questa connessione ci sono " + count_ref.ToString() + " oggetti.\n");
             this.command = db_interface.sql_con.CreateCommand();
             this.reader = null;
 
         }
 
-        public ~db_interface()
+        ~db_interface()
         {
             count_ref--;
             if (count_ref == 0) 
             {
+                Console.Write("\tChiudo la connessione con il db\n");
                 db_interface.sql_con.Close();
                 db_interface.sql_con = null;
             }
@@ -97,6 +103,7 @@ namespace ProgettoMalnati
         {
             foreach (string sql in db_structure)
             {
+                Console.Write("\t\tCreo la struttura del DB\n");
                 command.CommandText = sql;
                 command.ExecuteNonQuery();
             }
@@ -104,12 +111,14 @@ namespace ProgettoMalnati
             //Alcuni valori di test::
             foreach (string sql in utenti_di_test)
             {
+                Console.Write("\t\tInserisco nel DB gli utenti di test\n");
                 command.CommandText = sql;
                 command.ExecuteNonQuery();
             }
 
             foreach (string sql in file_di_test)
             {
+                Console.Write("\t\tInserisco nel DB snapshot di test\n");
                 command.CommandText = sql;
                 command.ExecuteNonQuery();
             }
@@ -127,6 +136,7 @@ namespace ProgettoMalnati
         /// </param>
         protected void ExecuteQuery(string txtQuery, string[][] parameters = null)
         {
+            Console.Write("\t\t\tExecuteNonQuery()\n");
             command.CommandText = txtQuery;
             if (parameters != null)
             {

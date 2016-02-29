@@ -39,23 +39,46 @@ namespace ProgettoMalnati
             }
         }
         //Costruttori
-        public User(string nome, string password)
+        public User(string nome, string password) 
+            : base()
         {
+            Console.Write("Creo un utente: nome ->"+nome+"; pass->"+password+"\n");            
             string[][] parameters = new string[2][];
             parameters[0] = new string[2] { "@nome", nome };
             parameters[1] = new string[2] { "@password", password };
-
+            int quantita = 0;
             this.ExecuteQuery(sql_get_user_data, parameters);
             //Get the data
+            Console.Write("Ora bisogna tirar fuori i dati...\n");
+            
             foreach (int i in this.GetResults()) 
             {
                 this.__nome = (string)(this.ResultGetValue("nome"));
                 this.__password = (string)(this.ResultGetValue("password"));
                 this.__path_monitorato = (string)(this.ResultGetValue("path_monitorato"));
+                quantita = i;
+            }
+            Console.Write("Andata... User = "+this.ToString());
+
+            //i contiene il numero di risultati;
+            if(quantita < 1){
+                throw new UserNotFoundException();
+            }
+            else if (quantita > 1) {
+                throw new UserNotFoundException("Panic! More than one user with same password and name or sql wrong");
             }
             //Create the snapshot list
             __s_list = new SnapshotList(this.__nome);
         }
         //Metodi
+
+        override public string ToString()
+        {
+            string s = "User\n{\n\tnome = " + this.__nome + "\n\tpassword = " + this.__password + "\n\tpath_monitorato = " + __path_monitorato + "\n\ts_list = ";
+            if (this.__s_list != null)
+                return s + this.__s_list.ToString() + "\n}\n";
+            else
+                return s + "null\n}\n";
+        }
     }
 }

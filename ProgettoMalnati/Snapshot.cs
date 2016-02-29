@@ -36,7 +36,9 @@ namespace ProgettoMalnati
             get { return __nome_utente; }
         }
         //Costruttori
-        public Snapshot(string nome_utente,int id) { 
+        public Snapshot(string nome_utente, int id)
+            : base()
+        { 
             string[][] parameters = new string[2][];
             parameters[0] = new string[2] {"@nome_utente",nome_utente};
             parameters[1] = new string[2] { "@id", id.ToString() };

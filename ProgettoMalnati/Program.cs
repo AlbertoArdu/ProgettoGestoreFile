@@ -6,19 +6,18 @@ using System.Threading.Tasks;
 using Finisar.SQLite;
 using System.Data;
 
-namespace ConsoleApplication3
+namespace ProgettoMalnati
 {
     class Program
     {
-        private SQLiteConnection sql_con;
-        private SQLiteCommand sql_cmd;
-        private SQLiteDataAdapter DB;
-        private DataSet DS = new DataSet();
-        private DataTable DT = new DataTable();
+
         static void Main(string[] args)
         {
+            Console.Write("Starting the server...\n");
+
+            Test.RunTestDB();
+            
+
         }
     }
-
-
 }

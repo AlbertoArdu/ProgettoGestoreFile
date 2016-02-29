@@ -9,7 +9,7 @@ namespace ProgettoMalnati
     {
         //Attributi
         private string __nome_utente;
-        private System.Collections.Generic.List<int> __list_ids_files = { };
+        private System.Collections.Generic.List<int> __list_ids_files;
         static private string sql_get_file_ids_of_user = "SELECT id FROM snapshots WHERE nome_utente = @nome_utente;";
         //Proprieta
         public string NomeUtente
@@ -28,6 +28,7 @@ namespace ProgettoMalnati
 
         //Costruttori
         public SnapshotList(string nome_utente)
+            : base()
         {
             //Leggere gli id dei file di questo utente e metterli in __list_ids_files
             string[][] parameters = new string[1][];
@@ -57,6 +58,11 @@ namespace ProgettoMalnati
             {
                 yield return new Snapshot(this.__nome_utente, __list_ids_files[index]);
             }
+        }
+
+        override public string ToString() 
+        {
+            return "Lista di Snapshot\n";
         }
         //Metodi Statici
     }
