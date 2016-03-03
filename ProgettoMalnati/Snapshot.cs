@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+//TODO -> Aggiungere supporto per la condivisione dei file (nel db una tabella relazione tra user e snapshot, magari con un flag per i privilegi)
+//                          E definire una politica in caso di modifica da parte di due utenti (Suggerito COPY-ON-MODIFY per semplicita)
+
 namespace ProgettoMalnati
 {
     
@@ -58,6 +61,13 @@ namespace ProgettoMalnati
         }
         //Distruttore
         //Metodi
+
+        //TODO:
+        //  InserisciContenuto
+        //  ModificaContenuto
+        //  Rinomina
+
+
         //Funzioni Statiche
     }
 }

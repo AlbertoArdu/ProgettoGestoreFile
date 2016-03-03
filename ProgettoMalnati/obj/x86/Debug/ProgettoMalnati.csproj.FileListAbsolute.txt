@@ -5,3 +5,5 @@
 \\homes\ardusso\Visual Studio 2010\Projects\ProgettoMalnati\ProgettoMalnati\bin\Debug\System.Data.SQLite.dll
 \\homes\ardusso\Visual Studio 2010\Projects\ProgettoMalnati\ProgettoMalnati\obj\x86\Debug\ProgettoMalnati.exe
 \\homes\ardusso\Visual Studio 2010\Projects\ProgettoMalnati\ProgettoMalnati\obj\x86\Debug\ProgettoMalnati.pdb
+C:\Users\ardusso\Documents\ProgettoMalnati\ProgettoGestoreFile\ProgettoMalnati\obj\x86\Debug\ProgettoMalnati.exe
+C:\Users\ardusso\Documents\ProgettoMalnati\ProgettoGestoreFile\ProgettoMalnati\obj\x86\Debug\ProgettoMalnati.pdb

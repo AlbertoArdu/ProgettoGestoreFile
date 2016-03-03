@@ -15,6 +15,7 @@ namespace ProgettoMalnati
         private string __path_monitorato;
         private SnapshotList __s_list;
         static private string sql_get_user_data = "SELECT * FROM users WHERE nome = @nome AND password = @password;";
+        static private string sql_insert_user = "INSERT INTO utenti(nome,password,path_monitorato) VALUES (@nome,@password,@path_monitorato);";
         //Proprieta
         public string Nome
         {
@@ -39,6 +40,7 @@ namespace ProgettoMalnati
             }
         }
         //Costruttori
+        //Da valutare se rendere privato -> nuovo user solo attraverso la funzione di Login
         public User(string nome, string password) 
             : base()
         {
@@ -79,6 +81,38 @@ namespace ProgettoMalnati
                 return s + this.__s_list.ToString() + "\n}\n";
             else
                 return s + "null\n}\n";
+        }
+
+        //Metodi Statici
+        static public User Login(string nome,string password)
+        {
+            return new User(nome, password);
+        }
+
+        /// <summary>
+        /// Funzione per registrare un nuovo utente
+        /// </summary>
+        /// <param name="nome">Nome utente</param>
+        /// <param name="password">Password per l'utente (cleartext)</param>
+        /// <param name="path_monitorato">Path Locale dell'utente che verra monitorato</param>
+        static public void RegistraUtente(string nome,string password, string path_monitorato)
+        {
+            //provo a mettere il nuovo utente: se ricevo un'eccezione particolare il nome utente e duplicato
+            db_interface db = new db_interface();
+            string[][] parameters = new string[3][];
+            parameters[0] = new string[2] { "@nome", nome };
+            parameters[1] = new string[2] { "@password", password };
+            parameters[2] = new string[2] { "@path_monitorato", path_monitorato };
+            //try{
+                db.ExecuteQuery(sql_insert_user, parameters);
+            /*}
+            //Qua bisogna mettere l'eccezione che viene lanciata quando il nome utente e ripetuto
+            catch (SQLiteExeption e)
+            {
+                //TODO: Notificare il chiamante che il nome utente esiste gia
+            }
+            */
+            return;
         }
     }
 }

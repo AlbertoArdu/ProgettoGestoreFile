@@ -44,6 +44,11 @@ namespace ProgettoMalnati
 
         //Distruttore
         //Metodi
+
+        //TODO
+        //  NuovoFile
+        //  RimuoviFile
+
         /// <summary>
         ///     Usata per ciclare sui file di un utente.
         ///     Non carica tutti i file in una volta

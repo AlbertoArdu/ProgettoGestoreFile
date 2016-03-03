@@ -134,7 +134,7 @@ namespace ProgettoMalnati
         ///     Parametri da sostituire; 
         ///     Formato: parameters[i] = {"@nome_parametro","valore da sostituire"}
         /// </param>
-        protected void ExecuteQuery(string txtQuery, string[][] parameters = null)
+        public void ExecuteQuery(string txtQuery, string[][] parameters = null)
         {
             Console.Write("\t\t\tExecuteNonQuery()\n");
             command.CommandText = txtQuery;
@@ -145,7 +145,12 @@ namespace ProgettoMalnati
                     command.Parameters.Add(new SQLiteParameter(param[0],param[1]));
                 }
             }
-            reader = command.ExecuteReader();
+
+            //Non sono troppo sicuro!!!!!!!!!
+            if(txtQuery.StartsWith("SELECT"))
+                reader = command.ExecuteReader();
+            else
+                command.ExecuteNonQuery();
         }
 
         /// <summary>
