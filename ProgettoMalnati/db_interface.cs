@@ -1,15 +1,18 @@
 ﻿using System.Data.SQLite;
 using System;
 using System.Collections.Generic;
+using System.Collections;
 using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Globalization;
+using System.Resources;
 
 namespace ProgettoMalnati
 {
-    class db_interface
+    class DB_Table
     {
         private SQLiteCommand command;
         private SQLiteDataReader reader;
@@ -18,111 +21,84 @@ namespace ProgettoMalnati
         private DataTable DT = new DataTable();
         
         //static private bool flag;
-        static String nome_file_db = "MyDatabase.sqlite";
+        static String nome_file_db = Properties.DBSettings.Default.nome_db;
         static private int count_ref = 0;
         static private SQLiteConnection sql_con = null;
 
+        private Log l;
+
         static private string[] db_structure = {
                         //Tabelle utenti
-                        "create table utenti (nome varchar(20), password varchar(100), "+
-                        "path_monitorato varchar(250), PRIMARY KEY(nome))",
+                        Properties.SQLquery.tabellaUtenti,
                         //Tabella snapshot
-                        "create table snapshots ( id int NOT NULL AUTO INCREMENT"+                    
-                        "nome_utente varchar(20), nome_file varchar(50), "+
-                        "path_relativo varchar(100), dim int, "+
-                        "t_inserimento timestamp NOT NULL DEFAULT CURRENT TIMESTAMP, "+
-                        "contenuto blob, sha1_contenuto char(24),"+
-                        "PRIMARY KEY (nome_utente,id), FOREIGN KEY (nome_utente) REFERENCES utenti(nome));"
+                        Properties.SQLquery.tabellaSnapshot,
                                                      };
-        static private string[] utenti_di_test = {
-                        "INSERT INTO utenti(nome, password, path_monitorato) VALUES ('tizio', 'abbecedario','C:\\user\\Documents');",
-                        "INSERT INTO utenti(nome, password, path_monitorato) VALUES ('caio', 'abbecedario','C:\\user\\Documents');",
-                        "INSERT INTO utenti(nome, password, path_monitorato) VALUES ('sempronio', 'abbecedario','C:\\user\\Documents');",
-                        "INSERT INTO utenti(nome, password, path_monitorato) VALUES ('cesare', 'abbecedario','C:\\user\\Documents');"
-                                                    };
-        static private string[] file_di_test = {
-                         "INSERT INTO snapshots(id, nome_utente, nome_file, path_relativo, sha1_contenuto) VALUES (1, 'tizio', 'cose_importanti.txt', '\\.', '1f8a690b7366a2323e2d5b045120da7e93896f47')",
-                         "INSERT INTO snapshots(id, nome_utente, nome_file, path_relativo, sha1_contenuto) VALUES (2, 'tizio', 'cose_importanti.txt', '\\Scuola', '1f8a690b7366a2323e2d5b045120da7e93896f47')",
-                         "INSERT INTO snapshots(id, nome_utente, nome_file, path_relativo, sha1_contenuto) VALUES (3, 'tizio', 'robette.exe', '\\Scuola', '1f8a690b7366a2323e2d5b045120da7e93896f47')",
-                         "INSERT INTO snapshots(id, nome_utente, nome_file, path_relativo, sha1_contenuto) VALUES (4, 'tizio', 'non_aprire.dll', '\\\\Scuola\\Programmi', '1f8a690b7366a2323e2d5b045120da7e93896f47')",
-                         "INSERT INTO snapshots(id, nome_utente, nome_file, path_relativo, sha1_contenuto) VALUES (5, 'caio', 'robette.exe', '', '1f8a690b7366a2323e2d5b045120da7e93896f47')",
-                         "INSERT INTO snapshots(id, nome_utente, nome_file, path_relativo, sha1_contenuto) VALUES (6, 'caio', '1234', '\\lkjhgfd', '1f8a690b7366a2323e2d5b045120da7e93896f47')",
-                         "INSERT INTO snapshots(id, nome_utente, nome_file, path_relativo, sha1_contenuto) VALUES (7, 'caio', 'liste.lst', '\\mnbvdt\\fgvcdr', '1f8a690b7366a2323e2d5b045120da7e93896f47')",
-                         "INSERT INTO snapshots(id, nome_utente, nome_file, path_relativo, sha1_contenuto) VALUES (8, 'caio', 'parcella.doc', '\\Economica', '1f8a690b7366a2323e2d5b045120da7e93896f47')",
-                         "INSERT INTO snapshots(id, nome_utente, nome_file, path_relativo, sha1_contenuto) VALUES (9, 'sempronio', 'doc1.doc', '\\.', '1f8a690b7366a2323e2d5b045120da7e93896f47')",
-                         "INSERT INTO snapshots(id, nome_utente, nome_file, path_relativo, sha1_contenuto) VALUES (10, 'sempronio', 'robette.exe', '\\Altro', '1f8a690b7366a2323e2d5b045120da7e93896f47')",
-                         "INSERT INTO snapshots(id, nome_utente, nome_file, path_relativo, sha1_contenuto) VALUES (11, 'sempronio', 'doc2.doc', '\\Cose', '1f8a690b7366a2323e2d5b045120da7e93896f47')",
-                         "INSERT INTO snapshots(id, nome_utente, nome_file, path_relativo, sha1_contenuto) VALUES (12, 'sempronio', 'doc3.doc', '\\Scuola', '1f8a690b7366a2323e2d5b045120da7e93896f47')",
-                         "INSERT INTO snapshots(id, nome_utente, nome_file, path_relativo, sha1_contenuto) VALUES (13, 'cesare', 'armate.xls', '\\Utilita', '1f8a690b7366a2323e2d5b045120da7e93896f47')",
-                         "INSERT INTO snapshots(id, nome_utente, nome_file, path_relativo, sha1_contenuto) VALUES (14, 'cesare', 'colosseo.jpg', '\\Scuola', '1f8a690b7366a2323e2d5b045120da7e93896f47')",
-                         "INSERT INTO snapshots(id, nome_utente, nome_file, path_relativo, sha1_contenuto) VALUES (15, 'cesare', 'pompeo.jpg', '\\.', '1f8a690b7366a2323e2d5b045120da7e93896f47')",
-                         "INSERT INTO snapshots(id, nome_utente, nome_file, path_relativo, sha1_contenuto) VALUES (16, 'cesare', 'galliche.log', '\\.', '1f8a690b7366a2323e2d5b045120da7e93896f47')",
-                                                     };
-        public db_interface()
+
+        public DB_Table()
         {
-            Console.Write("\tCostruttore db_interface\n");
+            l = Log.getLog();
             if (sql_con == null)
             {
-                Console.Write("\tConnetto al db\n");
+                count_ref = 0;
                 String s = "Data Source=";
                 s += nome_file_db + ";Versione=3;";
                 if (!File.Exists(nome_file_db))
                 {
-                    Console.Write("\tDB non esistente. Devo crearlo\n");
+                    l.log("DB non esistente. Devo crearlo");
                     //SQLiteConnection.CreateFile("MyDatabase.sqlite");
-                    db_interface.sql_con = new SQLiteConnection(s);
-                    db_interface.sql_con.Open();
+                    DB_Table.sql_con = new SQLiteConnection(s);
+                    DB_Table.sql_con.Open();
                     Crea_DB();
-                    Console.Write("\tDB creato\n");
+                    l.log("DB creato");
                 }
                 else
                 {
-                    db_interface.sql_con = new SQLiteConnection(s);
-                    db_interface.sql_con.Open();
+                    DB_Table.sql_con = new SQLiteConnection(s);
+                    DB_Table.sql_con.Open();
                 }
             }
             count_ref++;
-            Console.Write("Connesso. Su questa connessione ci sono " + count_ref.ToString() + " oggetti.\n");
-            this.command = db_interface.sql_con.CreateCommand();
             this.reader = null;
 
         }
 
-        ~db_interface()
+        ~DB_Table()
         {
             count_ref--;
             if (count_ref == 0) 
             {
-                Console.Write("\tChiudo la connessione con il db\n");
-                db_interface.sql_con.Close();
-                db_interface.sql_con = null;
+                try
+                {
+                    DB_Table.sql_con.Close();
+                }catch(ObjectDisposedException e)
+                {
+                    l.log("Warning! La connessione è già stata chiusa ma non so come mai -.-. "+e.Message);
+                }
+                DB_Table.sql_con = null;
             }
         }
 
         private void Crea_DB()
         {
+            command = sql_con.CreateCommand();
             foreach (string sql in db_structure)
             {
-                Console.Write("\t\tCreo la struttura del DB\n");
                 command.CommandText = sql;
                 command.ExecuteNonQuery();
             }
 
-            //Alcuni valori di test::
-            foreach (string sql in utenti_di_test)
+            //Alcuni valori di test:
+
+            Properties.DatiTest.Culture = CultureInfo.CurrentCulture;
+            ResourceSet rs = Properties.DatiTest.ResourceManager
+                                        .GetResourceSet(CultureInfo.CurrentCulture, true, true);
+
+            foreach (DictionaryEntry sql in rs)
             {
-                Console.Write("\t\tInserisco nel DB gli utenti di test\n");
-                command.CommandText = sql;
+                command.CommandText = sql.Value.ToString();
                 command.ExecuteNonQuery();
             }
-
-            foreach (string sql in file_di_test)
-            {
-                Console.Write("\t\tInserisco nel DB snapshot di test\n");
-                command.CommandText = sql;
-                command.ExecuteNonQuery();
-            }
-
+            
         }
 
         /// <summary>
@@ -136,7 +112,7 @@ namespace ProgettoMalnati
         /// </param>
         public void ExecuteQuery(string txtQuery, string[][] parameters = null)
         {
-            Console.Write("\t\t\tExecuteNonQuery()\n");
+            command = sql_con.CreateCommand();
             command.CommandText = txtQuery;
             if (parameters != null)
             {
@@ -145,12 +121,21 @@ namespace ProgettoMalnati
                     command.Parameters.Add(new SQLiteParameter(param[0],param[1]));
                 }
             }
-
-            //Non sono troppo sicuro!!!!!!!!!
-            if(txtQuery.StartsWith("SELECT"))
+            try
+            {
+                command.VerifyOnly();
+            }
+            catch(Exception e)
+            {
+                l.log("Query errata: " + e.Message);
+            }
+            try
+            {
                 reader = command.ExecuteReader();
-            else
-                command.ExecuteNonQuery();
+            }catch (SQLiteException e) when (e.ErrorCode == (int)SQLiteErrorCode.Constraint)
+            {
+                throw new DatabaseException("Errore di Constraint", DatabaseErrorCode.Constraint);
+            }
         }
 
         /// <summary>
@@ -160,7 +145,7 @@ namespace ProgettoMalnati
         /// <returns>
         /// Iteratore su stringa (MODIFICARE!!!)
         /// </returns>
-        protected IEnumerable<int> GetResults()
+        public IEnumerable<int> GetResults()
         {
             int i= 0;
             if (this.reader != null)
@@ -168,7 +153,9 @@ namespace ProgettoMalnati
                 try
                 {
                     while (reader.Read())
-                        yield return i++;
+                    {
+                        yield return ++i;
+                    }
                 }
                 finally
                 {
@@ -178,9 +165,17 @@ namespace ProgettoMalnati
             }
         }
 
-        protected object ResultGetValue(string field_name) 
+        public object ResultGetValue(string field_name) 
         {
             return reader[field_name];
+        }
+
+        public long getLastInsertedId()
+        {
+            command = sql_con.CreateCommand();
+            string sql = "select last_insert_rowid()";
+            command.CommandText = sql;
+            return (long)command.ExecuteScalar();
         }
     }
 }
