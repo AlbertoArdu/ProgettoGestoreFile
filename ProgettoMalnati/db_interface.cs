@@ -30,6 +30,8 @@ namespace ProgettoMalnati
         static private string[] db_structure = {
                         //Tabelle utenti
                         Properties.SQLquery.tabellaUtenti,
+                        //Tabella fileutente
+                        Properties.SQLquery.tabellaFileUtente,
                         //Tabella snapshot
                         Properties.SQLquery.tabellaSnapshot,
                                                      };
@@ -88,7 +90,6 @@ namespace ProgettoMalnati
             }
 
             //Alcuni valori di test:
-
             Properties.DatiTest.Culture = CultureInfo.CurrentCulture;
             ResourceSet rs = Properties.DatiTest.ResourceManager
                                         .GetResourceSet(CultureInfo.CurrentCulture, true, true);

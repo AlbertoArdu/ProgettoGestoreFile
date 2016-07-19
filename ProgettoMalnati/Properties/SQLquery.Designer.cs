@@ -61,6 +61,33 @@ namespace ProgettoMalnati.Properties {
         }
         
         /// <summary>
+        ///   Cerca una stringa localizzata simile a UPDATE utenti SET nome = @nuovo_nome WHERE nome = @nome;.
+        /// </summary>
+        internal static string sqlAggiornaNomeUtente {
+            get {
+                return ResourceManager.GetString("sqlAggiornaNomeUtente", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a UPDATE utenti SET password = @pass WHERE nome =@nome;.
+        /// </summary>
+        internal static string sqlAggiornaPassword {
+            get {
+                return ResourceManager.GetString("sqlAggiornaPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a UPDATE utenti SET path_monitorato = @path WHERE nome = @nome;.
+        /// </summary>
+        internal static string sqlAggiornaPath {
+            get {
+                return ResourceManager.GetString("sqlAggiornaPath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Cerca una stringa localizzata simile a SELECT * FROM utenti WHERE nome = @nome AND password = @password;.
         /// </summary>
         internal static string sqlCheckUtente {
@@ -70,7 +97,25 @@ namespace ProgettoMalnati.Properties {
         }
         
         /// <summary>
-        ///   Cerca una stringa localizzata simile a SELECT id FROM snapshots WHERE nome_utente = @nome_utente;.
+        ///   Cerca una stringa localizzata simile a SELECT count(*) as conteggio FROM utenti WHERE nome = @nome;.
+        /// </summary>
+        internal static string sqlControllaNomeUtente {
+            get {
+                return ResourceManager.GetString("sqlControllaNomeUtente", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a SELECT nome_file_c, path_relativo_c, t_creazione, valido FROM fileutente WHERE id = @id;.
+        /// </summary>
+        internal static string sqlGetFileData {
+            get {
+                return ResourceManager.GetString("sqlGetFileData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a SELECT id FROM snapshots WHERE id_file = @id_file ORDER BY t_inserimento;.
         /// </summary>
         internal static string sqlGetIds {
             get {
@@ -88,25 +133,51 @@ namespace ProgettoMalnati.Properties {
         }
         
         /// <summary>
-        ///   Cerca una stringa localizzata simile a UPDATE utenti SET password=@password WHERE nome=@nome;.
+        ///   Cerca una stringa localizzata simile a SELECT dim, t_modifica, sha_contenuto, nome_locale_s FROM snapshots WHERE id = @id;.
         /// </summary>
-        internal static string sqlUpdatePass {
+        internal static string sqlGetSnapshotData {
             get {
-                return ResourceManager.GetString("sqlUpdatePass", resourceCulture);
+                return ResourceManager.GetString("sqlGetSnapshotData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a INSERT INTO snapshots (dim, t_modifica, sha_contenuto, nome_locale_s) VALUES (@dim, @t_modifica, @sha_contenuto, @nome_locale_s);.
+        /// </summary>
+        internal static string sqlInsertSnapshotData {
+            get {
+                return ResourceManager.GetString("sqlInsertSnapshotData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a UPDATE snapshots SET dim = @dim, t_modifica = @t_modifica, sha_contenuto = @sha_contenuto, nome_locale_s = @nome_locale_s WHERE id = @id;.
+        /// </summary>
+        internal static string sqlStoreSnapshotData {
+            get {
+                return ResourceManager.GetString("sqlStoreSnapshotData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a create table fileutente (nome_utente varchar(20), id INTEGER PRIMARY KEY ASC, nome_file_c varchar(50), path_relativo_c varchar(100), t_creazione timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, valido BOOLEAN DEFAULT TRUE, FOREIGN KEY (nome_utente) REFERENCES utenti(nome) ON DELETE CASCADE ON UPDATE CASCADE); .
+        /// </summary>
+        internal static string tabellaFileUtente {
+            get {
+                return ResourceManager.GetString("tabellaFileUtente", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Cerca una stringa localizzata simile a create table snapshots (
         ///                        id INTEGER PRIMARY KEY ASC, 
-        ///                        nome_utente varchar(20), 
-        ///                        nome_file_c varchar(50), 
-        ///                        path_relativo_c varchar(100), 
+        ///                        id_file int,
         ///                        dim int, 
-        ///                        t_inserimento timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, 
-        ///                        valid BOOLEAN DEFAULT TRUE,
+        ///                        t_modifica timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, 
+        ///                        valido BOOLEAN DEFAULT TRUE,
         ///                        nome_locale_s varchar(100), 
-        ///                        sha_contenuto char(128 [stringa troncata]&quot;;.
+        ///                        sha_contenuto char(128), 
+        ///                        FOREIGN KEY (id_file) REFERENCES fileutente(id) on delete cascade);.
         /// </summary>
         internal static string tabellaSnapshot {
             get {

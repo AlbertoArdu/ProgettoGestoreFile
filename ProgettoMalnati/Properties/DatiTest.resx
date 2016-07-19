@@ -117,64 +117,64 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="String1" xml:space="preserve">
+  <data name="String01" xml:space="preserve">
     <value>INSERT INTO utenti(nome, password, path_monitorato) VALUES ('tizio', 'abbecedario','C:\\user\\Documents');</value>
   </data>
-  <data name="String10" xml:space="preserve">
-    <value>INSERT INTO snapshots(nome_utente, nome_file_c, path_relativo_c, sha_contenuto,dim,nome_locale_s) VALUES ('caio', '1234', 'lkjhgfd', '1f8a690b7366a2323e2d5b045120da7e93896f47',0, 'x')</value>
-  </data>
-  <data name="String11" xml:space="preserve">
-    <value>INSERT INTO snapshots(nome_utente, nome_file_c, path_relativo_c, sha_contenuto,dim,nome_locale_s) VALUES ('caio', 'liste.lst', 'mnbvdt\\fgvcdr', '1f8a690b7366a2323e2d5b045120da7e93896f47',0, 'x')</value>
-  </data>
-  <data name="String12" xml:space="preserve">
-    <value>INSERT INTO snapshots(nome_utente, nome_file_c, path_relativo_c, sha_contenuto,dim,nome_locale_s) VALUES ('caio', 'parcella.doc', 'Economica', '1f8a690b7366a2323e2d5b045120da7e93896f47',0, 'x')</value>
-  </data>
-  <data name="String13" xml:space="preserve">
-    <value>INSERT INTO snapshots(nome_utente, nome_file_c, path_relativo_c, sha_contenuto,dim,nome_locale_s) VALUES ('sempronio', 'doc1.doc', '.', '1f8a690b7366a2323e2d5b045120da7e93896f47',0, 'x')</value>
-  </data>
-  <data name="String14" xml:space="preserve">
-    <value>INSERT INTO snapshots(nome_utente, nome_file_c, path_relativo_c, sha_contenuto,dim,nome_locale_s) VALUES ('sempronio', 'robette.exe', 'Altro', '1f8a690b7366a2323e2d5b045120da7e93896f47',0, 'x')</value>
-  </data>
-  <data name="String15" xml:space="preserve">
-    <value>INSERT INTO snapshots(nome_utente, nome_file_c, path_relativo_c, sha_contenuto,dim,nome_locale_s) VALUES ('sempronio', 'doc2.doc', 'Cose', '1f8a690b7366a2323e2d5b045120da7e93896f47',0, 'x')</value>
-  </data>
-  <data name="String16" xml:space="preserve">
-    <value>INSERT INTO snapshots(nome_utente, nome_file_c, path_relativo_c, sha_contenuto,dim,nome_locale_s) VALUES ('sempronio', 'doc3.doc', 'Scuola', '1f8a690b7366a2323e2d5b045120da7e93896f47',0, 'x')</value>
-  </data>
-  <data name="String17" xml:space="preserve">
-    <value>INSERT INTO snapshots(nome_utente, nome_file_c, path_relativo_c, sha_contenuto,dim,nome_locale_s) VALUES ('cesare', 'armate.xls', 'Utilita', '1f8a690b7366a2323e2d5b045120da7e93896f47',0, 'x')</value>
-  </data>
-  <data name="String18" xml:space="preserve">
-    <value>INSERT INTO snapshots(nome_utente, nome_file_c, path_relativo_c, sha_contenuto,dim,nome_locale_s) VALUES ('cesare', 'colosseo.jpg', 'Scuola', '1f8a690b7366a2323e2d5b045120da7e93896f47',0, 'x')</value>
-  </data>
-  <data name="String19" xml:space="preserve">
-    <value>INSERT INTO snapshots(nome_utente, nome_file_c, path_relativo_c, sha_contenuto,dim,nome_locale_s) VALUES ('cesare', 'pompeo.jpg', '.', '1f8a690b7366a2323e2d5b045120da7e93896f47',0, 'x')</value>
-  </data>
-  <data name="String2" xml:space="preserve">
+  <data name="String02" xml:space="preserve">
     <value>INSERT INTO utenti(nome, password, path_monitorato) VALUES ('caio', 'abbecedario','C:\\user\\Documents');</value>
   </data>
-  <data name="String20" xml:space="preserve">
-    <value>INSERT INTO snapshots(nome_utente, nome_file_c, path_relativo_c, sha_contenuto,dim,nome_locale_s) VALUES ('cesare', 'galliche.log', '.', '1f8a690b7366a2323e2d5b045120da7e93896f47',17, 'x')</value>
-  </data>
-  <data name="String3" xml:space="preserve">
+  <data name="String03" xml:space="preserve">
     <value>INSERT INTO utenti(nome, password, path_monitorato) VALUES ('sempronio', 'abbecedario','C:\\user\\Documents');</value>
   </data>
-  <data name="String4" xml:space="preserve">
+  <data name="String04" xml:space="preserve">
     <value>INSERT INTO utenti(nome, password, path_monitorato) VALUES ('cesare', 'abbecedario','C:\\user\\Documents');</value>
   </data>
-  <data name="String5" xml:space="preserve">
-    <value>INSERT INTO snapshots(nome_utente, nome_file_c, path_relativo_c, sha_contenuto,dim,nome_locale_s) VALUES ('tizio', 'cose_importanti.txt', '.', '1f8a690b7366a2323e2d5b045120da7e93896f47',0, 'x')</value>
+  <data name="String05" xml:space="preserve">
+    <value>INSERT INTO fileutente(nome_utente, nome_file_c, path_relativo_c) VALUES ('tizio', 'cose_importanti.txt', '.')</value>
   </data>
-  <data name="String6" xml:space="preserve">
-    <value>INSERT INTO snapshots(nome_utente, nome_file_c, path_relativo_c, sha_contenuto,dim,nome_locale_s) VALUES ('tizio', 'cose_importanti.txt', 'Scuola', '1f8a690b7366a2323e2d5b045120da7e93896f47',0, 'x')</value>
+  <data name="String06" xml:space="preserve">
+    <value>INSERT INTO fileutente(nome_utente, nome_file_c, path_relativo_c) VALUES ('tizio', 'cose_importanti.txt', 'Scuola')</value>
   </data>
-  <data name="String7" xml:space="preserve">
-    <value>INSERT INTO snapshots(nome_utente, nome_file_c, path_relativo_c, sha_contenuto,dim,nome_locale_s) VALUES ('tizio', 'robette.exe', 'Scuola', '1f8a690b7366a2323e2d5b045120da7e93896f47',0, 'x')</value>
+  <data name="String07" xml:space="preserve">
+    <value>INSERT INTO fileutente(nome_utente, nome_file_c, path_relativo_c) VALUES ('tizio', 'robette.exe', 'Scuola')</value>
   </data>
-  <data name="String8" xml:space="preserve">
-    <value>INSERT INTO snapshots(nome_utente, nome_file_c, path_relativo_c, sha_contenuto,dim,nome_locale_s) VALUES ('tizio', 'non_aprire.dll', 'Scuola\\Programmi', '1f8a690b7366a2323e2d5b045120da7e93896f47',0, 'x')</value>
+  <data name="String08" xml:space="preserve">
+    <value>INSERT INTO fileutente(nome_utente, nome_file_c, path_relativo_c) VALUES ('tizio', 'non_aprire.dll', 'Scuola\\Programmi')</value>
   </data>
-  <data name="String9" xml:space="preserve">
-    <value>INSERT INTO snapshots(nome_utente, nome_file_c, path_relativo_c, sha_contenuto,dim,nome_locale_s) VALUES ('caio', 'robette.exe', '', '1f8a690b7366a2323e2d5b045120da7e93896f47',0, 'x')</value>
+  <data name="String09" xml:space="preserve">
+    <value>INSERT INTO fileutente(nome_utente, nome_file_c, path_relativo_c) VALUES ('caio', 'robette.exe', '.')</value>
+  </data>
+  <data name="String10" xml:space="preserve">
+    <value>INSERT INTO fileutente(nome_utente, nome_file_c, path_relativo_c) VALUES ('caio', '1234', 'lkjhgfd')</value>
+  </data>
+  <data name="String11" xml:space="preserve">
+    <value>INSERT INTO fileutente(nome_utente, nome_file_c, path_relativo_c) VALUES ('caio', 'liste.lst', 'mnbvdt\\fgvcdr')</value>
+  </data>
+  <data name="String12" xml:space="preserve">
+    <value>INSERT INTO fileutente(nome_utente, nome_file_c, path_relativo_c) VALUES ('caio', 'parcella.doc', 'Economica')</value>
+  </data>
+  <data name="String13" xml:space="preserve">
+    <value>INSERT INTO fileutente(nome_utente, nome_file_c, path_relativo_c) VALUES ('sempronio', 'doc1.doc', '.')</value>
+  </data>
+  <data name="String14" xml:space="preserve">
+    <value>INSERT INTO fileutente(nome_utente, nome_file_c, path_relativo_c) VALUES ('sempronio', 'robette.exe', 'Altro')</value>
+  </data>
+  <data name="String15" xml:space="preserve">
+    <value>INSERT INTO fileutente(nome_utente, nome_file_c, path_relativo_c) VALUES ('sempronio', 'doc2.doc', 'Cose')</value>
+  </data>
+  <data name="String16" xml:space="preserve">
+    <value>INSERT INTO snapshots(sha_contenuto,dim,nome_locale_s, id_file) VALUES ('1f8a690b7366a2323e2d5b045120da7e93896f47',0, 'x1', 4)</value>
+  </data>
+  <data name="String17" xml:space="preserve">
+    <value>INSERT INTO fileutente(nome_utente, nome_file_c, path_relativo_c) VALUES ('cesare', 'armate.xls', 'Utilita')</value>
+  </data>
+  <data name="String18" xml:space="preserve">
+    <value>INSERT INTO fileutente(nome_utente, nome_file_c, path_relativo_c) VALUES ('cesare', 'colosseo.jpg', 'Scuola')</value>
+  </data>
+  <data name="String19" xml:space="preserve">
+    <value>INSERT INTO snapshots(sha_contenuto,dim,nome_locale_s,id_file) VALUES ('1f8a690b7366a2323e2d5b045120da7e93896f47',0, 'x3',4)</value>
+  </data>
+  <data name="String20" xml:space="preserve">
+    <value>INSERT INTO snapshots(sha_contenuto,dim,nome_locale_s, id_file) VALUES ('1f8a690b7366a2323e2d5b045120da7e93896f47',17, 'x2', 4)</value>
   </data>
 </root>

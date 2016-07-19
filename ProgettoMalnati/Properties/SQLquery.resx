@@ -117,38 +117,63 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="sqlAggiornaNomeUtente" xml:space="preserve">
+    <value>UPDATE utenti SET nome = @nuovo_nome WHERE nome = @nome;</value>
+  </data>
+  <data name="sqlAggiornaPassword" xml:space="preserve">
+    <value>UPDATE utenti SET password = @pass WHERE nome =@nome;</value>
+  </data>
+  <data name="sqlAggiornaPath" xml:space="preserve">
+    <value>UPDATE utenti SET path_monitorato = @path WHERE nome = @nome;</value>
+  </data>
   <data name="sqlCheckUtente" xml:space="preserve">
     <value>SELECT * FROM utenti WHERE nome = @nome AND password = @password;</value>
     <comment>Query SQL per cercare un utente</comment>
   </data>
+  <data name="sqlControllaNomeUtente" xml:space="preserve">
+    <value>SELECT count(*) as conteggio FROM utenti WHERE nome = @nome;</value>
+  </data>
+  <data name="sqlGetFileData" xml:space="preserve">
+    <value>SELECT nome_file_c, path_relativo_c, t_creazione, valido FROM fileutente WHERE id = @id;</value>
+  </data>
   <data name="sqlGetIds" xml:space="preserve">
-    <value>SELECT id FROM snapshots WHERE nome_utente = @nome_utente;</value>
+    <value>SELECT id FROM snapshots WHERE id_file = @id_file ORDER BY t_inserimento;</value>
     <comment>Query SQL per ottenere gli id degli snapshot che un utente possiede</comment>
   </data>
   <data name="sqlGetInfoUtente" xml:space="preserve">
     <value>INSERT INTO utenti(nome,password,path_monitorato) VALUES (@nome,@password,@path_monitorato);</value>
     <comment>Query SQL per scaricare i dati di un utente</comment>
   </data>
-  <data name="sqlUpdatePass" xml:space="preserve">
-    <value>UPDATE utenti SET password=@password WHERE nome=@nome;</value>
-    <comment>Query SQL per aggiornare la password di un utente</comment>
+  <data name="sqlGetSnapshotData" xml:space="preserve">
+    <value>SELECT dim, t_modifica, sha_contenuto, nome_locale_s FROM snapshots WHERE id = @id;</value>
+    <comment>Query SQL per scaricare i dati di uno snapshot</comment>
+  </data>
+  <data name="sqlInsertSnapshotData" xml:space="preserve">
+    <value>INSERT INTO snapshots (dim, t_modifica, sha_contenuto, nome_locale_s) VALUES (@dim, @t_modifica, @sha_contenuto, @nome_locale_s);</value>
+    <comment>Query SQL per creare una nuova entry nella tabella snapshot</comment>
+  </data>
+  <data name="sqlStoreSnapshotData" xml:space="preserve">
+    <value>UPDATE snapshots SET dim = @dim, t_modifica = @t_modifica, sha_contenuto = @sha_contenuto, nome_locale_s = @nome_locale_s WHERE id = @id;</value>
+    <comment>Query SQL per aggiornare un entry della tabella snapshot</comment>
+  </data>
+  <data name="tabellaFileUtente" xml:space="preserve">
+    <value>create table fileutente (nome_utente varchar(20), id INTEGER PRIMARY KEY ASC, nome_file_c varchar(50), path_relativo_c varchar(100), t_creazione timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, valido BOOLEAN DEFAULT TRUE, FOREIGN KEY (nome_utente) REFERENCES utenti(nome) ON DELETE CASCADE ON UPDATE CASCADE); </value>
+    <comment>Codice SQL per creare la tabella dei file dell'utente</comment>
   </data>
   <data name="tabellaSnapshot" xml:space="preserve">
     <value>create table snapshots (
                         id INTEGER PRIMARY KEY ASC, 
-                        nome_utente varchar(20), 
-                        nome_file_c varchar(50), 
-                        path_relativo_c varchar(100), 
+                        id_file int,
                         dim int, 
-                        t_inserimento timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, 
-                        valid BOOLEAN DEFAULT TRUE,
+                        t_modifica timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, 
+                        valido BOOLEAN DEFAULT TRUE,
                         nome_locale_s varchar(100), 
                         sha_contenuto char(128), 
-                        FOREIGN KEY (nome_utente) REFERENCES utenti(nome));</value>
-    <comment>Query SQL per creare la tabella degli snapshot</comment>
+                        FOREIGN KEY (id_file) REFERENCES fileutente(id) on delete cascade);</value>
+    <comment>Codice SQL per creare la tabella degli snapshot</comment>
   </data>
   <data name="tabellaUtenti" xml:space="preserve">
     <value>create table utenti (nome varchar(20), password varchar(100), path_monitorato varchar(250), PRIMARY KEY(nome))</value>
-    <comment>Query SQL per creare la tabella utenti</comment>
+    <comment>Codice SQL per creare la tabella utenti</comment>
   </data>
 </root>

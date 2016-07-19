@@ -63,14 +63,86 @@ namespace ProgettoMalnati.Properties {
         /// <summary>
         ///   Cerca una stringa localizzata simile a INSERT INTO utenti(nome, password, path_monitorato) VALUES (&apos;tizio&apos;, &apos;abbecedario&apos;,&apos;C:\\user\\Documents&apos;);.
         /// </summary>
-        internal static string String1 {
+        internal static string String01 {
             get {
-                return ResourceManager.GetString("String1", resourceCulture);
+                return ResourceManager.GetString("String01", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Cerca una stringa localizzata simile a INSERT INTO snapshots(nome_utente, nome_file_c, path_relativo_c, sha_contenuto,dim,nome_locale_s) VALUES (&apos;caio&apos;, &apos;1234&apos;, &apos;lkjhgfd&apos;, &apos;1f8a690b7366a2323e2d5b045120da7e93896f47&apos;,0, &apos;x&apos;).
+        ///   Cerca una stringa localizzata simile a INSERT INTO utenti(nome, password, path_monitorato) VALUES (&apos;caio&apos;, &apos;abbecedario&apos;,&apos;C:\\user\\Documents&apos;);.
+        /// </summary>
+        internal static string String02 {
+            get {
+                return ResourceManager.GetString("String02", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a INSERT INTO utenti(nome, password, path_monitorato) VALUES (&apos;sempronio&apos;, &apos;abbecedario&apos;,&apos;C:\\user\\Documents&apos;);.
+        /// </summary>
+        internal static string String03 {
+            get {
+                return ResourceManager.GetString("String03", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a INSERT INTO utenti(nome, password, path_monitorato) VALUES (&apos;cesare&apos;, &apos;abbecedario&apos;,&apos;C:\\user\\Documents&apos;);.
+        /// </summary>
+        internal static string String04 {
+            get {
+                return ResourceManager.GetString("String04", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a INSERT INTO fileutente(nome_utente, nome_file_c, path_relativo_c) VALUES (&apos;tizio&apos;, &apos;cose_importanti.txt&apos;, &apos;.&apos;).
+        /// </summary>
+        internal static string String05 {
+            get {
+                return ResourceManager.GetString("String05", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a INSERT INTO fileutente(nome_utente, nome_file_c, path_relativo_c) VALUES (&apos;tizio&apos;, &apos;cose_importanti.txt&apos;, &apos;Scuola&apos;).
+        /// </summary>
+        internal static string String06 {
+            get {
+                return ResourceManager.GetString("String06", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a INSERT INTO fileutente(nome_utente, nome_file_c, path_relativo_c) VALUES (&apos;tizio&apos;, &apos;robette.exe&apos;, &apos;Scuola&apos;).
+        /// </summary>
+        internal static string String07 {
+            get {
+                return ResourceManager.GetString("String07", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a INSERT INTO fileutente(nome_utente, nome_file_c, path_relativo_c) VALUES (&apos;tizio&apos;, &apos;non_aprire.dll&apos;, &apos;Scuola\\Programmi&apos;).
+        /// </summary>
+        internal static string String08 {
+            get {
+                return ResourceManager.GetString("String08", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a INSERT INTO fileutente(nome_utente, nome_file_c, path_relativo_c) VALUES (&apos;caio&apos;, &apos;robette.exe&apos;, &apos;.&apos;).
+        /// </summary>
+        internal static string String09 {
+            get {
+                return ResourceManager.GetString("String09", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a INSERT INTO fileutente(nome_utente, nome_file_c, path_relativo_c) VALUES (&apos;caio&apos;, &apos;1234&apos;, &apos;lkjhgfd&apos;).
         /// </summary>
         internal static string String10 {
             get {
@@ -79,7 +151,7 @@ namespace ProgettoMalnati.Properties {
         }
         
         /// <summary>
-        ///   Cerca una stringa localizzata simile a INSERT INTO snapshots(nome_utente, nome_file_c, path_relativo_c, sha_contenuto,dim,nome_locale_s) VALUES (&apos;caio&apos;, &apos;liste.lst&apos;, &apos;mnbvdt\\fgvcdr&apos;, &apos;1f8a690b7366a2323e2d5b045120da7e93896f47&apos;,0, &apos;x&apos;).
+        ///   Cerca una stringa localizzata simile a INSERT INTO fileutente(nome_utente, nome_file_c, path_relativo_c) VALUES (&apos;caio&apos;, &apos;liste.lst&apos;, &apos;mnbvdt\\fgvcdr&apos;).
         /// </summary>
         internal static string String11 {
             get {
@@ -88,7 +160,7 @@ namespace ProgettoMalnati.Properties {
         }
         
         /// <summary>
-        ///   Cerca una stringa localizzata simile a INSERT INTO snapshots(nome_utente, nome_file_c, path_relativo_c, sha_contenuto,dim,nome_locale_s) VALUES (&apos;caio&apos;, &apos;parcella.doc&apos;, &apos;Economica&apos;, &apos;1f8a690b7366a2323e2d5b045120da7e93896f47&apos;,0, &apos;x&apos;).
+        ///   Cerca una stringa localizzata simile a INSERT INTO fileutente(nome_utente, nome_file_c, path_relativo_c) VALUES (&apos;caio&apos;, &apos;parcella.doc&apos;, &apos;Economica&apos;).
         /// </summary>
         internal static string String12 {
             get {
@@ -97,7 +169,7 @@ namespace ProgettoMalnati.Properties {
         }
         
         /// <summary>
-        ///   Cerca una stringa localizzata simile a INSERT INTO snapshots(nome_utente, nome_file_c, path_relativo_c, sha_contenuto,dim,nome_locale_s) VALUES (&apos;sempronio&apos;, &apos;doc1.doc&apos;, &apos;.&apos;, &apos;1f8a690b7366a2323e2d5b045120da7e93896f47&apos;,0, &apos;x&apos;).
+        ///   Cerca una stringa localizzata simile a INSERT INTO fileutente(nome_utente, nome_file_c, path_relativo_c) VALUES (&apos;sempronio&apos;, &apos;doc1.doc&apos;, &apos;.&apos;).
         /// </summary>
         internal static string String13 {
             get {
@@ -106,7 +178,7 @@ namespace ProgettoMalnati.Properties {
         }
         
         /// <summary>
-        ///   Cerca una stringa localizzata simile a INSERT INTO snapshots(nome_utente, nome_file_c, path_relativo_c, sha_contenuto,dim,nome_locale_s) VALUES (&apos;sempronio&apos;, &apos;robette.exe&apos;, &apos;Altro&apos;, &apos;1f8a690b7366a2323e2d5b045120da7e93896f47&apos;,0, &apos;x&apos;).
+        ///   Cerca una stringa localizzata simile a INSERT INTO fileutente(nome_utente, nome_file_c, path_relativo_c) VALUES (&apos;sempronio&apos;, &apos;robette.exe&apos;, &apos;Altro&apos;).
         /// </summary>
         internal static string String14 {
             get {
@@ -115,7 +187,7 @@ namespace ProgettoMalnati.Properties {
         }
         
         /// <summary>
-        ///   Cerca una stringa localizzata simile a INSERT INTO snapshots(nome_utente, nome_file_c, path_relativo_c, sha_contenuto,dim,nome_locale_s) VALUES (&apos;sempronio&apos;, &apos;doc2.doc&apos;, &apos;Cose&apos;, &apos;1f8a690b7366a2323e2d5b045120da7e93896f47&apos;,0, &apos;x&apos;).
+        ///   Cerca una stringa localizzata simile a INSERT INTO fileutente(nome_utente, nome_file_c, path_relativo_c) VALUES (&apos;sempronio&apos;, &apos;doc2.doc&apos;, &apos;Cose&apos;).
         /// </summary>
         internal static string String15 {
             get {
@@ -124,7 +196,7 @@ namespace ProgettoMalnati.Properties {
         }
         
         /// <summary>
-        ///   Cerca una stringa localizzata simile a INSERT INTO snapshots(nome_utente, nome_file_c, path_relativo_c, sha_contenuto,dim,nome_locale_s) VALUES (&apos;sempronio&apos;, &apos;doc3.doc&apos;, &apos;Scuola&apos;, &apos;1f8a690b7366a2323e2d5b045120da7e93896f47&apos;,0, &apos;x&apos;).
+        ///   Cerca una stringa localizzata simile a INSERT INTO snapshots(sha_contenuto,dim,nome_locale_s, id_file) VALUES (&apos;1f8a690b7366a2323e2d5b045120da7e93896f47&apos;,0, &apos;x1&apos;, 4).
         /// </summary>
         internal static string String16 {
             get {
@@ -133,7 +205,7 @@ namespace ProgettoMalnati.Properties {
         }
         
         /// <summary>
-        ///   Cerca una stringa localizzata simile a INSERT INTO snapshots(nome_utente, nome_file_c, path_relativo_c, sha_contenuto,dim,nome_locale_s) VALUES (&apos;cesare&apos;, &apos;armate.xls&apos;, &apos;Utilita&apos;, &apos;1f8a690b7366a2323e2d5b045120da7e93896f47&apos;,0, &apos;x&apos;).
+        ///   Cerca una stringa localizzata simile a INSERT INTO fileutente(nome_utente, nome_file_c, path_relativo_c) VALUES (&apos;cesare&apos;, &apos;armate.xls&apos;, &apos;Utilita&apos;).
         /// </summary>
         internal static string String17 {
             get {
@@ -142,7 +214,7 @@ namespace ProgettoMalnati.Properties {
         }
         
         /// <summary>
-        ///   Cerca una stringa localizzata simile a INSERT INTO snapshots(nome_utente, nome_file_c, path_relativo_c, sha_contenuto,dim,nome_locale_s) VALUES (&apos;cesare&apos;, &apos;colosseo.jpg&apos;, &apos;Scuola&apos;, &apos;1f8a690b7366a2323e2d5b045120da7e93896f47&apos;,0, &apos;x&apos;).
+        ///   Cerca una stringa localizzata simile a INSERT INTO fileutente(nome_utente, nome_file_c, path_relativo_c) VALUES (&apos;cesare&apos;, &apos;colosseo.jpg&apos;, &apos;Scuola&apos;).
         /// </summary>
         internal static string String18 {
             get {
@@ -151,7 +223,7 @@ namespace ProgettoMalnati.Properties {
         }
         
         /// <summary>
-        ///   Cerca una stringa localizzata simile a INSERT INTO snapshots(nome_utente, nome_file_c, path_relativo_c, sha_contenuto,dim,nome_locale_s) VALUES (&apos;cesare&apos;, &apos;pompeo.jpg&apos;, &apos;.&apos;, &apos;1f8a690b7366a2323e2d5b045120da7e93896f47&apos;,0, &apos;x&apos;).
+        ///   Cerca una stringa localizzata simile a INSERT INTO snapshots(sha_contenuto,dim,nome_locale_s,id_file) VALUES (&apos;1f8a690b7366a2323e2d5b045120da7e93896f47&apos;,0, &apos;x3&apos;,4).
         /// </summary>
         internal static string String19 {
             get {
@@ -160,83 +232,11 @@ namespace ProgettoMalnati.Properties {
         }
         
         /// <summary>
-        ///   Cerca una stringa localizzata simile a INSERT INTO utenti(nome, password, path_monitorato) VALUES (&apos;caio&apos;, &apos;abbecedario&apos;,&apos;C:\\user\\Documents&apos;);.
-        /// </summary>
-        internal static string String2 {
-            get {
-                return ResourceManager.GetString("String2", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Cerca una stringa localizzata simile a INSERT INTO snapshots(nome_utente, nome_file_c, path_relativo_c, sha_contenuto,dim,nome_locale_s) VALUES (&apos;cesare&apos;, &apos;galliche.log&apos;, &apos;.&apos;, &apos;1f8a690b7366a2323e2d5b045120da7e93896f47&apos;,17, &apos;x&apos;).
+        ///   Cerca una stringa localizzata simile a INSERT INTO snapshots(sha_contenuto,dim,nome_locale_s, id_file) VALUES (&apos;1f8a690b7366a2323e2d5b045120da7e93896f47&apos;,17, &apos;x2&apos;, 4).
         /// </summary>
         internal static string String20 {
             get {
                 return ResourceManager.GetString("String20", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Cerca una stringa localizzata simile a INSERT INTO utenti(nome, password, path_monitorato) VALUES (&apos;sempronio&apos;, &apos;abbecedario&apos;,&apos;C:\\user\\Documents&apos;);.
-        /// </summary>
-        internal static string String3 {
-            get {
-                return ResourceManager.GetString("String3", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Cerca una stringa localizzata simile a INSERT INTO utenti(nome, password, path_monitorato) VALUES (&apos;cesare&apos;, &apos;abbecedario&apos;,&apos;C:\\user\\Documents&apos;);.
-        /// </summary>
-        internal static string String4 {
-            get {
-                return ResourceManager.GetString("String4", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Cerca una stringa localizzata simile a INSERT INTO snapshots(nome_utente, nome_file_c, path_relativo_c, sha_contenuto,dim,nome_locale_s) VALUES (&apos;tizio&apos;, &apos;cose_importanti.txt&apos;, &apos;.&apos;, &apos;1f8a690b7366a2323e2d5b045120da7e93896f47&apos;,0, &apos;x&apos;).
-        /// </summary>
-        internal static string String5 {
-            get {
-                return ResourceManager.GetString("String5", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Cerca una stringa localizzata simile a INSERT INTO snapshots(nome_utente, nome_file_c, path_relativo_c, sha_contenuto,dim,nome_locale_s) VALUES (&apos;tizio&apos;, &apos;cose_importanti.txt&apos;, &apos;Scuola&apos;, &apos;1f8a690b7366a2323e2d5b045120da7e93896f47&apos;,0, &apos;x&apos;).
-        /// </summary>
-        internal static string String6 {
-            get {
-                return ResourceManager.GetString("String6", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Cerca una stringa localizzata simile a INSERT INTO snapshots(nome_utente, nome_file_c, path_relativo_c, sha_contenuto,dim,nome_locale_s) VALUES (&apos;tizio&apos;, &apos;robette.exe&apos;, &apos;Scuola&apos;, &apos;1f8a690b7366a2323e2d5b045120da7e93896f47&apos;,0, &apos;x&apos;).
-        /// </summary>
-        internal static string String7 {
-            get {
-                return ResourceManager.GetString("String7", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Cerca una stringa localizzata simile a INSERT INTO snapshots(nome_utente, nome_file_c, path_relativo_c, sha_contenuto,dim,nome_locale_s) VALUES (&apos;tizio&apos;, &apos;non_aprire.dll&apos;, &apos;Scuola\\Programmi&apos;, &apos;1f8a690b7366a2323e2d5b045120da7e93896f47&apos;,0, &apos;x&apos;).
-        /// </summary>
-        internal static string String8 {
-            get {
-                return ResourceManager.GetString("String8", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Cerca una stringa localizzata simile a INSERT INTO snapshots(nome_utente, nome_file_c, path_relativo_c, sha_contenuto,dim,nome_locale_s) VALUES (&apos;caio&apos;, &apos;robette.exe&apos;, &apos;&apos;, &apos;1f8a690b7366a2323e2d5b045120da7e93896f47&apos;,0, &apos;x&apos;).
-        /// </summary>
-        internal static string String9 {
-            get {
-                return ResourceManager.GetString("String9", resourceCulture);
             }
         }
     }

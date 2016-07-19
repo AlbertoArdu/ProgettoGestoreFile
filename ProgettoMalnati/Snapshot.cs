@@ -14,13 +14,11 @@ namespace ProgettoMalnati
     class Snapshot : DB_Table
     {
         //Attributi
-        private string __nome_file;
         private string __nome_utente;
-        private string __path_relativo;
         private string __sha_contenuto;
         private string __path_locale;
         private string __nome_locale;
-        private DateTime __t_inserimento;
+        private DateTime __t_modifica;
         private int __id;
         private int __dim;
         private FileStream __lettura_contenuto = null;
@@ -32,45 +30,26 @@ namespace ProgettoMalnati
 
         //Da inizializzare -v-
         static private string base_path;
-        private static string sql_get_snapshot_data 
-                            = "SELECT nome_file_c, path_relativo_c, dim, t_inserimento, sha_contenuto, nome_locale_s "+
-                               "FROM snapshots "+
-                               "WHERE nome_utente = @nome_utente AND id = @id;";
-        private static string sql_store_data =
-                            "UPDATE snapshots SET dim = @dim, t_inserimento = @t_inserimento, " +
-                            "sha_contenuto = @sha_contenuto, nome_file_c = @nome_file_c, " +
-                            "path_relativo_c = @path_relativo_c, nome_locale_s = @nome_locale_s " +
-                            "WHERE nome_utente = @nome_utente AND id = @id;";
-        private static string sql_insert_data =
-                            "INSERT INTO snapshots (nome_utente, dim, t_inserimento, " +
-                            "sha_contenuto, nome_file_c, path_relativo_c, nome_locale_s) " +
-                            "VALUES (@nome_utente, @dim, @t_inserimento, " +
-                            "@sha_contenuto, @nome_file_c, @path_relativo_c, @nome_locale_s);";
+        private static string sql_get_snapshot_data = Properties.SQLquery.sqlGetSnapshotData;
+        private static string sql_store_data = Properties.SQLquery.sqlStoreSnapshotData;
+        private static string sql_insert_data = Properties.SQLquery.sqlInsertSnapshotData;
 
         //Proprieta
         public int Dim 
         {
             get { return __dim; }
         }
-        public int Id
-        {
-            get { return __id; }
-        }
         public string NomeUtente
         {
             get { return __nome_utente; }
         }
-        public string NomeFile
+        public int Id
         {
-            get { return __nome_file; }
-        }
-        public string PathRelativo
-        {
-            get { return __path_relativo; }
+            get { return __id; }
         }
         public DateTime InsertTime
         {
-            get { return __t_inserimento; }
+            get { return __t_modifica; }
         }
         public string shaContenuto
         {
@@ -78,23 +57,21 @@ namespace ProgettoMalnati
         }
 
         //Costruttori
-        public Snapshot(string nome_utente, int id)
+        public Snapshot(string nome_utente,int id)
             : base()
         {
             l = Log.getLog();
-            base_path = Properties.ApplicationSettings.Default.base_path + Path.DirectorySeparatorChar + "users_files";
-            string[][] parameters = new string[2][];
-            parameters[0] = new string[2] {"@nome_utente",nome_utente};
-            parameters[1] = new string[2] { "@id", id.ToString() };
+            if(base_path == null)
+                base_path = Properties.ApplicationSettings.Default.base_path + Path.DirectorySeparatorChar + "users_files";
+            string[][] parameters = new string[1][];
+            parameters[0] = new string[2] { "@id", id.ToString() };
             this.ExecuteQuery(sql_get_snapshot_data,parameters);
             //Get the data
             foreach (Int32 i in GetResults())
             {
-                this.__nome_file = (string)(this.ResultGetValue("nome_file_c"));
-                this.__path_relativo = (string)(this.ResultGetValue("path_relativo_c"));
                 this.__dim = (int)(this.ResultGetValue("dim"));
                 //Da rivedere!!
-                this.__t_inserimento = (DateTime)(this.ResultGetValue("t_inserimento"));
+                this.__t_modifica = (DateTime)(this.ResultGetValue("t_modifica"));
                 this.__sha_contenuto = (string)(this.ResultGetValue("sha_contenuto"));
                 this.__nome_locale = (string)(this.ResultGetValue("nome_locale_s"));
 
@@ -189,7 +166,7 @@ namespace ProgettoMalnati
                 if(this.__lettura_contenuto != null)
                     this.__lettura_contenuto.Close();
                 this.__lettura_contenuto = null;
-                this.__t_inserimento = timestamp;
+                this.__t_modifica = timestamp;
                 this.__dim = newDim;
                 string tmp_nome = this.__path_locale + Path.DirectorySeparatorChar + this.__nome_locale + ".tmp";
                 string tmp_nome_da_sostituire = this.__path_locale + Path.DirectorySeparatorChar + this.__nome_locale;
@@ -267,15 +244,12 @@ namespace ProgettoMalnati
 
         public void CaricaDatiNelDB()
         {
-            string[][] parameters = new string[8][];
+            string[][] parameters = new string[5][];
             parameters[0] = new string[2] { "@dim", __dim.ToString()};
-            parameters[1] = new string[2] { "@t_inserimento", __t_inserimento.ToString("u") };
-            parameters[2] = new string[2] { "@path_relativo_c", __path_relativo };
-            parameters[3] = new string[2] { "@sha_contenuto", __sha_contenuto };
-            parameters[4] = new string[2] { "@nome_file_c", __nome_file };
-            parameters[5] = new string[2] { "@nome_locale_s", __nome_locale };
-            parameters[6] = new string[2] { "@nome_utente", __nome_utente };
-            parameters[7] = new string[2] { "@id", __id.ToString() };
+            parameters[1] = new string[2] { "@t_modifica", __t_modifica.ToString("u") };
+            parameters[2] = new string[2] { "@sha_contenuto", __sha_contenuto };
+            parameters[3] = new string[2] { "@nome_locale_s", __nome_locale };
+            parameters[4] = new string[2] { "@id", __id.ToString() };
 
 
             this.ExecuteQuery(sql_store_data, parameters);
@@ -317,7 +291,7 @@ namespace ProgettoMalnati
             // Memorizzo i file nel db, ottengo l'id e ritorno il nuovo snapshot
             string[][] parameters = new string[7][];
             parameters[0] = new string[2] { "@dim", dim.ToString() };
-            parameters[1] = new string[2] { "@t_inserimento", timestamp.ToString("u") };
+            parameters[1] = new string[2] { "@t_modifica", timestamp.ToString("u") };
             parameters[2] = new string[2] { "@path_relativo_c", path_relativo };
             parameters[3] = new string[2] { "@sha_contenuto", sha_contenuto };
             parameters[4] = new string[2] { "@nome_file_c", nome_file };

@@ -126,7 +126,7 @@ namespace ProgettoMalnati
             }
         }
 
-        abstract class Command
+        private abstract class Command
         {
             /// <summary>
             /// Metodo astratto di esecuzione di un comando.
@@ -137,7 +137,7 @@ namespace ProgettoMalnati
             abstract public string esegui(Server s, List<string> dati);
         }
 
-        class ComandoRegistra : Command
+        private class ComandoRegistra : Command
         {
             /// <summary>
             /// Registra un nuovo utente
@@ -198,7 +198,7 @@ namespace ProgettoMalnati
         /// </list>
         /// </param>
         /// <returns>OK se terminato con successo, un codice e messaggio di errore altrimenti</returns>
-        class ComandoLogin : Command
+        private class ComandoLogin : Command
         {
             public override string esegui(Server s,List<string> dati)
             {
@@ -234,7 +234,21 @@ namespace ProgettoMalnati
                 return sb.ToString();
             }
         }
-        class ComandoListDir : Command
+        private class ComandoAggiornaContenutoFile : Command
+        {
+            public override string esegui(Server s, List<string> dati)
+            {
+                StringBuilder sb = new StringBuilder();
+                if(s.user == null)
+                {
+                    return sb.Append(CommandErrorCode.UtenteNonLoggato).Append(" Utente non loggato.").ToString();
+                }
+                if(dati.Count < )
+                throw new NotImplementedException();
+            }
+        }
+
+        private class ComandoListDir : Command
         {
             public override string esegui(Server s, List<string> dati)
             {

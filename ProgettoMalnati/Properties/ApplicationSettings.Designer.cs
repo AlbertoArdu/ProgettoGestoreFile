@@ -142,5 +142,29 @@ namespace ProgettoMalnati.Properties {
                 this["max_connessioni_in_sospeso"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("4")]
+        public int snapshot_per_file {
+            get {
+                return ((int)(this["snapshot_per_file"]));
+            }
+            set {
+                this["snapshot_per_file"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("20")]
+        public int numero_file {
+            get {
+                return ((int)(this["numero_file"]));
+            }
+            set {
+                this["numero_file"] = value;
+            }
+        }
     }
 }

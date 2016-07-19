@@ -5,19 +5,20 @@ using System.Text;
 
 namespace ProgettoMalnati
 {
-    //Classe che raccoglie i vari snapshot di un file remoto
-    class SnapshotList : DB_Table, IEnumerable
+
+    //Si occupa di controllare il limite di file per utente e modella una lista di FileUtente
+    class FileUtenteList : DB_Table, IEnumerable
     {
         //Attributi
-        private int __id_file;
         private string __nome_utente;
         private System.Collections.Generic.List<int> __list_ids_files;
+        private FileUtente[] __file_list;
         static private string sql_get_file_ids_of_user = Properties.SQLquery.sqlGetIds;
-
+        private int __max_file = 0;
         //Proprieta
-        public int IdFile
+        public string NomeUtente
         {
-            get{ return __id_file; }
+            get{ return __nome_utente; }
         }
 
         public int Length
@@ -25,26 +26,40 @@ namespace ProgettoMalnati
             get { return __list_ids_files.Count; }
         }
 
-        public ProgettoMalnati.Snapshot this[int index] 
+        public FileUtente this[int index] 
         {
-            get 
+            get
             {
-                ProgettoMalnati.Snapshot ss = new Snapshot(__nome_utente, __list_ids_files[index]);
-                return ss;
+                if(__file_list[index] == null)
+                {
+                    __file_list[index] = new FileUtente(__nome_utente, __list_ids_files[index]);
+                }
+                return __file_list[index];
             }
            // set { }
         }
 
+        public FileUtente this[string nome_file]
+        {
+            get
+            {
+                for(int i = 0; i < this.__list_ids_files.Count; i++)
+                {
+                    if (this[i].NomeFile == nome_file)
+                        return this[i];
+                }
+                throw new DatabaseException(" Non esiste nessun file con questo nome.", DatabaseErrorCode.FileNonEsistente);
+            }
+        }
+
         //Costruttori
-        public SnapshotList(int id_file, string nome_utente)
+        public FileUtenteList(string nome_utente)
             : base()
         {
-            //Leggere gli id dei file di questo utente e metterli in __list_ids_files
-            this.__id_file = id_file;
             this.__nome_utente = nome_utente;
+            this.__max_file = Properties.ApplicationSettings.Default.numero_file;
             string[][] parameters = new string[1][];
-            parameters[0] = new string[2] { "@id_file", id_file.ToString() };
-            
+            parameters[0] = new string[2] { "@nome_utente", nome_utente };
             this.__list_ids_files = new System.Collections.Generic.List<int>();
             this.ExecuteQuery(sql_get_file_ids_of_user, parameters);
             //Get the data
@@ -52,6 +67,7 @@ namespace ProgettoMalnati
             {
                 this.__list_ids_files.Add(Int32.Parse(this.ResultGetValue("id").ToString()));
             }
+            this.__file_list = new FileUtente[this.__list_ids_files.Count];
         }
 
         //Distruttore
@@ -72,7 +88,6 @@ namespace ProgettoMalnati
                 yield return new Snapshot(this.__nome_utente, __list_ids_files[index]);
             }
         }
-
         //Metodi Statici
     }
 }

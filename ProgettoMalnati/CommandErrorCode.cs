@@ -18,6 +18,7 @@ namespace ProgettoMalnati
 
         // Applicazione
         NomeUtenteInUso,
+        UtenteNonLoggato,
         Unknown = -1
     }
 }
