@@ -9,6 +9,7 @@ namespace ProgettoMalnati
     class FileUtente: DB_Table
     {
         private int __snapshot_per_file;
+        private int id;
         private string __nome_utente;
         private string __nome_file_c;
         private string __path_relativo_c;
@@ -36,8 +37,8 @@ namespace ProgettoMalnati
                 this.__t_creazione = (DateTime)(this.ResultGetValue("t_creazione"));
                 this.__path_relativo_c = (string)(this.ResultGetValue("path_relativo_c"));
                 this.__valido = (bool)(this.ResultGetValue("valido"));
-
             }
+            this.id = id;
         }
 
         public SnapshotList Snapshots => __snapshots;
@@ -53,6 +54,11 @@ namespace ProgettoMalnati
                 __valido = value;
             }
         }
+
+        /// <summary>
+        /// Settare questa proprietà significa notificare il sistema che il file è stato rinominato
+        /// da un direttorio ad un altro nel client, ma il contenuto non è cambiato.
+        /// </summary>
         public string NomeFile
         {
             get
@@ -61,8 +67,47 @@ namespace ProgettoMalnati
             }
             set
             {
-                __nome_file_c = value;
+                string[][] parameters = new string[2][];
+                parameters[0] = new string[2] { "@id", this.id.ToString() };
+                parameters[1] = new string[2] { "@nome_file_c", value };
+                this.ExecuteQuery(Properties.SQLquery.sqlCambiaNomeFile, parameters);
+                this.__nome_file_c = value;
             }
+        }
+        /// <summary>
+        /// Settare questa proprietà significa notificare il sistema che il file è stato spostato
+        /// da un direttorio ad un altro nel client, ma il contenuto non è cambiato.
+        /// </summary>
+        public string PathRelativo
+        {
+            get
+            {
+                return __path_relativo_c;
+            }
+            
+            set
+            {
+                string[][] parameters = new string[2][];
+                parameters[0] = new string[2] { "@id", this.id.ToString() };
+                parameters[1] = new string[2] { "@path_monitorato_c", value };
+                this.ExecuteQuery(Properties.SQLquery.sqlCambiaPathFile, parameters);
+                __path_relativo_c = value;
+            }
+        }
+        public int Id => this.id;
+
+        /// <summary>
+        /// Ideata per essere chiamata solo quando si è ecceduto il limite di file creati
+        /// </summary>
+        public void Distruggi()
+        {
+            // Cerco i nomi locali degli snapshot e li elimino, poi elimino le entry nella tabella snapshot
+            // poi l'entry nella tabella FileUtente
+            this.__snapshots.DistruggiTutto();
+            string sql = "DELETE FROM fileutente WHERE id_file = @id_file;";
+            string[][] parameters = new string[1][];
+            parameters[0] = new string[2] { "@id_file", id.ToString() };
+            this.ExecuteQuery(sql, parameters);
         }
 
     }

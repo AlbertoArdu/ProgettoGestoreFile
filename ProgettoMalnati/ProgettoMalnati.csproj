@@ -78,6 +78,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CollegamentoDati.cs" />
     <Compile Include="CommandErrorCode.cs" />
     <Compile Include="FileUtente.cs" />
     <Compile Include="SnapshotList.cs" />

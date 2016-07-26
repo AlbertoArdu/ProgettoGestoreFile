@@ -13,11 +13,16 @@ namespace ProgettoMalnati
     /// Contiene il riferimento al thread in cui verranno eseguiti le sue funzioni.
     /// </summary>
     /// <example>
-    /// Formato messaggi:
+    /// Formato messaggi client:
     /// comando\r\n
     /// dati\r\n
     /// ...
     /// \r\n (linea vuota)
+    /// Formato risposte server:
+    /// CommandErrorCode Messaggio\r\n
+    /// dati\r\n
+    /// ...
+    /// \r\n
     /// </example>
     class Server
     {
@@ -83,7 +88,7 @@ namespace ProgettoMalnati
                     do
                     {
                         data.Add(reader.ReadLine());
-                    } while (data.Last() == null || data.Last().Length > 0);
+                    } while (data.Last() != null || data.Last().Length > 0);
                     comando = CommandFactory.creaComando(request);
                     response = comando.esegui(this, data);
                     writer.WriteLine(response);
@@ -91,6 +96,7 @@ namespace ProgettoMalnati
                 catch(Exception e)
                 {
                     l.log(e.Message);
+                    throw;
                 }
             }
 
@@ -116,6 +122,18 @@ namespace ProgettoMalnati
                         break;
                     case "LOGIN":
                         c = new ComandoLogin();
+                        break;
+                    case "NEWFILE":
+                        c = new ComandoNuovoFile();
+                        break;
+                    case "UPDATE":
+                        c = new ComandoAggiornaContenutoFile();
+                        break;
+                    case "DELETE":
+                        c = new ComandoEliminaFile();
+                        break;
+                    case "RETRIEVE":
+                        c = new ComandoScaricaFile();
                         break;
                     case "LISTDIR":
                         c = new ComandoListDir();
@@ -243,8 +261,46 @@ namespace ProgettoMalnati
                 {
                     return sb.Append(CommandErrorCode.UtenteNonLoggato).Append(" Utente non loggato.").ToString();
                 }
-                if(dati.Count < )
+                if(dati.Count < 5)
                 throw new NotImplementedException();
+                return "";
+            }
+        }
+        private class ComandoNuovoFile : Command
+        {
+            public override string esegui(Server s, List<string> dati)
+            {
+                StringBuilder sb = new StringBuilder();
+
+                return "";
+            }
+        }
+        private class ComandoEsci : Command
+        {
+            public override string esegui(Server s, List<string> dati)
+            {
+                StringBuilder sb = new StringBuilder();
+
+                throw new NotImplementedException();
+                return "";
+            }
+        }
+        private class ComandoEliminaFile : Command
+        {
+            public override string esegui(Server s, List<string> dati)
+            {
+
+                throw new NotImplementedException();
+                return "";
+            }
+        }
+        private class ComandoScaricaFile : Command
+        {
+            public override string esegui(Server s, List<string> dati)
+            {
+                StringBuilder sb = new StringBuilder();
+                throw new NotImplementedException();
+                return "";
             }
         }
 

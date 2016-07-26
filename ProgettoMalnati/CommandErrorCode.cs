@@ -9,6 +9,7 @@ namespace ProgettoMalnati
     enum CommandErrorCode
     {
         OK = 0,
+        OKIntermedio,
         // Errori brutti
         Default,
         Abort,

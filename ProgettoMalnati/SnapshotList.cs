@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
+using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace ProgettoMalnati
 {
@@ -73,6 +73,39 @@ namespace ProgettoMalnati
             }
         }
 
+        public void DistruggiTutto()
+        {
+            Snapshot s;
+            for(int i=0; i < this.Length; i++)
+            {
+                s = this[i];
+                s.RimuoviContenuto();
+                s = null;
+            }
+            string sql = "DELETE FROM snapshots WHERE id_file = @id_file;";
+            string[][] parameters = new string[1][];
+            parameters[0] = new string[2] { "@id_file", __id_file.ToString() };
+            this.ExecuteQuery(sql, parameters);
+        }
+
         //Metodi Statici
+
+        static public void RimuoviSnapshotsDiFile(string nome_utente, int id_file)
+        {
+            DB_Table db = new DB_Table();
+
+            string sql = "SELECT nome_locale_s FROM snapshots WHERE id_file = @id_file;";
+            string[][] parameters = new string[1][];
+            string local_file = "";
+            string local_path = Properties.ApplicationSettings.Default.base_path + Path.DirectorySeparatorChar + "users_files"+Path.DirectorySeparatorChar+nome_utente;
+            parameters[0] = new string[2]{ "@id_file", id_file.ToString()};
+            db.ExecuteQuery(sql, parameters);
+            foreach (int i in db.GetResults())
+            {
+                local_file = (string)db.ResultGetValue("nome_locale_s");
+                try{
+                File.Delete(local_path + Path.DirectorySeparatorChar + local_file);
+            }
+        }
     }
 }

@@ -27,7 +27,7 @@ namespace ProgettoMalnati
             set
             {
                 if(!User.NomeUtenteValido(value))
-                    throw new DatabaseException("nome_utente non va bene.", DatabaseErrorCode.FormatError);
+                    throw new DatabaseException("nome_utente non va bene.", DatabaseErrorCode.NomeUtenteNonValido);
                 else
                 {
                     string[][] parameters = new string[2][];
@@ -35,7 +35,7 @@ namespace ProgettoMalnati
                     parameters[1] = new string[2] { "@nuovo_nome", value };
                     this.ExecuteQuery(Properties.SQLquery.sqlAggiornaNomeUtente, parameters);
                     this.__nome = value;
-                    __s_list = new ;
+                    __s_list = new FileUtenteList(this.__nome);
 
                 }
             }
@@ -55,7 +55,7 @@ namespace ProgettoMalnati
                     throw new DatabaseException("password non va bene.", DatabaseErrorCode.FormatError);
                 string pass = User.TrasformaPassword(value);
                 string[][] parameters = new string[2][];
-                parameters[0] = new string[2] { "@nome", __nome };
+                parameters[0] = new string[2] { "@nome", this.__nome };
                 parameters[1] = new string[2] { "@pass", pass };
                 this.ExecuteQuery(Properties.SQLquery.sqlAggiornaPassword, parameters);
                 this.__password = pass;
@@ -67,7 +67,7 @@ namespace ProgettoMalnati
             set
             {
                 string[][] parameters = new string[2][];
-                parameters[0] = new string[2] { "@nome", __nome };
+                parameters[0] = new string[2] { "@nome", this.__nome };
                 parameters[1] = new string[2] { "@path", value };
                 this.ExecuteQuery(Properties.SQLquery.sqlAggiornaPath, parameters);
                 __path_monitorato = value; 

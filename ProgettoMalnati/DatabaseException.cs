@@ -16,6 +16,7 @@ namespace ProgettoMalnati
         UserNonEsistente,
         UserGiaEsistente,
         FileNonEsistente,
+        LimiteFileSuperato,
         SnapshotNonValido,
         SnapshotInLettura,
         SnapshotInScrittura,

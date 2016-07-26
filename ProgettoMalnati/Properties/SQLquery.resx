@@ -125,6 +125,16 @@
   </data>
   <data name="sqlAggiornaPath" xml:space="preserve">
     <value>UPDATE utenti SET path_monitorato = @path WHERE nome = @nome;</value>
+    <comment>Cambia il path monitorato di un utente</comment>
+  </data>
+  <data name="sqlCambiaNomeFile" xml:space="preserve">
+    <value>UPDATE fileutente SET nome_file_c = @nome_file_c WHERE id = @id;</value>
+  </data>
+  <data name="sqlCambiaPathFile" xml:space="preserve">
+    <value>UPDATE fileutente SET path_relativo_c = @path_relativo_c WHERE id=@id;</value>
+  </data>
+  <data name="sqlCercaFileDaDistruggere" xml:space="preserve">
+    <value>SELECT id FROM fileutente WHERE valido = false AND nome_utente = @nome_utente AND t_creazione = ( SELECT MIN(t_creazione) FROM fileutente WHERE valido = false AND nome_utente = @nome_utente);</value>
   </data>
   <data name="sqlCheckUtente" xml:space="preserve">
     <value>SELECT * FROM utenti WHERE nome = @nome AND password = @password;</value>
@@ -151,6 +161,9 @@
   <data name="sqlInsertSnapshotData" xml:space="preserve">
     <value>INSERT INTO snapshots (dim, t_modifica, sha_contenuto, nome_locale_s) VALUES (@dim, @t_modifica, @sha_contenuto, @nome_locale_s);</value>
     <comment>Query SQL per creare una nuova entry nella tabella snapshot</comment>
+  </data>
+  <data name="sqlNuovoFile" xml:space="preserve">
+    <value>INSERT INTO fileutente(nome_utente, nome_file_c, path_relativo_c, t_creazione) VALUES (@nome_utente, @nome_file_c, @path_relativo_c,  @t_creazione)</value>
   </data>
   <data name="sqlStoreSnapshotData" xml:space="preserve">
     <value>UPDATE snapshots SET dim = @dim, t_modifica = @t_modifica, sha_contenuto = @sha_contenuto, nome_locale_s = @nome_locale_s WHERE id = @id;</value>

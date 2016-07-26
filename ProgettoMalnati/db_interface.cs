@@ -144,7 +144,7 @@ namespace ProgettoMalnati
         /// uno alla volta con il costrutto "foreach"
         /// </summary>
         /// <returns>
-        /// Iteratore su stringa (MODIFICARE!!!)
+        /// Iteratore su int
         /// </returns>
         public IEnumerable<int> GetResults()
         {

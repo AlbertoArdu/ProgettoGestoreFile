@@ -88,6 +88,33 @@ namespace ProgettoMalnati.Properties {
         }
         
         /// <summary>
+        ///   Cerca una stringa localizzata simile a UPDATE fileutente SET nome_file_c = @nome_file_c WHERE id = @id;.
+        /// </summary>
+        internal static string sqlCambiaNomeFile {
+            get {
+                return ResourceManager.GetString("sqlCambiaNomeFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a UPDATE fileutente SET path_relativo_c = @path_relativo_c WHERE id=@id;.
+        /// </summary>
+        internal static string sqlCambiaPathFile {
+            get {
+                return ResourceManager.GetString("sqlCambiaPathFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a SELECT id FROM fileutente WHERE valido = false AND nome_utente = @nome_utente AND t_creazione = ( SELECT MIN(t_creazione) FROM fileutente WHERE valido = false AND nome_utente = @nome_utente);.
+        /// </summary>
+        internal static string sqlCercaFileDaDistruggere {
+            get {
+                return ResourceManager.GetString("sqlCercaFileDaDistruggere", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Cerca una stringa localizzata simile a SELECT * FROM utenti WHERE nome = @nome AND password = @password;.
         /// </summary>
         internal static string sqlCheckUtente {
@@ -147,6 +174,15 @@ namespace ProgettoMalnati.Properties {
         internal static string sqlInsertSnapshotData {
             get {
                 return ResourceManager.GetString("sqlInsertSnapshotData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a INSERT INTO fileutente(nome_utente, nome_file_c, path_relativo_c, t_creazione) VALUES (@nome_utente, @nome_file_c, @path_relativo_c,  @t_creazione).
+        /// </summary>
+        internal static string sqlNuovoFile {
+            get {
+                return ResourceManager.GetString("sqlNuovoFile", resourceCulture);
             }
         }
         

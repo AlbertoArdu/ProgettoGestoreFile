@@ -255,9 +255,30 @@ namespace ProgettoMalnati
             this.ExecuteQuery(sql_store_data, parameters);
         }
 
-        //Funzioni Statiche
+        public void RimuoviContenuto()
+        {
+            if(this.__lettura_contenuto != null)
+            {
+                this.__lettura_contenuto.Close();
+                this.__lettura_contenuto = null;
+            }
+            if (this.__scrittura_contenuto != null)
+            {
+                this.__scrittura_contenuto.Close();
+                this.__scrittura_contenuto = null;
+            }
+            try
+            {
+                File.Delete(this.__path_locale + Path.DirectorySeparatorChar + this.__nome_locale);
+            }
+            catch(Exception e)
+            {
+                l.log("Errore nell'eliminazione del file locale." + e.Message, Level.ERR);
+                throw;
+            }
+        }
 
-        //private static Snapshot s = null;
+        //Funzioni Statiche
 
         public static Snapshot creaNuovo(string nome_utente, 
                                             string nome_file,
@@ -284,7 +305,7 @@ namespace ProgettoMalnati
             string path_locale = base_path + Path.DirectorySeparatorChar + nome_utente + Path.DirectorySeparatorChar;
             do
             {
-                nome_locale = RandomFileName();
+                nome_locale = Path.GetRandomFileName();
             } while (File.Exists(path_locale + nome_locale));
             // Creo il file (vuoto)
             FileStream f = File.Create(path_locale + nome_locale);
@@ -312,19 +333,5 @@ namespace ProgettoMalnati
             return s;
         }
 
-        // Può essere migliorata con l'uso di RNGCryptoServiceProvider()
-        private static string RandomFileName()
-        {
-            int size = Properties.ApplicationSettings.Default.lunghezza_nomi_locali;
-            Random random = new Random((int)DateTime.Now.Ticks);
-            StringBuilder builder = new StringBuilder();
-            char ch;
-            for (int i = 0; i < size; i++)
-            {
-                ch = Convert.ToChar(Convert.ToInt32(Math.Floor(26 * random.NextDouble() + 65)));
-                builder.Append(ch);
-            }
-            return builder.ToString();
-        }
     }
 }

@@ -166,5 +166,17 @@ namespace ProgettoMalnati.Properties {
                 this["numero_file"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("8888")]
+        public int tcp_port_dati {
+            get {
+                return ((int)(this["tcp_port_dati"]));
+            }
+            set {
+                this["tcp_port_dati"] = value;
+            }
+        }
     }
 }
