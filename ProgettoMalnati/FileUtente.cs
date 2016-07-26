@@ -109,6 +109,6 @@ namespace ProgettoMalnati
             parameters[0] = new string[2] { "@id_file", id.ToString() };
             this.ExecuteQuery(sql, parameters);
         }
-
+        
     }
 }

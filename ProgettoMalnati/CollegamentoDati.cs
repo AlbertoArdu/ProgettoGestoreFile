@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net.Sockets;
 using System.Threading;
 
@@ -23,11 +22,11 @@ namespace ProgettoMalnati
         static private Thread t;
         static private TcpListener acceptor;
         static private int port;
-        static private Dictionary<byte[], TcpClient> socket_dati_in_sospeso;
-        static public int token_lenght = 20;
+        static private Dictionary<string, TcpClient> socket_dati_in_sospeso;
+        static public int token_length = 20;
         static private Random rand_gen;
         static private object lockDictionary;
-        static private Dictionary<byte[],AutoResetEvent> waitHandles;
+        static private Dictionary<string,AutoResetEvent> waitHandles;
         static private int timeout = Properties.ApplicationSettings.Default.timeout_dati;
 
         static public void Inizializza()
@@ -38,9 +37,9 @@ namespace ProgettoMalnati
                 throw new Exception("Vietato chiamare due volte questa funzione");
             }
             rand_gen = new Random((int)DateTime.Now.Ticks);
-            socket_dati_in_sospeso = new Dictionary<byte[], TcpClient>();
+            socket_dati_in_sospeso = new Dictionary<string, TcpClient>();
             lockDictionary = new object();
-            waitHandles = new Dictionary<byte[], AutoResetEvent>;
+            waitHandles = new Dictionary<string, AutoResetEvent>();
             t = new Thread(CollegamentoDati.gestisciConnessioneDati);
             acceptor = TcpListener.Create(port);
             t.Start();
@@ -49,13 +48,14 @@ namespace ProgettoMalnati
         static private void gestisciConnessioneDati()
         {
             TcpClient c;
-            byte[] token = new byte[token_lenght];
-
+            string token;
             while (true)
             {
                 c = acceptor.AcceptTcpClient();
                 NetworkStream stream = c.GetStream();
-                stream.Read(token, 0,token_lenght);
+                byte[] tmp = new byte[token_length];
+                stream.Read(tmp, 0,token_length);
+                token = System.Convert.ToBase64String(tmp);
                 lock (lockDictionary)
                 {
                     socket_dati_in_sospeso.Add(token, c);
@@ -68,14 +68,16 @@ namespace ProgettoMalnati
         /// Restituisce un token garantito univoco.
         /// </summary>
         /// <returns>Il token</returns>
-        static public byte[] getNewToken()
+        static public string getNewToken()
         {
-            byte[] token = new byte[CollegamentoDati.token_lenght];
+            string token;
             lock (lockDictionary)
             {
+                byte[] tmp = new byte[CollegamentoDati.token_length];
                 do
                 {
-                    rand_gen.NextBytes(token);
+                    rand_gen.NextBytes(tmp);
+                    token = System.Convert.ToBase64String(tmp);
                 }
                 while (socket_dati_in_sospeso.ContainsKey(token));
                 socket_dati_in_sospeso.Add(token, null);
@@ -91,7 +93,7 @@ namespace ProgettoMalnati
         /// <param name="token">Il token che mi aspetto</param>
         /// <returns>La connessione con il client in caso di successo. null se scade il timeout.</returns>
         /// <exception cref="Exception">Lancia un'eccezione se il token non è valido</exception>
-        static public TcpClient getCollegamentoDati(byte[] token)
+        static public NetworkStream getCollegamentoDati(string token)
         {
             TcpClient c = null;
 
@@ -110,7 +112,7 @@ namespace ProgettoMalnati
             {
                 waitHandles.Remove(token);
             }
-            return c;
+            return c.GetStream();
         }
 
     }

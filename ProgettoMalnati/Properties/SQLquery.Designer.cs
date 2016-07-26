@@ -142,7 +142,7 @@ namespace ProgettoMalnati.Properties {
         }
         
         /// <summary>
-        ///   Cerca una stringa localizzata simile a SELECT id FROM snapshots WHERE id_file = @id_file ORDER BY t_inserimento;.
+        ///   Cerca una stringa localizzata simile a SELECT id FROM snapshots WHERE id_file = @id_file ORDER BY t_inserimento DESC;.
         /// </summary>
         internal static string sqlGetIds {
             get {

@@ -9,6 +9,7 @@ namespace ProgettoMalnati
         Constraint,
         FormatError,
         HashInconsistente,
+        DimensioneFileEccessiva,
         //Application level
         NomeUtenteNonValido,
         PasswordNonValida,

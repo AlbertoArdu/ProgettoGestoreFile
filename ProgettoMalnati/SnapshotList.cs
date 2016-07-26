@@ -12,6 +12,9 @@ namespace ProgettoMalnati
         private int __id_file;
         private string __nome_utente;
         private System.Collections.Generic.List<int> __list_ids_files;
+        private Snapshot[] __snapshots;
+        private int snapshotPerFile = Properties.ApplicationSettings.Default.snapshot_per_file;
+
         static private string sql_get_file_ids_of_user = Properties.SQLquery.sqlGetIds;
 
         //Proprieta
@@ -25,14 +28,41 @@ namespace ProgettoMalnati
             get { return __list_ids_files.Count; }
         }
 
-        public ProgettoMalnati.Snapshot this[int index] 
+        public Snapshot this[int index] 
         {
             get 
             {
-                ProgettoMalnati.Snapshot ss = new Snapshot(__nome_utente, __list_ids_files[index]);
-                return ss;
+                if (index >= __list_ids_files.Count)
+                    throw new IndexOutOfRangeException();
+                if(__snapshots[index] == null)
+                    __snapshots[index] = new Snapshot(__id_file, __list_ids_files[index]);
+                return __snapshots[index];
             }
            // set { }
+        }
+        /// <summary>
+        /// Applica la politica di gestione degli snapshot.
+        /// </summary>
+        /// <param name="timestamp">Nuovo timestamp della modifica</param>
+        /// <param name="dim">Nuova dimensione del file</param>
+        /// <param name="sha256">Nuovo hash del file in codifica base64</param>
+        /// <returns></returns>
+        public Snapshot Nuovo(DateTime timestamp, int dim, string sha256)
+        {
+            Snapshot s;
+            __snapshots = null;
+
+            if (__list_ids_files.Count < snapshotPerFile)
+            {
+                s = Snapshot.creaNuovo(this.__id_file,timestamp,dim,sha256);
+                __list_ids_files.Insert(0, s.Id);
+            }
+            else
+            {
+                s = new Snapshot(__id_file, __list_ids_files.Last());
+                s.cambiaContenuto(dim, timestamp, sha256);
+            }
+            return s;
         }
 
         //Costruttori
@@ -42,6 +72,7 @@ namespace ProgettoMalnati
             //Leggere gli id dei file di questo utente e metterli in __list_ids_files
             this.__id_file = id_file;
             this.__nome_utente = nome_utente;
+            this.__snapshots = new Snapshot[snapshotPerFile];
             string[][] parameters = new string[1][];
             parameters[0] = new string[2] { "@id_file", id_file.ToString() };
             
@@ -69,7 +100,7 @@ namespace ProgettoMalnati
             int index;
             for (index = 0; index < this.__list_ids_files.Count; index++)
             {
-                yield return new Snapshot(this.__nome_utente, __list_ids_files[index]);
+                yield return new Snapshot(this.__id_file, __list_ids_files[index]);
             }
         }
 
@@ -103,8 +134,14 @@ namespace ProgettoMalnati
             foreach (int i in db.GetResults())
             {
                 local_file = (string)db.ResultGetValue("nome_locale_s");
-                try{
-                File.Delete(local_path + Path.DirectorySeparatorChar + local_file);
+                try
+                {
+                    File.Delete(local_path + Path.DirectorySeparatorChar + local_file);
+                }
+                catch
+                {
+                    throw;
+                }
             }
         }
     }

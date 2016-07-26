@@ -147,7 +147,7 @@
     <value>SELECT nome_file_c, path_relativo_c, t_creazione, valido FROM fileutente WHERE id = @id;</value>
   </data>
   <data name="sqlGetIds" xml:space="preserve">
-    <value>SELECT id FROM snapshots WHERE id_file = @id_file ORDER BY t_inserimento;</value>
+    <value>SELECT id FROM snapshots WHERE id_file = @id_file ORDER BY t_inserimento DESC;</value>
     <comment>Query SQL per ottenere gli id degli snapshot che un utente possiede</comment>
   </data>
   <data name="sqlGetInfoUtente" xml:space="preserve">

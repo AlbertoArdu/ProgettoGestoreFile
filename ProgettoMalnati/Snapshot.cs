@@ -14,12 +14,11 @@ namespace ProgettoMalnati
     class Snapshot : DB_Table
     {
         //Attributi
-        private string __nome_utente;
-        private string __sha_contenuto;
-        private string __path_locale;
         private string __nome_locale;
+        private string __sha_contenuto;
         private DateTime __t_modifica;
         private int __id;
+        private int __id_file;
         private int __dim;
         private FileStream __lettura_contenuto = null;
         private FileStream __scrittura_contenuto = null;
@@ -39,9 +38,9 @@ namespace ProgettoMalnati
         {
             get { return __dim; }
         }
-        public string NomeUtente
+        public int IdFile
         {
-            get { return __nome_utente; }
+            get { return __id_file; }
         }
         public int Id
         {
@@ -57,7 +56,7 @@ namespace ProgettoMalnati
         }
 
         //Costruttori
-        public Snapshot(string nome_utente,int id)
+        public Snapshot(int id_file,int id)
             : base()
         {
             l = Log.getLog();
@@ -76,9 +75,8 @@ namespace ProgettoMalnati
                 this.__nome_locale = (string)(this.ResultGetValue("nome_locale_s"));
 
             }
-            this.__nome_utente = nome_utente;
+            this.__id_file = id_file;
             this.__id = id;
-            this.__path_locale = base_path + Path.DirectorySeparatorChar + this.__nome_utente + Path.DirectorySeparatorChar;
         }
 
         //Distruttore
@@ -90,7 +88,7 @@ namespace ProgettoMalnati
                 {
                     l.log("Il contenuto del file non è stato completamente scritto. Il sistema verrà riportato allo stato prececedente.");
                     this.__scrittura_contenuto.Close();
-                    string tmp_nome_da_sostituire = this.__path_locale + Path.DirectorySeparatorChar + this.__nome_locale;
+                    string tmp_nome_da_sostituire = base_path + Path.DirectorySeparatorChar + this.__nome_locale;
                     File.Delete(tmp_nome_da_sostituire);
                     File.Move(tmp_nome_da_sostituire+".tmp", tmp_nome_da_sostituire);
                 }
@@ -114,8 +112,8 @@ namespace ProgettoMalnati
             {
                 try
                 {
-                    l.log("Path locale - " + this.__path_locale);
-                    this.__lettura_contenuto = new FileStream(this.__path_locale + this.__nome_locale, FileMode.Open, FileAccess.Read);
+                    l.log("Path locale - " + base_path);
+                    this.__lettura_contenuto = new FileStream(base_path + this.__nome_locale, FileMode.Open, FileAccess.Read);
                 }
                 catch (Exception e)
                 {
@@ -168,8 +166,8 @@ namespace ProgettoMalnati
                 this.__lettura_contenuto = null;
                 this.__t_modifica = timestamp;
                 this.__dim = newDim;
-                string tmp_nome = this.__path_locale + Path.DirectorySeparatorChar + this.__nome_locale + ".tmp";
-                string tmp_nome_da_sostituire = this.__path_locale + Path.DirectorySeparatorChar + this.__nome_locale;
+                string tmp_nome = base_path + Path.DirectorySeparatorChar + this.__nome_locale + ".tmp";
+                string tmp_nome_da_sostituire = base_path + Path.DirectorySeparatorChar + this.__nome_locale;
                 
                 File.Move(tmp_nome_da_sostituire, tmp_nome);
                 this.__scrittura_contenuto = new FileStream(tmp_nome_da_sostituire, FileMode.Create, FileAccess.ReadWrite);
@@ -191,26 +189,20 @@ namespace ProgettoMalnati
             }
 
             if (posizione_scrittura + size > this.__dim)
-                size = this.__dim - posizione_scrittura;
+                throw new DatabaseException("Dimensione fornita non corretta.",DatabaseErrorCode.DimensioneFileEccessiva);
             if (size == 0)
             {
                 return;
             }
             this.__scrittura_contenuto.Write(b, 0, size);
             posizione_scrittura += size;
-            //Da testare con calma
-            if(posizione_scrittura == this.__dim)
-            {
-                completaScrittura();
-                CaricaDatiNelDB();
-            }
         }
 
         /// <summary>
         /// Salva il nuovo contenuto, calcola l'hash del file memorizzato e lo confronta con quello fornito
         /// dall'utente (se fornito).
         /// </summary>
-        private void completaScrittura() 
+        public void completaScrittura() 
         {
             //Controllo se è la prima scrittura: allora lancio eccezione
             if (!cambioContenutoIniziato)
@@ -222,7 +214,7 @@ namespace ProgettoMalnati
             this.__scrittura_contenuto.Position = 0;
             hash_val = sha_obj.ComputeHash(this.__scrittura_contenuto);
             this.__scrittura_contenuto.Close();
-            string tmp_nome = this.__path_locale + Path.DirectorySeparatorChar + this.__nome_locale + ".tmp";
+            string tmp_nome = base_path + Path.DirectorySeparatorChar + this.__nome_locale + ".tmp";
             //Elimino il vecchio contenuto
             File.Delete(tmp_nome);
             //Controllo hash
@@ -239,7 +231,8 @@ namespace ProgettoMalnati
                 }
             }
             this.__sha_contenuto = sha_reale;
-            this.__lettura_contenuto = new FileStream(this.__path_locale + this.__nome_locale, FileMode.Open, FileAccess.Read);
+            CaricaDatiNelDB();
+            this.__lettura_contenuto = new FileStream(base_path + this.__nome_locale, FileMode.Open, FileAccess.Read);
         }
 
         public void CaricaDatiNelDB()
@@ -269,7 +262,7 @@ namespace ProgettoMalnati
             }
             try
             {
-                File.Delete(this.__path_locale + Path.DirectorySeparatorChar + this.__nome_locale);
+                File.Delete(base_path + Path.DirectorySeparatorChar + this.__nome_locale);
             }
             catch(Exception e)
             {
@@ -280,51 +273,37 @@ namespace ProgettoMalnati
 
         //Funzioni Statiche
 
-        public static Snapshot creaNuovo(string nome_utente, 
-                                            string nome_file,
-                                            string path_relativo,
+        public static Snapshot creaNuovo(   int id_file,
                                             DateTime timestamp = new DateTime(),
                                             int dim = 0,
                                             string sha_contenuto = "")
         {
             //Controllo che gli argomenti non abbiano caratteri strani
-            Regex r = new Regex("^[a-zA-Z0-9_]+$");
             Snapshot s = null;
 
-            if (!r.IsMatch(nome_utente))
-            {
-                throw new DatabaseException("nome_utente ha dei caratteri non permessi.",DatabaseErrorCode.FormatError);
-            }
-            // Controllo se la cartella relativa all'utente esiste
-            if (!Directory.Exists(base_path + Path.DirectorySeparatorChar + nome_utente))
-            {
-                Directory.CreateDirectory(base_path + Path.DirectorySeparatorChar + nome_utente);
-            }
             // Genero un nome casuale per il file in locale e controllo che non esista
             string nome_locale;
-            string path_locale = base_path + Path.DirectorySeparatorChar + nome_utente + Path.DirectorySeparatorChar;
             do
             {
                 nome_locale = Path.GetRandomFileName();
-            } while (File.Exists(path_locale + nome_locale));
+            } while (File.Exists(base_path + Path.DirectorySeparatorChar + nome_locale));
             // Creo il file (vuoto)
-            FileStream f = File.Create(path_locale + nome_locale);
+            FileStream f = File.Create(base_path + Path.DirectorySeparatorChar + nome_locale);
             // Memorizzo i file nel db, ottengo l'id e ritorno il nuovo snapshot
-            string[][] parameters = new string[7][];
+            string[][] parameters = new string[5][];
             parameters[0] = new string[2] { "@dim", dim.ToString() };
             parameters[1] = new string[2] { "@t_modifica", timestamp.ToString("u") };
-            parameters[2] = new string[2] { "@path_relativo_c", path_relativo };
-            parameters[3] = new string[2] { "@sha_contenuto", sha_contenuto };
-            parameters[4] = new string[2] { "@nome_file_c", nome_file };
-            parameters[5] = new string[2] { "@nome_locale_s", nome_locale };
-            parameters[6] = new string[2] { "@nome_utente", nome_utente };
+            parameters[2] = new string[2] { "@sha_contenuto", sha_contenuto };
+            parameters[3] = new string[2] { "@nome_locale_s", nome_locale };
+            parameters[4] = new string[2] { "@id_file", id_file.ToString() };
+
             DB_Table db = new DB_Table();
             Log l = Log.getLog();
             db.ExecuteQuery(sql_insert_data, parameters);
             long id = db.getLastInsertedId();
             l.log("Id inserito: "+ id);
 /*          Per qualche motivo questa cosa lancia una nullReferenceException, come se s non venisse creato*/
-            s = new Snapshot(nome_utente,(int)id);
+            s = new Snapshot(id_file,(int)id);
             s.cambioContenutoIniziato = true;
             s.__scrittura_contenuto = f;
             s.posizione_scrittura = 0;

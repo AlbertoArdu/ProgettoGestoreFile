@@ -74,7 +74,6 @@ namespace ProgettoMalnati
         public void servi()
         {
             string request = "";
-            string response;
             Command comando;
             StreamReader reader = new StreamReader(s.GetStream(), Encoding.ASCII);
             StreamWriter writer = new StreamWriter(s.GetStream(), Encoding.ASCII);
@@ -90,8 +89,10 @@ namespace ProgettoMalnati
                         data.Add(reader.ReadLine());
                     } while (data.Last() != null || data.Last().Length > 0);
                     comando = CommandFactory.creaComando(request);
-                    response = comando.esegui(this, data);
-                    writer.WriteLine(response);
+                    foreach (string response in comando.esegui(this, data))
+                    {
+                        writer.WriteLine(response);
+                    }
                 }
                 catch(Exception e)
                 {
@@ -151,8 +152,8 @@ namespace ProgettoMalnati
             /// </summary>
             /// <param name="s">L'istanza dell'oggetto server</param>
             /// <param name="dati"></param>
-            /// <returns>Il messaggio da restituire al client</returns>
-            abstract public string esegui(Server s, List<string> dati);
+            /// <returns>Un iteratore contenente i messaggi da restituire al client</returns>
+            abstract public IEnumerable<string> esegui(Server s, List<string> dati);
         }
 
         private class ComandoRegistra : Command
@@ -169,23 +170,25 @@ namespace ProgettoMalnati
             /// </list>
             /// </param>
             /// <returns>OK se terminato con successo, un codice e messaggio di errore altrimenti</returns>
-            public override string esegui(Server s,List<string> dati)
+            public override IEnumerable<string> esegui(Server s,List<string> dati)
             {
                 StringBuilder sb = new StringBuilder();
                 if (s.user == null)
                 {
-                    return sb.Append(CommandErrorCode.MomentoSbagliato).Append(" Utente già loggato. Impossibile registrarne uno nuovo").ToString();
+                    yield return sb.Append(CommandErrorCode.MomentoSbagliato).Append(" Utente già loggato. Impossibile registrarne uno nuovo").ToString();
+                    yield break;
                 }
                 if (dati.Count < 3)
                 {
-                    sb.Append((int)CommandErrorCode.DatiIncompleti).Append(" Dati mancanti per la registrazione");
+                    yield return sb.Append(CommandErrorCode.DatiIncompleti).Append(" Dati mancanti per la registrazione").ToString();
+                    yield break;
                 }
                 else
                 {
                     try
                     {
                         s.user = User.RegistraUtente(dati[0], dati[1], dati[2]);
-                        sb.Append(CommandErrorCode.OK + " OK");
+                        sb.Append(CommandErrorCode.OK).Append(" OK");
                     } catch (DatabaseException e)
                     {
                         if(e.ErrorCode == DatabaseErrorCode.UserGiaEsistente)
@@ -202,39 +205,43 @@ namespace ProgettoMalnati
                         }
                     }
                 }
-                return sb.ToString();
+                yield return sb.ToString();
             }
         }
-        /// <summary>
-        /// Login utente
-        /// </summary>
-        /// <param name="s">L'istanza dell'oggetto server</param>
-        /// <param name="dati">
-        /// <list type="string">
-        ///    <item index=0 >Nome utente</item>
-        ///    <item index=1 >Password</item>
-        /// </list>
-        /// </param>
-        /// <returns>OK se terminato con successo, un codice e messaggio di errore altrimenti</returns>
+
         private class ComandoLogin : Command
         {
-            public override string esegui(Server s,List<string> dati)
+            /// <summary>
+            /// Login utente
+            /// </summary>
+            /// <param name="s">L'istanza dell'oggetto server</param>
+            /// <param name="dati">
+            /// <list type="string">
+            ///    <item index=0 >Nome utente</item>
+            ///    <item index=1 >Password</item>
+            /// </list>
+            /// </param>
+            /// <returns>OK se terminato con successo, un codice e messaggio di errore altrimenti</returns>
+            public override IEnumerable<string> esegui(Server s,List<string> dati)
             {
                 StringBuilder sb = new StringBuilder();
                 if (s.user == null)
                 {
-                    return sb.Append(CommandErrorCode.MomentoSbagliato).Append(" Utente già loggato.").ToString();
+                    yield return sb.Append(CommandErrorCode.MomentoSbagliato).Append(" Utente già loggato.").ToString();
+                    yield break;
                 }
                 if (dati.Count < 2)
                 {
-                    sb.Append((int)CommandErrorCode.DatiIncompleti).Append(" Dati mancanti per il login.");
+                    yield return sb.Append((int)CommandErrorCode.DatiIncompleti)
+                                    .Append(" Dati mancanti per il login.").ToString();
+                    yield break;
                 }
                 else
                 {
                     try
                     {
                         s.user = User.Login(dati[0], dati[1]);
-                        sb.Append(CommandErrorCode.OK + " OK");
+                        sb.Append(CommandErrorCode.OK).Append(" OK");
                     }
                     catch (DatabaseException e)
                     {
@@ -249,68 +256,132 @@ namespace ProgettoMalnati
                         }
                     }
                 }
-                return sb.ToString();
+                yield return sb.ToString();
             }
         }
+
         private class ComandoAggiornaContenutoFile : Command
         {
-            public override string esegui(Server s, List<string> dati)
+            /// <summary>
+            /// Comando che gestisce l'aggiornamento del contenuto di un file
+            /// </summary>
+            /// <param name="s"></param>
+            /// <param name="dati">
+            ///  [0]: nome del file
+            ///  [1]: path relativo del file
+            ///  [2]: timestamp di modifica (in "ticks")
+            ///  [3]: sha256 del file in codifica base64
+            ///  [4]: dimensione del file in formato testuale
+            /// </param>
+            /// <returns>
+            /// Ritorna prima una stringa con il codice "OKIntermedio" seguita dal token assegnato al client.
+            /// Quando il client si connette alla porta dati viene ricevuto il nuovo contenuto del file e in 
+            /// caso di successo viene ancora inviato un messaggio di ok.
+            /// </returns>
+            public override IEnumerable<string> esegui(Server s, List<string> dati)
             {
+                Log l = Log.getLog();
                 StringBuilder sb = new StringBuilder();
                 if(s.user == null)
                 {
-                    return sb.Append(CommandErrorCode.UtenteNonLoggato).Append(" Utente non loggato.").ToString();
+                    yield return sb.Append(CommandErrorCode.UtenteNonLoggato).Append(" Utente non loggato.").ToString();
+                    yield break;
                 }
                 if(dati.Count < 5)
-                throw new NotImplementedException();
-                return "";
+                {
+                    yield return sb.Append(CommandErrorCode.DatiIncompleti)
+                                    .Append(" I dati inviati non sono sufficienti").ToString();
+                    yield break;
+                }
+
+                FileUtente daModificare;
+                Snapshot snap;
+                string nome_file = dati[0];
+                string path_relativo = dati[1];
+                DateTime timestamp = new DateTime(Int64.Parse(dati[2]));
+                string sha256 = dati[3];
+                int dim = Int32.Parse(dati[4]);
+                TcpClient conn_dati;
+                try
+                {
+                    daModificare = s.user.FileList[dati[0], dati[1]];
+                    snap = daModificare.Snapshots.Nuovo(timestamp, dim, sha256);
+                }
+                catch (Exception e)
+                {
+                    l.log("Errore... "+e.Message,Level.ERR);
+                    throw;
+                }
+
+                string token = CollegamentoDati.getNewToken();
+                yield return sb.Append(CommandErrorCode.OKIntermedio).Append(" Stream dati pronto").ToString();
+                yield return token;
+                NetworkStream stream_dati = CollegamentoDati.getCollegamentoDati(token);
+                byte[] buffer = new byte[1024];
+                int letti = 0;
+                try
+                {
+                    do
+                    {
+                        letti = stream_dati.Read(buffer, 0, 1024);
+                        snap.scriviBytes(buffer, letti);
+                    } while (letti == 1024);
+                    snap.completaScrittura();
+                }
+                catch( Exception e)
+                {
+                    l.log("Errore nella scrittura del file",Level.ERR);
+                    throw;
+                }
+
+                yield return CommandErrorCode.OK.ToString()+" Trasferimento completato con successo";
             }
         }
         private class ComandoNuovoFile : Command
         {
-            public override string esegui(Server s, List<string> dati)
+            public override IEnumerable<string> esegui(Server s, List<string> dati)
             {
                 StringBuilder sb = new StringBuilder();
 
-                return "";
+                yield return "";
             }
         }
         private class ComandoEsci : Command
         {
-            public override string esegui(Server s, List<string> dati)
+            public override IEnumerable<string> esegui(Server s, List<string> dati)
             {
                 StringBuilder sb = new StringBuilder();
 
                 throw new NotImplementedException();
-                return "";
+                yield return "";
             }
         }
         private class ComandoEliminaFile : Command
         {
-            public override string esegui(Server s, List<string> dati)
+            public override IEnumerable<string> esegui(Server s, List<string> dati)
             {
 
                 throw new NotImplementedException();
-                return "";
+                yield return "";
             }
         }
         private class ComandoScaricaFile : Command
         {
-            public override string esegui(Server s, List<string> dati)
+            public override IEnumerable<string> esegui(Server s, List<string> dati)
             {
                 StringBuilder sb = new StringBuilder();
                 throw new NotImplementedException();
-                return "";
+                yield return "";
             }
         }
 
         private class ComandoListDir : Command
         {
-            public override string esegui(Server s, List<string> dati)
+            public override IEnumerable<string> esegui(Server s, List<string> dati)
             {
                 StringBuilder sb = new StringBuilder();
 
-                return sb.ToString();
+                yield return sb.ToString();
             }
         }
     }
