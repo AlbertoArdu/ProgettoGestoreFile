@@ -178,5 +178,17 @@ namespace ProgettoMalnati.Properties {
                 this["tcp_port_dati"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("3000")]
+        public int timeout_dati {
+            get {
+                return ((int)(this["timeout_dati"]));
+            }
+            set {
+                this["timeout_dati"] = value;
+            }
+        }
     }
 }

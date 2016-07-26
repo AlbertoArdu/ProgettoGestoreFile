@@ -41,5 +41,8 @@
     <Setting Name="tcp_port_dati" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">8888</Value>
     </Setting>
+    <Setting Name="timeout_dati" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">3000</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

@@ -26,7 +26,9 @@ namespace ProgettoMalnati
         static private Dictionary<byte[], TcpClient> socket_dati_in_sospeso;
         static public int token_lenght = 20;
         static private Random rand_gen;
-        static public object lockDictionary;
+        static private object lockDictionary;
+        static private Dictionary<byte[],AutoResetEvent> waitHandles;
+        static private int timeout = Properties.ApplicationSettings.Default.timeout_dati;
 
         static public void Inizializza()
         {
@@ -38,6 +40,7 @@ namespace ProgettoMalnati
             rand_gen = new Random((int)DateTime.Now.Ticks);
             socket_dati_in_sospeso = new Dictionary<byte[], TcpClient>();
             lockDictionary = new object();
+            waitHandles = new Dictionary<byte[], AutoResetEvent>;
             t = new Thread(CollegamentoDati.gestisciConnessioneDati);
             acceptor = TcpListener.Create(port);
             t.Start();
@@ -56,6 +59,7 @@ namespace ProgettoMalnati
                 lock (lockDictionary)
                 {
                     socket_dati_in_sospeso.Add(token, c);
+                    waitHandles[token].Set();
                 }
             }
         }
@@ -75,48 +79,39 @@ namespace ProgettoMalnati
                 }
                 while (socket_dati_in_sospeso.ContainsKey(token));
                 socket_dati_in_sospeso.Add(token, null);
+                waitHandles.Add(token, new AutoResetEvent(false));
             }
             return token;
         }
 
+        /// <summary>
+        /// Funzione che mette in attesa il chiamante fino all'arrivo di una connessione con
+        /// il token corrispondente.
+        /// </summary>
+        /// <param name="token">Il token che mi aspetto</param>
+        /// <returns>La connessione con il client in caso di successo. null se scade il timeout.</returns>
+        /// <exception cref="Exception">Lancia un'eccezione se il token non è valido</exception>
         static public TcpClient getCollegamentoDati(byte[] token)
         {
             TcpClient c = null;
+
+            waitHandles[token].WaitOne(timeout);
             lock (lockDictionary)
             {
                 if (!socket_dati_in_sospeso.ContainsKey(token))
                 {
                     throw new Exception("Token non valido");
                 }
-
-                if (socket_dati_in_sospeso[token] == null)
-                {
+                c = socket_dati_in_sospeso[token];
+                socket_dati_in_sospeso.Remove(token);
+            }
                     
-                }
-                c = socket_dati_in_sospeso[token];
-                socket_dati_in_sospeso.Remove(token);
-            }
-            return c;
-        }
-
-        static private TcpClient getValue(byte[] token)
-        {
-            TcpClient c = null;
             lock (lockDictionary)
             {
-                if (!socket_dati_in_sospeso.ContainsKey(token))
-                {
-                    throw new Exception("Token non valido");
-                }
-
-                if (socket_dati_in_sospeso[token] == null)
-                {
-
-                }
-                c = socket_dati_in_sospeso[token];
-                socket_dati_in_sospeso.Remove(token);
+                waitHandles.Remove(token);
             }
             return c;
         }
+
     }
 }
