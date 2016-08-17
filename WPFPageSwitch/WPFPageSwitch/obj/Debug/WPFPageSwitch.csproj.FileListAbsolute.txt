@@ -1,0 +1,12 @@
+C:\Users\c.citera\Documents\Visual Studio 2015\Projects\WPFPageSwitch\WPFPageSwitch\obj\Debug\Menu\Login.baml
+C:\Users\c.citera\Documents\Visual Studio 2015\Projects\WPFPageSwitch\WPFPageSwitch\obj\Debug\Menu\MainMenu.baml
+C:\Users\c.citera\Documents\Visual Studio 2015\Projects\WPFPageSwitch\WPFPageSwitch\obj\Debug\Menu\Register.baml
+C:\Users\c.citera\Documents\Visual Studio 2015\Projects\WPFPageSwitch\WPFPageSwitch\obj\Debug\Menu\Login.g.cs
+C:\Users\c.citera\Documents\Visual Studio 2015\Projects\WPFPageSwitch\WPFPageSwitch\obj\Debug\Menu\MainMenu.g.cs
+C:\Users\c.citera\Documents\Visual Studio 2015\Projects\WPFPageSwitch\WPFPageSwitch\obj\Debug\Menu\PathMonitor.g.cs
+C:\Users\c.citera\Documents\Visual Studio 2015\Projects\WPFPageSwitch\WPFPageSwitch\obj\Debug\Menu\Register.g.cs
+C:\Users\c.citera\Documents\Visual Studio 2015\Projects\WPFPageSwitch\WPFPageSwitch\obj\Debug\PageSwitcher.g.cs
+C:\Users\c.citera\Documents\Visual Studio 2015\Projects\WPFPageSwitch\WPFPageSwitch\obj\Debug\App.g.cs
+C:\Users\c.citera\Documents\Visual Studio 2015\Projects\WPFPageSwitch\WPFPageSwitch\obj\Debug\WPFPageSwitch_MarkupCompile.cache
+C:\Users\c.citera\Documents\Visual Studio 2015\Projects\WPFPageSwitch\WPFPageSwitch\obj\Debug\WPFPageSwitch_MarkupCompile.lref
+C:\Users\c.citera\Documents\Visual Studio 2015\Projects\WPFPageSwitch\WPFPageSwitch\bin\Debug\WPFPageSwitch.exe.config
