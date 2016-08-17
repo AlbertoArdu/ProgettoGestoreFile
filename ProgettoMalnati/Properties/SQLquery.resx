@@ -123,10 +123,6 @@
   <data name="sqlAggiornaPassword" xml:space="preserve">
     <value>UPDATE utenti SET password = @pass WHERE nome =@nome;</value>
   </data>
-  <data name="sqlAggiornaPath" xml:space="preserve">
-    <value>UPDATE utenti SET path_monitorato = @path WHERE nome = @nome;</value>
-    <comment>Cambia il path monitorato di un utente</comment>
-  </data>
   <data name="sqlCambiaNomeFile" xml:space="preserve">
     <value>UPDATE fileutente SET nome_file_c = @nome_file_c WHERE id = @id;</value>
   </data>
@@ -144,15 +140,11 @@
     <value>SELECT count(*) as conteggio FROM utenti WHERE nome = @nome;</value>
   </data>
   <data name="sqlGetFileData" xml:space="preserve">
-    <value>SELECT nome_file_c, path_relativo_c, t_creazione, valido FROM fileutente WHERE id = @id;</value>
+    <value>SELECT nome_file_c, path_relativo_c, t_creazione, valido FROM fileutente WHERE id = @id AND nome_utente = @nome_utente;</value>
   </data>
   <data name="sqlGetIds" xml:space="preserve">
     <value>SELECT id FROM snapshots WHERE id_file = @id_file ORDER BY t_inserimento DESC;</value>
     <comment>Query SQL per ottenere gli id degli snapshot che un utente possiede</comment>
-  </data>
-  <data name="sqlGetInfoUtente" xml:space="preserve">
-    <value>INSERT INTO utenti(nome,password,path_monitorato) VALUES (@nome,@password,@path_monitorato);</value>
-    <comment>Query SQL per scaricare i dati di un utente</comment>
   </data>
   <data name="sqlGetSnapshotData" xml:space="preserve">
     <value>SELECT dim, t_modifica, sha_contenuto, nome_locale_s FROM snapshots WHERE id = @id;</value>
@@ -164,6 +156,10 @@
   </data>
   <data name="sqlNuovoFile" xml:space="preserve">
     <value>INSERT INTO fileutente(nome_utente, nome_file_c, path_relativo_c, t_creazione) VALUES (@nome_utente, @nome_file_c, @path_relativo_c,  @t_creazione)</value>
+  </data>
+  <data name="sqlSetInfoUtente" xml:space="preserve">
+    <value>INSERT INTO utenti(nome,password) VALUES (@nome,@password);</value>
+    <comment>Query SQL per scaricare i dati di un utente</comment>
   </data>
   <data name="sqlStoreSnapshotData" xml:space="preserve">
     <value>UPDATE snapshots SET dim = @dim, t_modifica = @t_modifica, sha_contenuto = @sha_contenuto, nome_locale_s = @nome_locale_s WHERE id = @id;</value>
@@ -186,7 +182,7 @@
     <comment>Codice SQL per creare la tabella degli snapshot</comment>
   </data>
   <data name="tabellaUtenti" xml:space="preserve">
-    <value>create table utenti (nome varchar(20), password varchar(100), path_monitorato varchar(250), PRIMARY KEY(nome))</value>
+    <value>create table utenti (nome varchar(20), password varchar(100), PRIMARY KEY(nome))</value>
     <comment>Codice SQL per creare la tabella utenti</comment>
   </data>
 </root>

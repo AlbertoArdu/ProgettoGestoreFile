@@ -18,8 +18,13 @@ namespace ProgettoMalnati
         MomentoSbagliato,
 
         // Applicazione
+            //Registrazione
         NomeUtenteInUso,
+            //Login
+        DatiErrati, //Nome utente o password
         UtenteNonLoggato,
+           //Creazione file
+        LimiteFileSuperato,
         Unknown = -1
     }
 }

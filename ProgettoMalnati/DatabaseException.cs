@@ -10,6 +10,7 @@ namespace ProgettoMalnati
         FormatError,
         HashInconsistente,
         DimensioneFileEccessiva,
+        NoDati,
         //Application level
         NomeUtenteNonValido,
         PasswordNonValida,

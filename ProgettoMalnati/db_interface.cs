@@ -104,7 +104,6 @@ namespace ProgettoMalnati
 
         /// <summary>
         /// Esegue una query sql parametrizzata.
-        /// Errori NON GESTITI!!
         /// </summary>
         /// <param name="txtQuery">Query sql con o senza parametri</param>
         /// <param name="parameters">
@@ -129,6 +128,7 @@ namespace ProgettoMalnati
             catch(Exception e)
             {
                 l.log("Query errata: " + e.Message);
+                throw;
             }
             try
             {
@@ -177,6 +177,11 @@ namespace ProgettoMalnati
             string sql = "select last_insert_rowid()";
             command.CommandText = sql;
             return (long)command.ExecuteScalar();
+        }
+
+        public bool hasResults()
+        {
+            return reader.HasRows;
         }
     }
 }

@@ -28,24 +28,23 @@ namespace ProgettoMalnati
             IPAddress mio_ip = IPAddress.Any;
             int port = Properties.ApplicationSettings.Default.tcp_port;
             TcpListener acceptor = TcpListener.Create(port);
-            List<Server> servers = new List<Server>();
+            s_list = new List<Server>();
             acceptor.AllowNatTraversal (true);
             acceptor.Start(Properties.ApplicationSettings.Default.max_connessioni_in_sospeso);
             TcpClient client;
             while (true)
             {
                 client = acceptor.AcceptTcpClient();
-                servers.Add(new Server(client));
+                s_list.Add(new Server(client));
 
-                foreach(Server s in servers)
+                foreach(Server s in s_list)
                 {
                     if (!s.Connected)
                     {
-                        servers.Remove(s);
+                        s_list.Remove(s);
                     }
                 }
             }
-            return;
         }
 
     }

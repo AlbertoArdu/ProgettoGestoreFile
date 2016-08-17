@@ -5,8 +5,6 @@ using System.Text;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
-//TODO -> Aggiungere supporto per la condivisione dei file (nel db una tabella relazione tra user e snapshot, magari con un flag per i privilegi)
-//                          E definire una politica in caso di modifica da parte di due utenti (Suggerito COPY-ON-MODIFY per semplicita)
 
 namespace ProgettoMalnati
 {
@@ -20,6 +18,7 @@ namespace ProgettoMalnati
         private int __id;
         private int __id_file;
         private int __dim;
+        private bool __valido;
         private FileStream __lettura_contenuto = null;
         private FileStream __scrittura_contenuto = null;
         private Log l;
@@ -54,7 +53,28 @@ namespace ProgettoMalnati
         {
             get { return __sha_contenuto; }
         }
-
+        public bool Valido
+        {
+            get { return __valido; }
+            set
+            {
+                string sql = "UPDATE snapshots SET valido = @valido WHERE id = @id AND id_file = @id_file;";
+                string[][] parameters = new string[3][];
+                parameters[0] = new string[2] { "@valido", value.ToString() };
+                parameters[1] = new string[2] { "@id", this.__id.ToString() };
+                parameters[2] = new string[2] { "@id_file", this.__id_file.ToString() };
+                try
+                {
+                    this.ExecuteQuery(sql, parameters);
+                }
+                catch (Exception e)
+                {
+                    l.log("Errore nel settare il file come invalido nel database: " + e.Message, Level.ERR);
+                    throw;
+                }
+                __valido = value;
+            }
+        }
         //Costruttori
         public Snapshot(int id_file,int id)
             : base()
@@ -65,18 +85,24 @@ namespace ProgettoMalnati
             string[][] parameters = new string[1][];
             parameters[0] = new string[2] { "@id", id.ToString() };
             this.ExecuteQuery(sql_get_snapshot_data,parameters);
-            //Get the data
-            foreach (Int32 i in GetResults())
+            if (this.hasResults())
             {
-                this.__dim = (int)(this.ResultGetValue("dim"));
-                //Da rivedere!!
-                this.__t_modifica = (DateTime)(this.ResultGetValue("t_modifica"));
-                this.__sha_contenuto = (string)(this.ResultGetValue("sha_contenuto"));
-                this.__nome_locale = (string)(this.ResultGetValue("nome_locale_s"));
-
+                //Get the data
+                foreach (Int32 i in GetResults())
+                {
+                    this.__dim = (int)(this.ResultGetValue("dim"));
+                    this.__t_modifica = (DateTime)(this.ResultGetValue("t_modifica"));
+                    this.__sha_contenuto = (string)(this.ResultGetValue("sha_contenuto"));
+                    this.__nome_locale = (string)(this.ResultGetValue("nome_locale_s"));
+                    this.__valido = (bool)(this.ResultGetValue("valido"));
+                }
+                this.__id_file = id_file;
+                this.__id = id;
             }
-            this.__id_file = id_file;
-            this.__id = id;
+            else
+            {
+                throw new DatabaseException("Impossibile ricavare i dati su uno snapshot.",DatabaseErrorCode.NoDati);
+            }
         }
 
         //Distruttore

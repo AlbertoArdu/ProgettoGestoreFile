@@ -8,7 +8,7 @@ namespace ProgettoMalnati
 {
 
     //Si occupa di controllare il limite di file per utente e modella una lista di FileUtente
-    class FileUtenteList : DB_Table, IEnumerable
+    class FileUtenteList : DB_Table
     {
         //Attributi
         private string __nome_utente;
@@ -84,28 +84,8 @@ namespace ProgettoMalnati
             this.__file_list = new FileUtente[this.__max_file];
         }
 
-        //Distruttore
-        //Metodi
-
-        /// <summary>
-        ///     Usata per ciclare sui file di un utente.
-        ///     Non carica tutti i file in una volta
-        /// </summary>
-        /// <returns>
-        ///     Un iteratore per il costrutto "foreach".
-        /// </returns>
-        public IEnumerator GetEnumerator()
-        {
-            int index;
-            for (index = 0; index < this.__list_ids_files.Count; index++)
-            {
-                yield return new Snapshot(this.__nome_utente, __list_ids_files[index]);
-            }
-        }
-
         public FileUtente nuovoFile(string nome_file, string path_relativo,DateTime t_creazione= new DateTime())
         {
-
             //Se non c'è spazio, cerco un capro espiatorio da buttare per far posto a quello nuovo,
             //Altrimenti lancio un'eccezione
             string[][] parameters = new string[1][];

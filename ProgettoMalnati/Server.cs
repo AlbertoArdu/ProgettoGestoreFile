@@ -29,7 +29,6 @@ namespace ProgettoMalnati
         Log l;
         private Thread thread = null;
         private TcpClient s;
-        private User user;
         private bool __connected = false;
         private volatile bool __stop = false;
 
@@ -89,7 +88,7 @@ namespace ProgettoMalnati
                         data.Add(reader.ReadLine());
                     } while (data.Last() != null || data.Last().Length > 0);
                     comando = CommandFactory.creaComando(request);
-                    foreach (string response in comando.esegui(this, data))
+                    foreach (string response in comando.esegui(data))
                     {
                         writer.WriteLine(response);
                     }
@@ -147,13 +146,13 @@ namespace ProgettoMalnati
 
         private abstract class Command
         {
+            protected User user = null;
             /// <summary>
             /// Metodo astratto di esecuzione di un comando.
             /// </summary>
-            /// <param name="s">L'istanza dell'oggetto server</param>
             /// <param name="dati"></param>
             /// <returns>Un iteratore contenente i messaggi da restituire al client</returns>
-            abstract public IEnumerable<string> esegui(Server s, List<string> dati);
+            abstract public IEnumerable<string> esegui(List<string> dati);
         }
 
         private class ComandoRegistra : Command
@@ -161,24 +160,22 @@ namespace ProgettoMalnati
             /// <summary>
             /// Registra un nuovo utente
             /// </summary>
-            /// <param name="s">L'istanza dell'oggetto server</param>
             /// <param name="dati">
             /// <list type="string">
             ///    <item index=0 >Nome utente</item>
             ///    <item index=1 >Password</item>
-            ///    <item index=2 >Path monitorato</item>
             /// </list>
             /// </param>
             /// <returns>OK se terminato con successo, un codice e messaggio di errore altrimenti</returns>
-            public override IEnumerable<string> esegui(Server s,List<string> dati)
+            public override IEnumerable<string> esegui(List<string> dati)
             {
                 StringBuilder sb = new StringBuilder();
-                if (s.user == null)
+                if (user == null)
                 {
                     yield return sb.Append(CommandErrorCode.MomentoSbagliato).Append(" Utente già loggato. Impossibile registrarne uno nuovo").ToString();
                     yield break;
                 }
-                if (dati.Count < 3)
+                if (dati.Count < 2)
                 {
                     yield return sb.Append(CommandErrorCode.DatiIncompleti).Append(" Dati mancanti per la registrazione").ToString();
                     yield break;
@@ -187,17 +184,19 @@ namespace ProgettoMalnati
                 {
                     try
                     {
-                        s.user = User.RegistraUtente(dati[0], dati[1], dati[2]);
+                        user = User.RegistraUtente(dati[0], dati[1]);
                         sb.Append(CommandErrorCode.OK).Append(" OK");
                     } catch (DatabaseException e)
                     {
                         if(e.ErrorCode == DatabaseErrorCode.UserGiaEsistente)
                         {
-                            sb.Append(CommandErrorCode.NomeUtenteInUso).Append(" Nome utente già in uso.");
+                            sb.Append(CommandErrorCode.NomeUtenteInUso).Append(" Nome utente già in uso. ");
+                            sb.Append(e.Message);
                         }
                         else if (e.ErrorCode == DatabaseErrorCode.FormatError)
                         {
                             sb.Append(CommandErrorCode.FormatoDatiErrato).Append(" Formato dati errato. ");
+                            sb.Append(e.Message);
                         }
                         else
                         {
@@ -214,7 +213,6 @@ namespace ProgettoMalnati
             /// <summary>
             /// Login utente
             /// </summary>
-            /// <param name="s">L'istanza dell'oggetto server</param>
             /// <param name="dati">
             /// <list type="string">
             ///    <item index=0 >Nome utente</item>
@@ -222,10 +220,11 @@ namespace ProgettoMalnati
             /// </list>
             /// </param>
             /// <returns>OK se terminato con successo, un codice e messaggio di errore altrimenti</returns>
-            public override IEnumerable<string> esegui(Server s,List<string> dati)
+            public override IEnumerable<string> esegui(List<string> dati)
             {
                 StringBuilder sb = new StringBuilder();
-                if (s.user == null)
+                Log l = Log.getLog();
+                if (user != null)
                 {
                     yield return sb.Append(CommandErrorCode.MomentoSbagliato).Append(" Utente già loggato.").ToString();
                     yield break;
@@ -240,23 +239,207 @@ namespace ProgettoMalnati
                 {
                     try
                     {
-                        s.user = User.Login(dati[0], dati[1]);
+                        user = User.Login(dati[0], dati[1]);
                         sb.Append(CommandErrorCode.OK).Append(" OK");
                     }
                     catch (DatabaseException e)
                     {
-                        s.l.log(e.Message,Level.ERR);
+                        l.log(e.Message,Level.ERR);
                         if (e.ErrorCode == DatabaseErrorCode.FormatError)
                         {
                             sb.Append(CommandErrorCode.FormatoDatiErrato).Append(" Formato dati errato.");
                         }
-                        else
+                        else if(e.ErrorCode == DatabaseErrorCode.UserNonEsistente)
+                        {
+                            sb.Append(CommandErrorCode.DatiErrati).Append(" Username o password errati");
+                        }else
                         {
                             sb.Append(CommandErrorCode.Default).Append(" Errore nella creazione dell'utente.");
                         }
                     }
                 }
                 yield return sb.ToString();
+            }
+        }
+
+        private class ComandoNuovoFile : Command
+        {
+            /// <summary>
+            /// Comando per la creazione di un nuovo file sul server. Se l'utente ha troppi file, il più
+            /// vecchio tra quelli eliminati viene distrutto. Se non ci sono file eliminati da distruggere
+            /// viene generato un errore.
+            /// </summary>
+            /// <param name="dati">
+            ///     [0]: nome_file
+            ///     [1]: path_relativo
+            ///     [2]: timestamp creazione (in ticks)
+            ///     [3]: sha256 del contenuto
+            ///     [4]: dimensione
+            /// </param>
+            /// <returns></returns>
+            public override IEnumerable<string> esegui(List<string> dati)
+            {
+                Log l = Log.getLog();
+                StringBuilder sb = new StringBuilder();
+                if (user == null)
+                {
+                    yield return sb.Append(CommandErrorCode.UtenteNonLoggato).Append(" Utente non loggato.").ToString();
+                    yield break;
+                }
+                if (dati.Count < 5)
+                {
+                    yield return sb.Append(CommandErrorCode.DatiIncompleti)
+                                    .Append(" I dati inviati non sono sufficienti").ToString();
+                    yield break;
+                }
+                
+                string nome_file = dati[0];
+                string path_relativo = dati[1];
+                DateTime timestamp = new DateTime();
+                int dim = -1;
+                sb.Clear();
+                try
+                {
+                    timestamp = new DateTime(Int64.Parse(dati[2]));
+                    dim = Int32.Parse(dati[4]);
+                }catch(Exception e)
+                {
+                    sb.Append(CommandErrorCode.FormatoDatiErrato).Append(" Dimensione o timestamp non corretti");
+                    l.log("Utente: " + user.Nome + " " + e.Message,Level.INFO);
+                }
+                // if exception occurred...
+                if (dim == -1 || timestamp == DateTime.MinValue)
+                {
+                    yield return sb.ToString();
+                    yield break;
+                }
+                sb.Clear();
+                string sha256 = dati[3];
+                FileUtente nuovo = null;
+
+                try
+                {
+                    nuovo = user.FileList.nuovoFile(nome_file, path_relativo);
+                }
+                catch (DatabaseException e)
+                {
+                    switch (e.ErrorCode)
+                    {
+                        case DatabaseErrorCode.LimiteFileSuperato:
+                            sb.Append(CommandErrorCode.LimiteFileSuperato).Append(" L'utente ha superato il limite di file creabili.");
+                            break;
+                        default:
+                            l.log("Server Error!! " + e.Message,Level.ERR);
+                            sb.Append(CommandErrorCode.Default).Append(" Errore del server durante la creazione del file.");
+                            break;
+                    }
+                    l.log("Errore nella creazione del file." + e.Message, Level.ERR);
+                    throw;
+                }
+                if(nuovo == null)
+                {
+                    yield return sb.ToString();
+                    yield break;
+                }
+                Snapshot snap;
+                sb.Clear();
+                try
+                {
+                    snap = nuovo.Snapshots.Nuovo(timestamp, dim, sha256);
+                }
+                catch (Exception e)
+                {
+                    l.log("Errore... " + e.Message, Level.ERR);
+                    sb.Append(CommandErrorCode.Unknown).Append(" Un errore sconosciuto è accaduto nel server.");
+                }
+
+                string token = CollegamentoDati.getNewToken();
+                yield return sb.Append(CommandErrorCode.OKIntermedio).Append(" Stream dati pronto").ToString();
+                yield return token;
+                NetworkStream stream_dati = CollegamentoDati.getCollegamentoDati(token);
+                byte[] buffer = new byte[1024];
+                int letti = 0;
+                try
+                {
+                    do
+                    {
+                        letti = stream_dati.Read(buffer, 0, 1024);
+                        snap.scriviBytes(buffer, letti);
+                    } while (letti == 1024);
+                    snap.completaScrittura();
+                }
+                catch (Exception e)
+                {
+                    l.log("Errore nella scrittura del file" + e.Message, Level.ERR);
+                    throw;
+                }
+                yield return CommandErrorCode.OK.ToString() + " Trasferimento completato con successo";
+            }
+        }
+
+        private class ComandoScaricaFile : Command
+        {
+            /// <summary>
+            /// Carica la versione richiesta del file all'utente che lo richiede.
+            /// </summary>
+            /// <param name="s"></param>
+            /// <param name="dati">
+            ///     [0]: nome_file
+            ///     [1]: path relativo
+            ///     [2]: timestamp versione (in Ticks)
+            /// </param>
+            /// <returns>
+            /// OK intermedio
+            /// token
+            /// dimensione file
+            /// sha contenuto
+            /// </returns>
+            public override IEnumerable<string> esegui(List<string> dati)
+            {
+                StringBuilder sb = new StringBuilder();
+                Log l = Log.getLog();
+                if (user == null)
+                {
+                    yield return sb.Append(CommandErrorCode.UtenteNonLoggato).Append(" Utente non loggato.").ToString();
+                    yield break;
+                }
+                if (dati.Count < 3)
+                {
+                    yield return sb.Append(CommandErrorCode.DatiIncompleti)
+                                    .Append(" I dati inviati non sono sufficienti").ToString();
+                    yield break;
+                }
+                DateTime timestamp = new DateTime(Int64.Parse(dati[2]));
+                string nome_file = dati[0];
+                string path_relativo = dati[1];
+                Snapshot snap = null;
+                try
+                {
+                    snap = user.FileList[nome_file, path_relativo].Snapshots[timestamp];
+                }
+                catch (Exception e)
+                {
+                    l.log("Errore nel selezionare il file corretto. " + e.Message, Level.ERR);
+                    throw;
+                }
+                string token = CollegamentoDati.getNewToken();
+                yield return sb.Append(CommandErrorCode.OKIntermedio).Append(" File pronto. Connettiti alla porta corrispondente").ToString();
+                yield return token;
+                yield return snap.Dim.ToString();
+                yield return snap.shaContenuto;
+                //Prepararsi all'invio del file...
+                NetworkStream ns = CollegamentoDati.getCollegamentoDati(token);
+                int buff_size = 1024;
+                int letti = 0;
+                byte[] buff = new byte[buff_size];
+                do
+                {
+                    letti = snap.leggiBytesDalContenuto(buff, buff_size);
+                    ns.Write(buff, 0, letti);
+                } while (letti > 0);
+                ns.Close();
+                sb.Clear();
+                yield return sb.Append(CommandErrorCode.OK).Append(" File scritto correttamente").ToString();
             }
         }
 
@@ -278,11 +461,11 @@ namespace ProgettoMalnati
             /// Quando il client si connette alla porta dati viene ricevuto il nuovo contenuto del file e in 
             /// caso di successo viene ancora inviato un messaggio di ok.
             /// </returns>
-            public override IEnumerable<string> esegui(Server s, List<string> dati)
+            public override IEnumerable<string> esegui(List<string> dati)
             {
                 Log l = Log.getLog();
                 StringBuilder sb = new StringBuilder();
-                if(s.user == null)
+                if(user == null)
                 {
                     yield return sb.Append(CommandErrorCode.UtenteNonLoggato).Append(" Utente non loggato.").ToString();
                     yield break;
@@ -301,10 +484,9 @@ namespace ProgettoMalnati
                 DateTime timestamp = new DateTime(Int64.Parse(dati[2]));
                 string sha256 = dati[3];
                 int dim = Int32.Parse(dati[4]);
-                TcpClient conn_dati;
                 try
                 {
-                    daModificare = s.user.FileList[dati[0], dati[1]];
+                    daModificare = user.FileList[dati[0], dati[1]];
                     snap = daModificare.Snapshots.Nuovo(timestamp, dim, sha256);
                 }
                 catch (Exception e)
@@ -330,58 +512,68 @@ namespace ProgettoMalnati
                 }
                 catch( Exception e)
                 {
-                    l.log("Errore nella scrittura del file",Level.ERR);
+                    l.log("Errore nella scrittura del file: "+e.Message,Level.ERR);
                     throw;
                 }
 
                 yield return CommandErrorCode.OK.ToString()+" Trasferimento completato con successo";
             }
         }
-        private class ComandoNuovoFile : Command
-        {
-            public override IEnumerable<string> esegui(Server s, List<string> dati)
-            {
-                StringBuilder sb = new StringBuilder();
 
-                yield return "";
-            }
-        }
-        private class ComandoEsci : Command
-        {
-            public override IEnumerable<string> esegui(Server s, List<string> dati)
-            {
-                StringBuilder sb = new StringBuilder();
-
-                throw new NotImplementedException();
-                yield return "";
-            }
-        }
         private class ComandoEliminaFile : Command
         {
-            public override IEnumerable<string> esegui(Server s, List<string> dati)
-            {
-
-                throw new NotImplementedException();
-                yield return "";
-            }
-        }
-        private class ComandoScaricaFile : Command
-        {
-            public override IEnumerable<string> esegui(Server s, List<string> dati)
+            /// <summary>
+            /// Setta un file come non valido. Esiste ancora.
+            /// </summary>
+            /// <param name="s"></param>
+            /// <param name="dati">
+            ///     [0]: nome file
+            ///     [1]: path relativo
+            /// </param>
+            /// <returns></returns>
+            public override IEnumerable<string> esegui(List<string> dati)
             {
                 StringBuilder sb = new StringBuilder();
-                throw new NotImplementedException();
-                yield return "";
+                Log l = Log.getLog();
+                if (user == null)
+                {
+                    yield return sb.Append(CommandErrorCode.UtenteNonLoggato).Append(" Utente non loggato.").ToString();
+                    yield break;
+                }
+                if (dati.Count < 2)
+                {
+                    yield return sb.Append(CommandErrorCode.DatiIncompleti)
+                                    .Append(" I dati inviati non sono sufficienti").ToString();
+                    yield break;
+                }
+                try
+                {
+                    user.FileList[nome_file: dati[0], path_relativo: dati[1]].Valido = false;
+                }catch(Exception e)
+                {
+                    l.log("Errore nel settare il file come non valido; " + e.Message,Level.ERR);
+                }
+                yield return sb.Append(CommandErrorCode.OK).Append(" File eliminato con successo").ToString();
             }
         }
 
         private class ComandoListDir : Command
         {
-            public override IEnumerable<string> esegui(Server s, List<string> dati)
+            public override IEnumerable<string> esegui(List<string> dati)
             {
                 StringBuilder sb = new StringBuilder();
 
                 yield return sb.ToString();
+            }
+        }
+
+        private class ComandoEsci : Command
+        {
+            public override IEnumerable<string> esegui(List<string> dati)
+            {
+                StringBuilder sb = new StringBuilder();
+                user.Logout();
+                yield return sb.Append(CommandErrorCode.OK).Append(" Connessione terminata con successo").ToString();
             }
         }
     }

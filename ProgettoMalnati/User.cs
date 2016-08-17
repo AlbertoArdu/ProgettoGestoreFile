@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.IO;
@@ -14,10 +12,9 @@ namespace ProgettoMalnati
         //Attributi
         private string __nome;
         private string __password;
-        private string __path_monitorato;
         private FileUtenteList __s_list;
         static private string sql_get_user_data = Properties.SQLquery.sqlCheckUtente;
-        static private string sql_insert_user = Properties.SQLquery.sqlGetInfoUtente;
+        static private string sql_insert_user = Properties.SQLquery.sqlSetInfoUtente;
         //static private string sql_update_password = Properties.SQLquery.sqlUpdatePass;
 
         //Proprieta
@@ -61,18 +58,7 @@ namespace ProgettoMalnati
                 this.__password = pass;
             }
         }
-        public string PathMonitorato
-        {
-            get { return __path_monitorato; }
-            set
-            {
-                string[][] parameters = new string[2][];
-                parameters[0] = new string[2] { "@nome", this.__nome };
-                parameters[1] = new string[2] { "@path", value };
-                this.ExecuteQuery(Properties.SQLquery.sqlAggiornaPath, parameters);
-                __path_monitorato = value; 
-            }
-        }
+        
         //Costruttori
         //Da valutare se rendere privato -> nuovo user solo attraverso la funzione di Login
         private User(string nome, string password) 
@@ -88,7 +74,6 @@ namespace ProgettoMalnati
             foreach (int i in this.GetResults()) 
             {
                 this.__nome = (string)(this.ResultGetValue("nome"));
-                this.__path_monitorato = (string)(this.ResultGetValue("path_monitorato"));
                 quantita = i;
             }
             //i contiene il numero di risultati;
@@ -103,14 +88,12 @@ namespace ProgettoMalnati
         }
 
         //Metodi
-
-        override public string ToString()
+        internal void Logout()
         {
-            string s = "User\n{\n\tnome = " + this.__nome + "\n\tpassword = " + this.__password + "\n\tpath_monitorato = " + __path_monitorato + "\n\ts_list = ";
-            if (this.__s_list != null)
-                return s + this.__s_list.ToString() + "\n}\n";
-            else
-                return s + "null\n}\n";
+            //Logout...
+            this.__nome = null;
+            this.__password = null;
+            this.__s_list = null;
         }
 
         //Metodi Statici
@@ -191,15 +174,15 @@ namespace ProgettoMalnati
         /// <param name="nome">Nome utente</param>
         /// <param name="password">Password per l'utente (cleartext)</param>
         /// <param name="path_monitorato">Path Locale dell'utente che verra monitorato</param>
-        static public User RegistraUtente(string nome,string password, string path_monitorato)
+        static public User RegistraUtente(string nome,string password)
         {
             if (!NomeUtenteValido(nome))
             {
-                throw new DatabaseException("nome_utente non va bene.", DatabaseErrorCode.FormatError);
+                throw new DatabaseException("Nome utente non va bene.", DatabaseErrorCode.FormatError);
             }
             if (!PasswordValida(password))
             {
-                throw new DatabaseException("password non va bene.", DatabaseErrorCode.FormatError);
+                throw new DatabaseException("Password non va bene.", DatabaseErrorCode.FormatError);
             }
             password = TrasformaPassword(password);
             //provo a mettere il nuovo utente: se ricevo un'eccezione particolare il nome utente e duplicato
@@ -207,7 +190,6 @@ namespace ProgettoMalnati
             string[][] parameters = new string[3][];
             parameters[0] = new string[2] { "@nome", nome };
             parameters[1] = new string[2] { "@password", password };
-            parameters[2] = new string[2] { "@path_monitorato", path_monitorato };
             try{
                 db.ExecuteQuery(sql_insert_user, parameters);
             }
@@ -218,5 +200,6 @@ namespace ProgettoMalnati
             
             return new User(nome, password);
         }
+
     }
 }

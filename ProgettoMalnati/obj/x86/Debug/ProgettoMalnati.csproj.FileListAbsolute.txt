@@ -16,3 +16,14 @@ F:\Lavoro\Progetto_malnati\ProgettoGestoreFile\ProgettoMalnati\obj\x86\Debug\Pro
 F:\Lavoro\Progetto_malnati\ProgettoGestoreFile\ProgettoMalnati\obj\x86\Debug\ProgettoMalnati.Properties.DatiTest.resources
 F:\Lavoro\Progetto_malnati\ProgettoGestoreFile\ProgettoMalnati\obj\x86\Debug\ProgettoMalnati.Properties.SQLquery.resources
 F:\Lavoro\Progetto_malnati\ProgettoGestoreFile\ProgettoMalnati\obj\x86\Debug\ProgettoMalnati.csproj.GenerateResource.Cache
+F:\Lavoro\Progetto_malnati\ProgettoGestoreFile\ProgettoMalnati\bin\Debug\ProgettoMalnati.exe
+F:\Lavoro\Progetto_malnati\ProgettoGestoreFile\ProgettoMalnati\bin\Debug\ProgettoMalnati.pdb
+F:\Lavoro\Progetto_malnati\ProgettoGestoreFile\ProgettoMalnati\bin\Debug\EntityFramework.dll
+F:\Lavoro\Progetto_malnati\ProgettoGestoreFile\ProgettoMalnati\bin\Debug\EntityFramework.SqlServer.dll
+F:\Lavoro\Progetto_malnati\ProgettoGestoreFile\ProgettoMalnati\bin\Debug\SQLite.NET.dll
+F:\Lavoro\Progetto_malnati\ProgettoGestoreFile\ProgettoMalnati\bin\Debug\System.Data.SQLite.dll
+F:\Lavoro\Progetto_malnati\ProgettoGestoreFile\ProgettoMalnati\bin\Debug\System.Data.SQLite.EF6.dll
+F:\Lavoro\Progetto_malnati\ProgettoGestoreFile\ProgettoMalnati\bin\Debug\System.Data.SQLite.Linq.dll
+F:\Lavoro\Progetto_malnati\ProgettoGestoreFile\ProgettoMalnati\bin\Debug\System.Runtime.CompilerServices.VisualC.dll
+F:\Lavoro\Progetto_malnati\ProgettoGestoreFile\ProgettoMalnati\bin\Debug\EntityFramework.xml
+F:\Lavoro\Progetto_malnati\ProgettoGestoreFile\ProgettoMalnati\bin\Debug\EntityFramework.SqlServer.xml

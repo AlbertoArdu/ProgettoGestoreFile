@@ -79,15 +79,6 @@ namespace ProgettoMalnati.Properties {
         }
         
         /// <summary>
-        ///   Cerca una stringa localizzata simile a UPDATE utenti SET path_monitorato = @path WHERE nome = @nome;.
-        /// </summary>
-        internal static string sqlAggiornaPath {
-            get {
-                return ResourceManager.GetString("sqlAggiornaPath", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Cerca una stringa localizzata simile a UPDATE fileutente SET nome_file_c = @nome_file_c WHERE id = @id;.
         /// </summary>
         internal static string sqlCambiaNomeFile {
@@ -133,7 +124,7 @@ namespace ProgettoMalnati.Properties {
         }
         
         /// <summary>
-        ///   Cerca una stringa localizzata simile a SELECT nome_file_c, path_relativo_c, t_creazione, valido FROM fileutente WHERE id = @id;.
+        ///   Cerca una stringa localizzata simile a SELECT nome_file_c, path_relativo_c, t_creazione, valido FROM fileutente WHERE id = @id AND nome_utente = @nome_utente;.
         /// </summary>
         internal static string sqlGetFileData {
             get {
@@ -147,15 +138,6 @@ namespace ProgettoMalnati.Properties {
         internal static string sqlGetIds {
             get {
                 return ResourceManager.GetString("sqlGetIds", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Cerca una stringa localizzata simile a INSERT INTO utenti(nome,password,path_monitorato) VALUES (@nome,@password,@path_monitorato);.
-        /// </summary>
-        internal static string sqlGetInfoUtente {
-            get {
-                return ResourceManager.GetString("sqlGetInfoUtente", resourceCulture);
             }
         }
         
@@ -183,6 +165,15 @@ namespace ProgettoMalnati.Properties {
         internal static string sqlNuovoFile {
             get {
                 return ResourceManager.GetString("sqlNuovoFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a INSERT INTO utenti(nome,password) VALUES (@nome,@password);.
+        /// </summary>
+        internal static string sqlSetInfoUtente {
+            get {
+                return ResourceManager.GetString("sqlSetInfoUtente", resourceCulture);
             }
         }
         
@@ -222,7 +213,7 @@ namespace ProgettoMalnati.Properties {
         }
         
         /// <summary>
-        ///   Cerca una stringa localizzata simile a create table utenti (nome varchar(20), password varchar(100), path_monitorato varchar(250), PRIMARY KEY(nome)).
+        ///   Cerca una stringa localizzata simile a create table utenti (nome varchar(20), password varchar(100), PRIMARY KEY(nome)).
         /// </summary>
         internal static string tabellaUtenti {
             get {

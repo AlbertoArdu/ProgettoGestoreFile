@@ -10,7 +10,7 @@ namespace ProgettoMalnati
     {
         private int __snapshot_per_file;
         private int id;
-        private string __nome_utente;
+        private string __nome_utente = null;
         private string __nome_file_c;
         private string __path_relativo_c;
         private SnapshotList __snapshots;
@@ -23,22 +23,32 @@ namespace ProgettoMalnati
             base()
         {
             l = Log.getLog();
+            this.id = id;
             //Miglioramenti futuri: rendere questo valore personalizzabile per utente.
             __snapshot_per_file = Properties.ApplicationSettings.Default.snapshot_per_file;
-            __snapshots = new SnapshotList(id, nome_utente);
-            string[][] parameters = new string[1][];
+            __snapshots = new SnapshotList(id);
+            string[][] parameters = new string[2][];
 
             parameters[0] = new string[2] { "@id", id.ToString() };
+            parameters[1] = new string[2] { "@nome_utente", nome_utente };
+
             this.ExecuteQuery(sql_get_file_data, parameters);
-            //Get the data
-            foreach (Int32 i in GetResults())
+            if (this.hasResults())
             {
-                this.__nome_file_c = (string)(this.ResultGetValue("nome_utente_c"));
-                this.__t_creazione = (DateTime)(this.ResultGetValue("t_creazione"));
-                this.__path_relativo_c = (string)(this.ResultGetValue("path_relativo_c"));
-                this.__valido = (bool)(this.ResultGetValue("valido"));
+                //Get the data
+                foreach (Int32 i in GetResults())
+                {
+                    this.__nome_file_c = (string)(this.ResultGetValue("nome_file_c"));
+                    this.__t_creazione = (DateTime)(this.ResultGetValue("t_creazione"));
+                    this.__path_relativo_c = (string)(this.ResultGetValue("path_relativo_c"));
+                    this.__valido = (bool)(this.ResultGetValue("valido"));
+                    this.__nome_utente = nome_utente;
+                }
             }
-            this.id = id;
+            else
+            {
+                throw new DatabaseException("Impossibile ottenere i dati del FileUtente richiesto.", DatabaseErrorCode.NoDati);
+            }
         }
 
         public SnapshotList Snapshots => __snapshots;
@@ -51,7 +61,23 @@ namespace ProgettoMalnati
             }
             set
             {
+                string sql = "UPDATE fileutente SET valido = @valido WHERE id = @id AND nome_utente = @nome_utente;";
+                string[][] parameters = new string[3][];
+                parameters[0] = new string[2] { "@valido", value.ToString() };
+                parameters[1] = new string[2] { "@id", this.id.ToString() };
+                parameters[2] = new string[2] { "@nome_utente", this.__nome_utente };
+                try
+                {
+                    this.ExecuteQuery(sql, parameters);
+                }
+                catch (Exception e)
+                {
+                    l.log("Errore nel settare il file come invalido nel database: " + e.Message, Level.ERR);
+                    throw;
+                }
+
                 __valido = value;
+
             }
         }
 
