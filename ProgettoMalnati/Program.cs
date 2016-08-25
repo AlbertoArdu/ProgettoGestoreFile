@@ -23,8 +23,6 @@ namespace ProgettoMalnati
             Properties.ApplicationSettings.Default.base_path = base_path;
             Properties.ApplicationSettings.Default.Save();
 
-            Test.RunTestDB();
-
             IPAddress mio_ip = IPAddress.Any;
             int port = Properties.ApplicationSettings.Default.tcp_port;
             TcpListener acceptor = TcpListener.Create(port);
