@@ -9,6 +9,7 @@ namespace WPFPageSwitch
         Constraint,
         FormatError,
         HashInconsistente,
+        ConnessioneFallita,
         //Application level
         NomeUtenteNonValido,
         PasswordNonValida,

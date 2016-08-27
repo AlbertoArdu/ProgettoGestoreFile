@@ -92,6 +92,9 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="CollegamentoDati.cs" />
+    <Compile Include="Command.cs" />
+    <Compile Include="CommandErrorCode.cs" />
     <Compile Include="HeaderToImageConverter.cs" />
     <Compile Include="DatabaseException.cs" />
     <Compile Include="db_interface.cs" />
