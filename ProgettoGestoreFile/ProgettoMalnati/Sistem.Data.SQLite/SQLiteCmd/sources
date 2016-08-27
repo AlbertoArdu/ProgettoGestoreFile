@@ -1,0 +1,41 @@
+RELEASETYPE=LOCAL
+_ISVINCPATH=$(_WINCEROOT)\public\common\sdk\inc;
+_OEMINCPATH=$(_WINCEROOT)\public\common\oak\inc;$(_WINCEROOT)\public\common\sdk\inc;
+TARGETNAME=SQLiteCmd
+FILE_VIEW_ROOT_FOLDER= \
+    ReadMe.txt \
+    StdAfx.cpp \
+    prelink.bat \
+    postlink.bat \
+
+FILE_VIEW_RESOURCE_FOLDER= \
+
+FILE_VIEW_INCLUDES_FOLDER= \
+    StdAfx.h \
+	..\SQLite\SQLite.h \
+
+SOURCES= \
+    SQLiteCmd.cpp \
+
+TARGETTYPE=PROGRAM
+PRECOMPILED_CXX=1
+TARGETLIBS= \
+    $(SG_OUTPUT_ROOT)\sdk\lib\$(_CPUINDPATH)\coredll.lib \
+	..\SQLite2013\Resources\$(_TGTCPU)\SQLite.lib \
+
+# Alternative link for above
+# ..\SQLite\obj\$(_TGTCPU)\$(WINCEDEBUG)\SQLite.lib 
+
+PRECOMPILED_PCH=StdAfx.pch
+PRECOMPILED_OBJ=StdAfx.obj
+PRECOMPILED_INCLUDE=StdAfx.h
+EXEENTRY=mainACRTStartup 
+POSTLINK_PASS_CMD=postlink.bat
+PRELINK_PASS_CMD=prelink.bat
+FILE_VIEW_PARAMETER_FOLDER= \
+    SQLiteCmd.bib \
+    SQLiteCmd.reg \
+    SQLiteCmd.dat \
+    SQLiteCmd.db \
+    ProjSysgen.bat \
+

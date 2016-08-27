@@ -1,0 +1,34 @@
+RELEASETYPE=MANAGED
+_ISVINCPATH=$(_WINCEROOT)\public\common\sdk\inc;
+_OEMINCPATH=$(_WINCEROOT)\public\common\oak\inc;$(_WINCEROOT)\public\common\sdk\inc;
+TARGETNAME=SQLiteADOTestCS
+FILE_VIEW_ROOT_FOLDER= \
+    ReadMe.txt \
+    prelink.bat \
+    postlink.bat \
+
+FILE_VIEW_RESOURCE_FOLDER= \
+
+FILE_VIEW_INCLUDES_FOLDER= \
+
+SOURCES= \
+    SQLiteADOTestCS.cs \
+
+TARGETLIBS= \
+    $(SG_OUTPUT_ROOT)\sdk\lib\$(_CPUINDPATH)\coredll.lib \
+
+TARGETTYPE=MANAGED_EXE
+POSTLINK_PASS_CMD=postlink.bat
+PRELINK_PASS_CMD=prelink.bat
+FILE_VIEW_PARAMETER_FOLDER= \
+    SQLiteADOTestCS.bib \
+    SQLiteADOTestCS.reg \
+    SQLiteADOTestCS.dat \
+    SQLiteADOTestCS.db \
+    ProjSysgen.bat \
+
+MANAGED_REFERENCES=$(_MANAGED_FRAMEWORK_DIR)\mscorlib.dll; \
+$(_MANAGED_FRAMEWORK_DIR)\system.dll; \
+$(_WINCEROOT)\3rdParty\CESQLite2013\SQLiteADONET\Resources\System.Data.SQLite.dll; \
+$(_MANAGED_FRAMEWORK_DIR)\System.data.dll
+
