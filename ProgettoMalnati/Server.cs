@@ -351,8 +351,13 @@ namespace ProgettoMalnati
                 {
                     l.log("Errore... " + e.Message, Level.ERR);
                     sb.Append(CommandErrorCode.Unknown).Append(" Un errore sconosciuto è accaduto nel server.");
+                    snap = null;
                 }
-
+                if(snap == null)
+                {
+                    yield return sb.ToString();
+                    yield break;
+                }
                 string token = CollegamentoDati.getNewToken();
                 yield return sb.Append(CommandErrorCode.OKIntermedio).Append(" Stream dati pronto").ToString();
                 yield return token;
