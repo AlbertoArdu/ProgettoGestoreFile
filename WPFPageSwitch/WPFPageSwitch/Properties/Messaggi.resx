@@ -117,4 +117,28 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="collegamentoDati" xml:space="preserve">
+    <value>"Il collegamento dati non può essere istanziato. Riprovare più tardi"</value>
+  </data>
+  <data name="erroreServer" xml:space="preserve">
+    <value>"Un errore sconosciuto è accaduto sul server. Riprovare più tardi"</value>
+  </data>
+  <data name="fileEsistente" xml:space="preserve">
+    <value>"Il file esiste già sul server. Forse lo vuoi solo aggiornare?"</value>
+  </data>
+  <data name="formatoDatiErrato" xml:space="preserve">
+    <value>"Il formato dei dati forniti è errato. Riprovare"</value>
+  </data>
+  <data name="limiteFileSuperato" xml:space="preserve">
+    <value>"L'utente ha troppi file memorizzati sul server. Dividere la cartella e creare un nuovo account."</value>
+  </data>
+  <data name="momentoSbagliato" xml:space="preserve">
+    <value>"L'azione richiesta non può essere gestita ora."</value>
+  </data>
+  <data name="nomeUtenteInUso" xml:space="preserve">
+    <value>"Il nome utente scelto è già in uso."</value>
+  </data>
+  <data name="nonLoggato" xml:space="preserve">
+    <value>"Prima di lanciare un comando è necessario essersi loggati con il comando login."</value>
+  </data>
 </root>

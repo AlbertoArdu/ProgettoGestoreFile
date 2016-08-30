@@ -25,6 +25,7 @@ namespace WPFPageSwitch
         UtenteNonLoggato,
            //Creazione file
         LimiteFileSuperato,
+        FileEsistente,
         Unknown = -1
     }
 }

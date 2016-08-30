@@ -25,6 +25,7 @@ namespace ProgettoMalnati
         UtenteNonLoggato,
            //Creazione file
         LimiteFileSuperato,
+        FileEsistente,
         Unknown = -1
     }
 }

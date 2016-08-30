@@ -10,3 +10,4 @@ C:\Users\c.citera\Documents\Visual Studio 2015\Projects\WPFPageSwitch\WPFPageSwi
 C:\Users\c.citera\Documents\Visual Studio 2015\Projects\WPFPageSwitch\WPFPageSwitch\obj\Debug\WPFPageSwitch_MarkupCompile.cache
 C:\Users\c.citera\Documents\Visual Studio 2015\Projects\WPFPageSwitch\WPFPageSwitch\obj\Debug\WPFPageSwitch_MarkupCompile.lref
 C:\Users\c.citera\Documents\Visual Studio 2015\Projects\WPFPageSwitch\WPFPageSwitch\bin\Debug\WPFPageSwitch.exe.config
+F:\Lavoro\Progetto_malnati\WPFPageSwitch\WPFPageSwitch\bin\Debug\WPFPageSwitch.exe.config

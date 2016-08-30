@@ -45,7 +45,7 @@ namespace ProgettoMalnati
                 throw new Exception("Socket non connesso.");
             }
             this.s = s;
-            
+
             thread.Start();
         }
         //Proprietà
@@ -59,7 +59,7 @@ namespace ProgettoMalnati
 
         //Metodi
         /// <summary>
-        /// Richiede al client di chiudere la connessione e terminare il thread. 
+        /// Richiede al client di chiudere la connessione e terminare il thread.
         /// Per eventi eccezionali di errore.
         /// </summary>
         public void RichiediStop()
@@ -67,7 +67,7 @@ namespace ProgettoMalnati
             __stop = true;
         }
         /// <summary>
-        /// Funzione di partenza del thread. Legge messaggi, genera il comando, 
+        /// Funzione di partenza del thread. Legge messaggi, genera il comando,
         /// esegue il comando, gestisce eventuali errori.
         /// </summary>
         public void servi()
@@ -98,12 +98,12 @@ namespace ProgettoMalnati
                     l.log(e.Message);
                     throw;
                 }
-            }
 
-            if (this.__stop)
-            {
-                writer.WriteLine(CommandErrorCode.Abort+" Abort");
-                s.Close();
+                if (this.__stop)
+                {
+                    writer.WriteLine(CommandErrorCode.Abort+" Abort");
+                    s.Close();
+                }
             }
 
             return; //Il thread muore qui...
@@ -292,7 +292,7 @@ namespace ProgettoMalnati
                                     .Append(" I dati inviati non sono sufficienti").ToString();
                     yield break;
                 }
-                
+
                 string nome_file = dati[0];
                 string path_relativo = dati[1];
                 DateTime timestamp = new DateTime();
@@ -327,6 +327,9 @@ namespace ProgettoMalnati
                     {
                         case DatabaseErrorCode.LimiteFileSuperato:
                             sb.Append(CommandErrorCode.LimiteFileSuperato).Append(" L'utente ha superato il limite di file creabili.");
+                            break;
+                        case DatabaseErrorCode.FileEsistente:
+                            sb.Append(CommandErrorCode.FileEsistente).Append(" Un file con quel nome esiste gia'.");
                             break;
                         default:
                             l.log("Server Error!! " + e.Message,Level.ERR);
@@ -463,7 +466,7 @@ namespace ProgettoMalnati
             /// </param>
             /// <returns>
             /// Ritorna prima una stringa con il codice "OKIntermedio" seguita dal token assegnato al client.
-            /// Quando il client si connette alla porta dati viene ricevuto il nuovo contenuto del file e in 
+            /// Quando il client si connette alla porta dati viene ricevuto il nuovo contenuto del file e in
             /// caso di successo viene ancora inviato un messaggio di ok.
             /// </returns>
             public override IEnumerable<string> esegui(List<string> dati)

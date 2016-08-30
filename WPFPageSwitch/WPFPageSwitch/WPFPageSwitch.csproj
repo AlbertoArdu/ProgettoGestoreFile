@@ -95,6 +95,12 @@
     <Compile Include="CollegamentoDati.cs" />
     <Compile Include="Command.cs" />
     <Compile Include="CommandErrorCode.cs" />
+    <Compile Include="Properties\Messaggi.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Messaggi.resx</DependentUpon>
+    </Compile>
+    <Compile Include="ServerException.cs" />
     <Compile Include="HeaderToImageConverter.cs" />
     <Compile Include="DatabaseException.cs" />
     <Compile Include="db_interface.cs" />
@@ -151,6 +157,10 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <EmbeddedResource Include="Properties\Messaggi.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Messaggi.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

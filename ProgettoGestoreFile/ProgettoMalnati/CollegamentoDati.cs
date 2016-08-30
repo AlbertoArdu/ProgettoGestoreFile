@@ -7,7 +7,7 @@ using System.Threading;
 namespace ProgettoMalnati
 {
     /// <summary>
-    /// Classe con un thread in ascolto sulla porta tcp dei dati. 
+    /// Classe con un thread in ascolto sulla porta tcp dei dati.
     /// Quando un client si connette:
     ///  - legge il token dal socket
     ///  - aggiunge il socket a un dizionario che ha come indice il token stesso
@@ -55,7 +55,7 @@ namespace ProgettoMalnati
                 NetworkStream stream = c.GetStream();
                 byte[] tmp = new byte[token_length];
                 stream.Read(tmp, 0,token_length);
-                token = System.Convert.ToBase64String(tmp);
+                token = System.Text.Encoding.Default.GetString(tmp);
                 lock (lockDictionary)
                 {
                     socket_dati_in_sospeso.Add(token, c);
@@ -97,6 +97,9 @@ namespace ProgettoMalnati
         {
             TcpClient c = null;
 
+            if(!waitHandles[token].ContainsKey(token))
+                throw new Exception("Token non valido");
+
             waitHandles[token].WaitOne(timeout);
             lock (lockDictionary)
             {
@@ -107,7 +110,7 @@ namespace ProgettoMalnati
                 c = socket_dati_in_sospeso[token];
                 socket_dati_in_sospeso.Remove(token);
             }
-                    
+
             lock (lockDictionary)
             {
                 waitHandles.Remove(token);
