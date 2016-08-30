@@ -290,7 +290,7 @@ namespace WPFPageSwitch
         string sha_contenuto;
         DateTime t_creazione;
         FileStream file,tmp_file;
-        const string nome_comando = "NEWFILE";
+        const string nome_comando = "RETRIEVE";
 
         public ComandoScaricaFile(string nome_file, string path, DateTime timestamp)
             : base()
@@ -325,7 +325,78 @@ namespace WPFPageSwitch
         /// </returns>
         public override void esegui()
         {
+            StringBuilder sb = new StringBuilder();
+            sb.Append(nome_comando).Append(Environment.NewLine).
+                Append(nome_file).Append(Environment.NewLine).
+                Append(path).Append(Environment.NewLine).
+                Append(t_creazione.Ticks).Append(Environment.NewLine).
+                Append(Environment.NewLine);
+            control_stream_writer.Write(sb.ToString());
+            string response = control_stream_reader.ReadLine();
+            response = response.Trim();
+            CommandErrorCode errorCode = (CommandErrorCode)Int32.Parse(response.Split(' ')[0]); //Extract code from response
+            switch (errorCode)
+            {
+                case CommandErrorCode.OKIntermedio:
+                    try
+                    {
+                        string token = control_stream_reader.ReadLine();
+                        this.dim = Int32.Parse(control_stream_reader.ReadLine());
+                        this.sha_contenuto = control_stream_reader.ReadLine();
+                        data_stream = CollegamentoDati.getCollegamentoDati(token);
+                    }
+                    catch
+                    {
+                        throw new ServerException(Properties.Messaggi.collegamentoDati,
+                            ServerErrorCode.CollegamentoDatiNonDisponibile);
+                    }
+                    break;
+                case CommandErrorCode.FormatoDatiErrato:
+                    throw new ServerException(Properties.Messaggi.formatoDatiErrato, ServerErrorCode.FormatoDatiErrato);
+                case CommandErrorCode.UtenteNonLoggato:
+                    throw new ServerException(Properties.Messaggi.nonLoggato, ServerErrorCode.UtenteNonLoggato);
+                case CommandErrorCode.AperturaFile:
+                    throw new ServerException(Properties.Messaggi.fileEsistente, ServerErrorCode.FileEsistente);
+                case CommandErrorCode.DatiIncompleti:
+                default:
+                    throw new ServerException(Properties.Messaggi.erroreServer, ServerErrorCode.Default);
+            }
+            byte[] buffer = new byte[1024];
+            int size = 1024;
+            try
+            {
+                while ((size = data_stream.Read(buffer, 0, size)) != 0)
+                {
+                    //Scrivo su un file temporaneo. Se tutto va bene sostituisco quello presente
+                    //nella cartella dell'utente
+                    tmp_file.Write(buffer, 0, size);
+                }
+            }
+            catch
+            {
+                throw new ServerException(Properties.Messaggi.erroreServer, ServerErrorCode.Default);
+            }
+            tmp_file.Close();
+            data_stream.Close();
+            //TODO: dimensione e controllo hash
 
+            try
+            {
+                File.Delete(path_completo);
+            }
+            catch {; }
+            try
+            {
+                File.Move(tmp_path, path_completo);
+            }catch(Exception e)
+            {
+                throw new DatabaseException("Il file scaricato non può essere memorizzato nella cartella di destinazione. Controllare i permessi e riprovare. "+e.Message, DatabaseErrorCode.Unknown);
+            }
+            try
+            {
+                File.Delete(tmp_path);
+            }
+            catch {; }
         }
     }
 

@@ -428,7 +428,8 @@ namespace ProgettoMalnati
                 catch (Exception e)
                 {
                     l.log("Errore nel selezionare il file corretto. " + e.Message, Level.ERR);
-                    throw;
+                    yield return sb.Append(CommandErrorCode.AperturaFile).Append(" File non esistente o errore strano").ToString();
+                    yield break;
                 }
                 string token = CollegamentoDati.getNewToken();
                 yield return sb.Append(CommandErrorCode.OKIntermedio).Append(" File pronto. Connettiti alla porta corrispondente").ToString();

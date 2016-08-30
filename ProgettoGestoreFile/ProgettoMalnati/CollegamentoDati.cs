@@ -55,7 +55,7 @@ namespace ProgettoMalnati
                 NetworkStream stream = c.GetStream();
                 byte[] tmp = new byte[token_length];
                 stream.Read(tmp, 0,token_length);
-                token = System.Text.Encoding.Default.GetString(tmp);
+                token = System.Convert.ToBase64String(tmp);
                 lock (lockDictionary)
                 {
                     socket_dati_in_sospeso.Add(token, c);

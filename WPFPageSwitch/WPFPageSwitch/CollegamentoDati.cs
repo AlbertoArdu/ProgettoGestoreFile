@@ -24,16 +24,27 @@ namespace WPFPageSwitch
         /// <exception cref="Exception">Lancia un'eccezione se il token non è valido o non è possibile connettere il socket</exception>
         static public NetworkStream getCollegamentoDati(string token)
         {
+            int token_length = 20;
             TcpClient c = null;
             IPAddress server_addr = IPAddress.Parse(Properties.Settings.Default.ip_address);
+            NetworkStream netS = null;
             port = Properties.Settings.Default.data_port;
-            
+            byte[] tmp = new byte[token_length = 20];
+            tmp = System.Convert.FromBase64String(token);
             c = new TcpClient();
             try
             {
                 c.Connect(server_addr, port);
+                netS = c.GetStream();
+                netS.Write(tmp, 0, token_length);
+                netS.Flush();
             }
-            return c.GetStream();
+            catch
+            {
+                throw new ServerException("Errore nell'istanziare una connessione dati",
+                    ServerErrorCode.CollegamentoDatiNonDisponibile);
+            }
+            return netS;
         }
 
     }

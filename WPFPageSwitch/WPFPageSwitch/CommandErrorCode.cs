@@ -16,7 +16,6 @@ namespace WPFPageSwitch
         DatiIncompleti,
         FormatoDatiErrato,
         MomentoSbagliato,
-
         // Applicazione
             //Registrazione
         NomeUtenteInUso,
@@ -26,6 +25,8 @@ namespace WPFPageSwitch
            //Creazione file
         LimiteFileSuperato,
         FileEsistente,
+        //Scaricamento file
+        AperturaFile,
         Unknown = -1
     }
 }
