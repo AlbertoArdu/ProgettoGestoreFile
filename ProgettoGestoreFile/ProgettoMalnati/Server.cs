@@ -135,14 +135,19 @@ namespace ProgettoMalnati
                     case "RETRIEVE":
                         c = new ComandoScaricaFile();
                         break;
+                    case "LISTPATHS":
+                        c = new ComandoListFolders();
+                        break;
                     case "LISTDIR":
                         c = new ComandoListDir();
+                        break;
+                    case "LISTVERSIONS":
+                        c = new ComandoListVersions();
                         break;
                     case "EXIT":
                         c = new ComandoEsci();
                         break;
                 }
-
                 return c;
             }
         }
@@ -569,13 +574,136 @@ namespace ProgettoMalnati
             }
         }
 
-        private class ComandoListDir : Command
+        private class ComandoListFolders : Command
         {
+            /// <summary>
+            /// Ritorna uno per riga i paths di un utente. Utile per ricostruire il file system
+            /// </summary>
+            /// <param name="dati">
+            /// null
+            /// </param>
+            /// <returns>OK se terminato con successo, un codice e messaggio di errore altrimenti</returns>
+
             public override IEnumerable<string> esegui(List<string> dati)
             {
                 StringBuilder sb = new StringBuilder();
-                sb.Append(CommandErrorCode.NotImplemented).Append(" Il comando non è implementato");
+                if (user == null)
+                {
+                    yield return sb.Append(CommandErrorCode.UtenteNonLoggato).Append(" Utente non loggato.").ToString();
+                    yield break;
+                }
+                string[] paths = null;
+                try
+                {
+                    paths = user.FileList.PathNames;
+                    sb.Append(CommandErrorCode.OK).Append(" OK");
+                }
+                catch
+                {
+                    sb.Append(CommandErrorCode.Unknown).Append(" Un errore sconosciuto è accaduto nel server");
+                }
                 yield return sb.ToString();
+                if (paths == null)
+                    yield break;
+                foreach(string p in paths)
+                {
+                    yield return p;
+                }
+                yield return "";
+            }
+        }
+
+        private class ComandoListDir : Command
+        {
+            /// <summary>
+            /// Ritorna uno per riga i nomi dei file nel direttamente nel path specificato
+            /// </summary>
+            /// <param name="dati">
+            /// <list type="string">
+            ///    <item index=0 >Path</item>
+            /// </list>
+            /// </param>
+            /// <returns>OK se terminato con successo, un codice e messaggio di errore altrimenti</returns>
+
+            public override IEnumerable<string> esegui(List<string> dati)
+            {
+                StringBuilder sb = new StringBuilder();
+                if (user == null)
+                {
+                    yield return sb.Append(CommandErrorCode.UtenteNonLoggato).Append(" Utente non loggato.").ToString();
+                    yield break;
+                }
+                if(dati.Count < 1)
+                {
+                    yield return sb.Append(CommandErrorCode.DatiIncompleti).Append(" Manca il path.").ToString();
+                    yield break;
+                }
+
+                string[] files = null;
+                try
+                {
+                    files = user.FileList.FileNames(dati[0]);
+                    sb.Append(CommandErrorCode.OK).Append(" OK");
+                }
+                catch
+                {
+                    sb.Append(CommandErrorCode.Unknown).Append(" Un errore sconosciuto è accaduto nel server");
+                }
+                yield return sb.ToString();
+                if (files == null)
+                    yield break;
+                foreach (string f in files)
+                {
+                    yield return f;
+                }
+                yield return "";
+            }
+        }
+
+        private class ComandoListVersions: Command
+        {
+            /// <summary>
+            /// Registra un nuovo utente
+            /// </summary>
+            /// <param name="dati">
+            /// <list type="string">
+            ///    <item index=0 >nome file</item>
+            ///    <item index=1 >path</item>
+            /// </list>
+            /// </param>
+            /// <returns>OK se terminato con successo, un codice e messaggio di errore altrimenti</returns>
+            public override IEnumerable<string> esegui(List<string> dati)
+            {
+                StringBuilder sb = new StringBuilder();
+                if (user == null)
+                {
+                    yield return sb.Append(CommandErrorCode.UtenteNonLoggato).Append(" Utente non loggato.").ToString();
+                    yield break;
+                }
+                if (dati.Count < 2)
+                {
+                    yield return sb.Append(CommandErrorCode.DatiIncompleti).Append(" Manca il path o il nome del file.").ToString();
+                    yield break;
+                }
+
+                DateTime[] versioni = null;
+                try
+                {
+                    versioni = user.FileList[dati[0],dati[1]].Snapshots.timestampList;
+                    sb.Append(CommandErrorCode.OK).Append(" OK");
+                }
+                catch
+                {
+                    sb.Append(CommandErrorCode.Unknown).Append(" Un errore sconosciuto è accaduto nel server");
+                }
+                yield return sb.ToString();
+                if (versioni == null)
+                    yield break;
+                foreach (DateTime t in versioni)
+                {
+                    yield return t.Ticks.ToString();
+                }
+                yield return "";
             }
         }
 
@@ -588,5 +716,6 @@ namespace ProgettoMalnati
                 yield return sb.Append(CommandErrorCode.OK).Append(" Connessione terminata con successo").ToString();
             }
         }
+
     }
 }

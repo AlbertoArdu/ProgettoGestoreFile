@@ -422,7 +422,7 @@ namespace WPFPageSwitch
         string path_completo;
         int dim;
         string sha_contenuto;
-        DateTime t_creazione;
+        DateTime t_modifica;
         FileStream file = null;
         const string nome_comando = "UPDATE";
 
@@ -455,8 +455,8 @@ namespace WPFPageSwitch
             }
             if (dim < 0)
                 dim = (int)(finfo.Length);
-            if (t_creazione == DateTime.MinValue)
-                t_creazione = finfo.CreationTime;
+            if (t_modifica == DateTime.MinValue)
+                t_modifica = finfo.LastWriteTime;
 
             file = File.Open(this.path_completo, FileMode.Open);
             if (sha_contenuto == null)
@@ -469,18 +469,16 @@ namespace WPFPageSwitch
             this.file.Position = 0;
         }
         /// <summary>
-        /// Comando per la creazione di un nuovo file sul server. Se l'utente ha troppi file, il più
-        /// vecchio tra quelli eliminati viene distrutto. Se non ci sono file eliminati da distruggere
-        /// viene generato un errore.
+        /// Comando usato per aggiornare il contenuto di un file sul server.
         /// </summary>
-        /// <exception>CommandExeption con un codice corrispondente all'errore riscontrato</exception>
+        /// <exception>ServerExeption con un codice corrispondente all'errore riscontrato</exception>
         public override void esegui()
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(nome_comando).Append(Environment.NewLine).
                 Append(nome_file).Append(Environment.NewLine).
                 Append(path).Append(Environment.NewLine).
-                Append(t_creazione.Ticks).Append(Environment.NewLine).
+                Append(t_modifica.Ticks).Append(Environment.NewLine).
                 Append(sha_contenuto).Append(Environment.NewLine).
                 Append(dim).Append(Environment.NewLine).
                 Append(Environment.NewLine);
@@ -526,6 +524,18 @@ namespace WPFPageSwitch
             {
                 throw new ServerException(Properties.Messaggi.erroreServer, ServerErrorCode.Default);
             }
+            //Leggo la risposta (se tutto è andato bene o c'è stato un errore)
+            response = control_stream_reader.ReadLine();
+            response = response.Trim();
+            errorCode = (CommandErrorCode)Int32.Parse(response.Split(' ')[0]); //Extract code from response
+            switch (errorCode)
+            {
+                case CommandErrorCode.OK:
+                    
+                    break;
+                default:
+                    throw new ServerException(Properties.Messaggi.erroreServer, ServerErrorCode.Default);
+            }
         }
 
         ~ComandoAggiornaContenutoFile()
@@ -537,19 +547,191 @@ namespace WPFPageSwitch
 
     class ComandoEliminaFile : Command
     {
+        string path;
+        string nome_file;
+        string path_completo;
+        const string nome_comando = "DELETE";
+
+        public ComandoEliminaFile(string nome_file, string path)
+            : base()
+        {
+            Log l = Log.getLog();
+            if (!Logged)
+            {
+                throw new ServerException(Properties.Messaggi.nonLoggato, ServerErrorCode.UtenteNonLoggato);
+            }
+            this.path = path;
+            this.nome_file = nome_file;
+            this.path_completo = new StringBuilder(base_path).Append(Path.DirectorySeparatorChar).Append(path).Append(Path.DirectorySeparatorChar).Append(nome_file).ToString();
+        }
         /// <summary>
         /// Setta un file come non valido. Esiste ancora.
         /// </summary>
         /// <returns></returns>
         public override void esegui()
         {
+            Log l = Log.getLog();
+            StringBuilder sb = new StringBuilder();
+            sb.Append(nome_comando).Append(Environment.NewLine).
+                Append(nome_file).Append(Environment.NewLine).
+                Append(path).Append(Environment.NewLine).
+                Append(Environment.NewLine);
+            control_stream_writer.Write(sb.ToString());
+            string response = control_stream_reader.ReadLine();
+            response = response.Trim();
+            CommandErrorCode errorCode = (CommandErrorCode)Int32.Parse(response.Split(' ')[0]); //Extract code from response
+            switch (errorCode)
+            {
+                case CommandErrorCode.OK:
+                    l.log(String.Format("File eliminato con successo: %s", path + Path.DirectorySeparatorChar + nome_file), Level.INFO);
+                    break;
+                default:
+                    throw new ServerException();
+            }
+        }
+    }
+
+    class ComandoListFolders : Command
+    {
+        System.Collections.Generic.List<string> __paths = null;
+        const string nome_comando = "LISTPATHS";
+
+        string[] Paths
+        {
+            get { return __paths.ToArray(); }
+        }
+        public ComandoListFolders() : base()
+        {
+            if (!Logged)
+            {
+                throw new ServerException(Properties.Messaggi.nonLoggato, ServerErrorCode.UtenteNonLoggato);
+            }
+            __paths = new System.Collections.Generic.List<string>();
+
+        }
+
+        public override void esegui()
+        {
+            StringBuilder sb = new StringBuilder().Append(nome_comando).Append(Environment.NewLine)
+                .Append(Environment.NewLine);
+            control_stream_writer.Write(sb.ToString());
+            string response = control_stream_reader.ReadLine();
+            response = response.Trim();
+            CommandErrorCode errorCode = (CommandErrorCode)Int32.Parse(response.Split(' ')[0]); //Extract code from response
+            switch (errorCode)
+            {
+                case CommandErrorCode.OK:
+                    break;
+                default:
+                    throw new ServerException();
+            }
+            //Finché non c'è una riga vuota
+            while((response = control_stream_reader.ReadLine().Trim()).Length > 0)
+            {
+                __paths.Add(response);
+            }
         }
     }
 
     class ComandoListDir : Command
     {
+        System.Collections.Generic.List<string> __files;
+        string path;
+        const string nome_comando = "LISTDIR";
+        
+        string[] FileNames
+        {
+            get { return this.__files.ToArray(); }
+        }
+
+        public ComandoListDir(string path) : base()
+        {
+            if (!Logged)
+            {
+                throw new ServerException(Properties.Messaggi.nonLoggato, ServerErrorCode.UtenteNonLoggato);
+            }
+
+            this.path = path;
+            __files = new System.Collections.Generic.List<string>();
+        }
         public override void esegui()
         {
+            StringBuilder sb = new StringBuilder().Append(nome_comando).Append(Environment.NewLine)
+                .Append(path).Append(Environment.NewLine)
+                .Append(Environment.NewLine);
+
+            control_stream_writer.Write(sb.ToString());
+            string response = control_stream_reader.ReadLine();
+            response = response.Trim();
+            CommandErrorCode errorCode = (CommandErrorCode)Int32.Parse(response.Split(' ')[0]); //Extract code from response
+            switch (errorCode)
+            {
+                case CommandErrorCode.OK:
+                    break;
+                case CommandErrorCode.DatiIncompleti:
+                case CommandErrorCode.DatiErrati:
+                    throw new ServerException("I dati forniti dall'utente non sono corretti.", ServerErrorCode.DatiIncompleti);
+                default:
+                    throw new ServerException();
+            }
+            //Finché non c'è una riga vuota
+            while ((response = control_stream_reader.ReadLine().Trim()).Length > 0)
+            {
+                __files.Add(response);
+            }
+        }
+    }
+
+    class ComandoListVersions : Command
+    {
+        System.Collections.Generic.List<DateTime> __versions;
+        string path;
+        string nome_file;
+        const string nome_comando = "LISTVERSIONS";
+
+        DateTime[] Versions
+        {
+            get { return __versions.ToArray(); }
+        }
+
+        public ComandoListVersions(string nome_file, string path) : base()
+        {
+            if (!Logged)
+            {
+                throw new ServerException(Properties.Messaggi.nonLoggato, ServerErrorCode.UtenteNonLoggato);
+            }
+
+            this.path = path;
+            this.nome_file = nome_file;
+            __versions = new System.Collections.Generic.List<DateTime>();
+        }
+
+        public override void esegui()
+        {
+            StringBuilder sb = new StringBuilder().Append(nome_comando).Append(Environment.NewLine)
+                .Append(path).Append(Environment.NewLine)
+                .Append(Environment.NewLine);
+
+            control_stream_writer.Write(sb.ToString());
+            string response = control_stream_reader.ReadLine();
+            response = response.Trim();
+            CommandErrorCode errorCode = (CommandErrorCode)Int32.Parse(response.Split(' ')[0]); //Extract code from response
+            switch (errorCode)
+            {
+                case CommandErrorCode.OK:
+                    break;
+                case CommandErrorCode.DatiIncompleti:
+                case CommandErrorCode.DatiErrati:
+                    throw new ServerException("I dati forniti dall'utente non sono corretti.", ServerErrorCode.DatiIncompleti);
+                default:
+                    throw new ServerException();
+            }
+            //Finché non c'è una riga vuota
+            while ((response = control_stream_reader.ReadLine().Trim()).Length > 0)
+            {
+                __versions.Add(new DateTime(Int64.Parse(response)));
+            }
+
         }
     }
 

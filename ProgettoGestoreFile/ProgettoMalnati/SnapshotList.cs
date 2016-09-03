@@ -12,9 +12,11 @@ namespace ProgettoMalnati
         private int __id_file;
         private System.Collections.Generic.List<int> __list_ids_files;
         private Snapshot[] __snapshots;
+        private DateTime[] __timestampList;
         private int snapshotPerFile = Properties.ApplicationSettings.Default.snapshot_per_file;
 
         static private string sql_get_file_ids_of_user = Properties.SQLquery.sqlGetIds;
+        static private string sql_get_versions = Properties.SQLquery.sqlGetVersions;
 
         //Proprieta
         public int IdFile
@@ -25,6 +27,29 @@ namespace ProgettoMalnati
         public int Length
         {
             get { return __list_ids_files.Count; }
+        }
+
+        public DateTime[] timestampList
+        {
+            get
+            {
+                if (timestampList == null)
+                {
+                    string[][] parameters = new string[1][];
+                    parameters[0] = new string[2] { "@id_file", __id_file.ToString() };
+
+                    System.Collections.Generic.List<DateTime> tmp = new System.Collections.Generic.List<DateTime>();
+                    this.ExecuteQuery(sql_get_versions, parameters);
+                    //Get the data
+                    foreach (int i in this.GetResults())
+                    {
+                        tmp.Add(DateTime.Parse(this.ResultGetValue("t_modifica").ToString()));
+                    }
+                    this.__timestampList = tmp.ToArray();
+                }
+
+                return timestampList;
+            }
         }
 
         public Snapshot this[int index] 

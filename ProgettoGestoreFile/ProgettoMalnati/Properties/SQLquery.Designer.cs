@@ -133,6 +133,15 @@ namespace ProgettoMalnati.Properties {
         }
         
         /// <summary>
+        ///   Cerca una stringa localizzata simile a SELECT DISTINCT nome_file_c FROM fileutente WHERE nome_utente = @nome_utente AND path_relativo_c = @path_relativo_c;.
+        /// </summary>
+        internal static string sqlGetFileNames {
+            get {
+                return ResourceManager.GetString("sqlGetFileNames", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Cerca una stringa localizzata simile a SELECT id FROM snapshots WHERE id_file = @id_file ORDER BY t_inserimento DESC;.
         /// </summary>
         internal static string sqlGetIds {
@@ -142,11 +151,29 @@ namespace ProgettoMalnati.Properties {
         }
         
         /// <summary>
+        ///   Cerca una stringa localizzata simile a SELECT DISTINCT path_relativo_c FROM fileutente WHERE nome_utente = @nome_utente;.
+        /// </summary>
+        internal static string sqlGetPathNames {
+            get {
+                return ResourceManager.GetString("sqlGetPathNames", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Cerca una stringa localizzata simile a SELECT dim, t_modifica, sha_contenuto, nome_locale_s FROM snapshots WHERE id = @id;.
         /// </summary>
         internal static string sqlGetSnapshotData {
             get {
                 return ResourceManager.GetString("sqlGetSnapshotData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a SELECT t_modifica FROM snapshots WHERE id_file = @id_file;.
+        /// </summary>
+        internal static string sqlGetVersions {
+            get {
+                return ResourceManager.GetString("sqlGetVersions", resourceCulture);
             }
         }
         

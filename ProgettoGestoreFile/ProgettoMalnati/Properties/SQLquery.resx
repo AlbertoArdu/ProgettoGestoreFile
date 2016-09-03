@@ -142,13 +142,22 @@
   <data name="sqlGetFileData" xml:space="preserve">
     <value>SELECT nome_file_c, path_relativo_c, t_creazione, valido FROM fileutente WHERE id = @id AND nome_utente = @nome_utente;</value>
   </data>
+  <data name="sqlGetFileNames" xml:space="preserve">
+    <value>SELECT DISTINCT nome_file_c FROM fileutente WHERE nome_utente = @nome_utente AND path_relativo_c = @path_relativo_c;</value>
+  </data>
   <data name="sqlGetIds" xml:space="preserve">
     <value>SELECT id FROM snapshots WHERE id_file = @id_file ORDER BY t_inserimento DESC;</value>
     <comment>Query SQL per ottenere gli id degli snapshot che un utente possiede</comment>
   </data>
+  <data name="sqlGetPathNames" xml:space="preserve">
+    <value>SELECT DISTINCT path_relativo_c FROM fileutente WHERE nome_utente = @nome_utente;</value>
+  </data>
   <data name="sqlGetSnapshotData" xml:space="preserve">
     <value>SELECT dim, t_modifica, sha_contenuto, nome_locale_s FROM snapshots WHERE id = @id;</value>
     <comment>Query SQL per scaricare i dati di uno snapshot</comment>
+  </data>
+  <data name="sqlGetVersions" xml:space="preserve">
+    <value>SELECT t_modifica FROM snapshots WHERE id_file = @id_file;</value>
   </data>
   <data name="sqlInsertSnapshotData" xml:space="preserve">
     <value>INSERT INTO snapshots (dim, t_modifica, sha_contenuto, nome_locale_s) VALUES (@dim, @t_modifica, @sha_contenuto, @nome_locale_s);</value>

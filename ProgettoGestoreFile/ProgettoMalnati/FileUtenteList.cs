@@ -13,8 +13,11 @@ namespace ProgettoMalnati
         //Attributi
         private string __nome_utente;
         private System.Collections.Generic.List<int> __list_ids_files;
+        private string[] __path_names;
         private FileUtente[] __file_list;
         static private string sql_get_file_ids_of_user = Properties.SQLquery.sqlGetIds;
+        static private string sql_get_path_names = Properties.SQLquery.sqlGetPathNames;
+        static private string sql_get_file_names = Properties.SQLquery.sqlGetFileNames;
         private int __max_file = 0;
         private Log l;
 
@@ -27,6 +30,41 @@ namespace ProgettoMalnati
         public int Length
         {
             get { return __list_ids_files.Count; }
+        }
+
+        public string[] PathNames
+        {
+            get {
+                if (__path_names == null)
+                {
+                    string[][] parameters = new string[1][];
+                    parameters[0] = new string[2] { "@nome_utente", __nome_utente };
+                    System.Collections.Generic.List<string> tmp = new System.Collections.Generic.List<string>();
+                    this.ExecuteQuery(sql_get_path_names, parameters);
+                    //Get the data
+                    foreach (int i in this.GetResults())
+                    {
+                        tmp.Add(this.ResultGetValue("path_relativo_c").ToString());
+                    }
+                    __path_names = tmp.ToArray();
+                }
+                return __path_names;
+            }
+        }
+
+        public string[] FileNames(string path)
+        {
+            string[][] parameters = new string[2][];
+            parameters[0] = new string[2] { "@nome_utente", __nome_utente };
+            parameters[1] = new string[2] { "@path_relativo_c", path };
+            System.Collections.Generic.List<string> tmp = new System.Collections.Generic.List<string>();
+            this.ExecuteQuery(sql_get_file_names, parameters);
+            //Get the data
+            foreach (int i in this.GetResults())
+            {
+                tmp.Add(this.ResultGetValue("nome_file_c").ToString());
+            }
+            return tmp.ToArray();
         }
 
         /// <summary>
