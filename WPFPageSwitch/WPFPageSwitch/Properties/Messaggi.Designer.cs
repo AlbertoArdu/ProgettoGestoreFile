@@ -70,6 +70,15 @@ namespace WPFPageSwitch.Properties {
         }
         
         /// <summary>
+        ///   Cerca una stringa localizzata simile a &quot;La dimensione o l&apos;hash del file proveniente dal server non corrispondono al file scaricato&quot;.
+        /// </summary>
+        public static string datiInconsistenti {
+            get {
+                return ResourceManager.GetString("datiInconsistenti", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Cerca una stringa localizzata simile a &quot;Un errore sconosciuto è accaduto sul server. Riprovare più tardi&quot;.
         /// </summary>
         public static string erroreServer {

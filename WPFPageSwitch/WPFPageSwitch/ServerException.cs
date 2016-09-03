@@ -11,7 +11,7 @@ namespace WPFPageSwitch
         DatiIncompleti,
         FormatoDatiErrato,
         MomentoSbagliato,
-
+        DatiInconsistenti, //Dimensione o hash non corrispondenti
         // Applicazione
         //Registrazione
         NomeUtenteInUso,

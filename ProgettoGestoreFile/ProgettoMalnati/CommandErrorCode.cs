@@ -13,6 +13,7 @@ namespace ProgettoMalnati
         // Errori brutti
         Default,
         Abort,
+        NotImplemented,
         DatiIncompleti,
         FormatoDatiErrato,
         MomentoSbagliato,

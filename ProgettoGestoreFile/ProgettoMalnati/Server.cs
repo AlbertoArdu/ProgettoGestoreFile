@@ -138,6 +138,9 @@ namespace ProgettoMalnati
                     case "LISTDIR":
                         c = new ComandoListDir();
                         break;
+                    case "EXIT":
+                        c = new ComandoEsci();
+                        break;
                 }
 
                 return c;
@@ -571,7 +574,7 @@ namespace ProgettoMalnati
             public override IEnumerable<string> esegui(List<string> dati)
             {
                 StringBuilder sb = new StringBuilder();
-
+                sb.Append(CommandErrorCode.NotImplemented).Append(" Il comando non è implementato");
                 yield return sb.ToString();
             }
         }
