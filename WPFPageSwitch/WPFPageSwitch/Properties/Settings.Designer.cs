@@ -121,5 +121,17 @@ namespace WPFPageSwitch.Properties {
                 this["data_port"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("300")]
+        public int intervallo {
+            get {
+                return ((int)(this["intervallo"]));
+            }
+            set {
+                this["intervallo"] = value;
+            }
+        }
     }
 }

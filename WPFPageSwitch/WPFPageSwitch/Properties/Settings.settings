@@ -29,5 +29,8 @@
     <Setting Name="data_port" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">8888</Value>
     </Setting>
+    <Setting Name="intervallo" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">300</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

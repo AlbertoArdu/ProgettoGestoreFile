@@ -92,9 +92,11 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ClientException.cs" />
     <Compile Include="CollegamentoDati.cs" />
     <Compile Include="Command.cs" />
     <Compile Include="CommandErrorCode.cs" />
+    <Compile Include="ControlloModifiche.cs" />
     <Compile Include="Properties\Messaggi.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -134,8 +136,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>DatiTest.resx</DependentUpon>
     </Compile>
-    <Compile Include="Snapshot.cs" />
-    <Compile Include="SnapshotList.cs" />
     <Compile Include="Switcher.cs" />
     <Compile Include="ISwitchable.cs" />
     <Compile Include="PageSwitcher.xaml.cs">

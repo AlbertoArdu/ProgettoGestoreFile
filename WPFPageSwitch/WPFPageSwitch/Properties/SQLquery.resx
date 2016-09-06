@@ -118,13 +118,10 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="sqlGetFileData" xml:space="preserve">
-    <value>SELECT nome_file_c, path_relativo_c, t_creazione, valido FROM file;</value>
+    <value>SELECT nome_file_c, path_relativo_c,t_creazione,  t_modifica, sha_contenuto, dim FROM file WHERE id = @id_file;</value>
   </data>
   <data name="sqlGetId" xml:space="preserve">
-    <value>SELECT id FROM file WHERE id = @id_file;</value>
-  </data>
-  <data name="String1" xml:space="preserve">
-    <value>SELECT dim, t_modifica, sha_contenuto, nome_locale_s FROM file WHERE id = @id;</value>
+    <value>SELECT id FROM file;</value>
   </data>
   <data name="tabellaFile" xml:space="preserve">
     <value>create table file (
@@ -132,7 +129,13 @@ id INTEGER PRIMARY KEY ASC,
 nome_file_c varchar(50), 
 path_relativo_c varchar(100),
 dim int, 
-t_modifica timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, 
+t_modifica timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, t_creazione timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
 sha_contenuto char(128));</value>
+  </data>
+  <data name="sqlMemorizzaDatiFile" xml:space="preserve">
+    <value>UPDATE file SET dim = @dim, t_modifica = @t_modifica, sha_contenuto = @sha_contenuto WHERE id = @id;</value>
+  </data>
+  <data name="sqlNuovoFile" xml:space="preserve">
+    <value>INSERT INTO file (nome_file_c, path_relativo_c, dim, t_modifica, t_creazione, sha_contenuto) VALUES(@nome_file, @path, @dim, @t_modifica, @t_creazione, @sha_contenuto);</value>
   </data>
 </root>

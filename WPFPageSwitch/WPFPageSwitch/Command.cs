@@ -59,7 +59,7 @@ namespace WPFPageSwitch
                 catch (Exception e)
                 {
                     l.log(e.Message, Level.ERR);
-                    throw new DatabaseException("Errore di connessione: " + e.Message, DatabaseErrorCode.ConnessioneFallita);
+                    throw new ClientException("Errore di connessione: " + e.Message, ClientErrorCode.ServerNonDisponibile);
                 }
             }
         }
