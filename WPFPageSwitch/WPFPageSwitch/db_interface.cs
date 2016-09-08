@@ -30,8 +30,6 @@ namespace WPFPageSwitch
         static private string[] db_structure = {
                         //Tabella fileutente
                         Properties.SQLquery.tabellaFile,
-                        //Tabella snapshot
-                        Properties.SQLquery.tabellaFile,
                                                      };
 
         public DB_Table()

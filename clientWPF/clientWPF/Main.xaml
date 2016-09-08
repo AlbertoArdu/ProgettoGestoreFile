@@ -1,0 +1,57 @@
+﻿<Window x:Class="clientWPF.Main"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Client" Height="350" MinHeight="350" Width="450" MinWidth="450" Loaded="Window_Loaded" Icon="sync.png" StateChanged="Window_StateChanged">
+	<Grid>
+		<TabControl Margin="0,0,0,19">
+			<TabItem Header="Home" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="55">
+				<Grid Background="#FFE5E5E5">
+					<Image Margin="20,20,0,0" Source="user.png" Stretch="Fill" HorizontalAlignment="Left" Width="76" Height="77" VerticalAlignment="Top"/>
+					<Label Content="User:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="119,20,0,0"/>
+					<Label Name="lUsername" Content="Please login" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="119,46,0,0"/>
+					<Button Name="bLogInOut" Content="Login" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="119,77,0,0" Click="LogInOut_Click"/>
+					<ListBox Name="lbStatus" Margin="10,113,10,10"/>
+				</Grid>
+			</TabItem>
+			<TabItem Header="Versions">
+				<Grid Background="#FFE5E5E5">
+					<ListView Name="lVersions" Margin="10,10,10,35" SelectionMode="Single" MouseDoubleClick="lVersions_MouseDoubleClick">
+						<ListView.View>
+							<GridView>
+								<GridViewColumn Header="Version" Width="60" DisplayMemberBinding="{Binding sVersion}"/>
+								<GridViewColumn Header="NewFiles" Width="60" DisplayMemberBinding="{Binding sNewFiles}"/>
+								<GridViewColumn Header="EditFiles" Width="60" DisplayMemberBinding="{Binding sEditFiles}"/>
+								<GridViewColumn Header="DelFIles" Width="60" DisplayMemberBinding="{Binding sDelFiles}"/>
+								<GridViewColumn Header="DateTime" Width="150" DisplayMemberBinding="{Binding sDateTime}"/>
+							</GridView>
+						</ListView.View>
+					</ListView>
+					<Button Name="bRestore" Content="Restore" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="75" Margin="0,0,10,10" IsEnabled="False" Click="Restore_Click"/>
+					<Button Name="bGetVersions" Content="Get versions" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="75" Margin="10,0,0,10" IsEnabled="False" Click="GetVersions_Click"/>
+				</Grid>
+			</TabItem>
+			<TabItem Header="Settings">
+				<Grid Background="#FFE5E5E5" Margin="0,0,0,3">
+					<Label Content="Direcotry:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0"/>
+					<TextBox Name="tDirectory" Text="D:\ProgettoMalnati\client" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Margin="10,36,49,0"/>
+					<Button Name="bBrowse" Content="..." HorizontalAlignment="Right" VerticalAlignment="Top" Width="30" RenderTransformOrigin="3.136,8.118" Margin="0,36,14,0" Height="23" Click="Browse_Click"/>
+					<Label Content="Server address:" HorizontalAlignment="Left" VerticalAlignment="Top" RenderTransformOrigin="0.473,0.501" Margin="10,64,0,0"/>
+					<TextBox Name="tAddress" Height="23" Margin="10,90,104,0" TextWrapping="Wrap" Text="192.168.1.130" VerticalAlignment="Top"/>
+					<Label Content="Port:" HorizontalAlignment="Right" Margin="0,64,60,0" VerticalAlignment="Top" RenderTransformOrigin="0.496,0.501"/>
+					<TextBox Name="tPort" HorizontalAlignment="Right" Height="23" Margin="0,90,10,0" TextWrapping="Wrap" Text="55555" VerticalAlignment="Top" Width="85"/>
+					<Button Name="bStart" Content="Start sync" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="75" Margin="10,0,0,10" Click="StartSync_Click" IsEnabled="False"/>
+					<Button Name="bStop" Content="Stop sync" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="75" Margin="90,0,0,10" IsEnabled="False" Click="StopSync_Click"/>
+					<Label Content="Sync time[s]:" HorizontalAlignment="Left" VerticalAlignment="Top" RenderTransformOrigin="1.605,6.115" Margin="10,118,0,0"/>
+					<TextBox Name="tTimeout" TextWrapping="Wrap" Text="10" Margin="10,144,0,0" ToolTip="Time between two sync" Height="23" VerticalAlignment="Top" HorizontalAlignment="Left" Width="100"/>
+					<Button Name="bSyncNow" Content="Sync now" Margin="0,0,14,10" HorizontalAlignment="Right" Width="75" Height="20" VerticalAlignment="Bottom" IsEnabled="False" Click="bSyncNow_Click"/>
+				</Grid>
+			</TabItem>
+		</TabControl>
+		<StatusBar Height="25" VerticalAlignment="Bottom">
+			<StatusBarItem Name="lStatus" Content="Status" Height="25" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,0,0,0"/>
+			<StatusBarItem HorizontalAlignment="Right">
+				<ProgressBar Name="lStatusBar" Value="0" Width="100" Height="12" VerticalAlignment="Center"/>
+			</StatusBarItem>
+		</StatusBar>
+	</Grid>
+</Window>
