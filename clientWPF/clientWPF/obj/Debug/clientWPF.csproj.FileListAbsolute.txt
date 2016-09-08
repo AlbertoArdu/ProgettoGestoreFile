@@ -1,1 +1,2 @@
 C:\Users\c.citera\Documents\Visual Studio 2015\Projects\clientWPF\clientWPF\bin\Debug\clientWPF.exe.config
+F:\Lavoro\Progetto_malnati\clientWPF\clientWPF\bin\Debug\clientWPF.exe.config

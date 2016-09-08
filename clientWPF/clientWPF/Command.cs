@@ -80,7 +80,7 @@ namespace clientWPF
         string nome_utente, password;
         const string nome_comando = "REGISTER";
 
-        public ComandoRegistra(string address, Int32 port, string nome_utente, string password, string directoty):
+        public ComandoRegistra(string nome_utente, string password):
             base()
         {
             this.nome_utente = nome_utente;
@@ -124,7 +124,7 @@ namespace clientWPF
         string nome_utente, password;
         const string nome_comando = "LOGIN";
 
-        public ComandoLogin(string address, Int32 port, string nome_utente, string password):
+        public ComandoLogin(string nome_utente, string password):
             base()
         {
             this.nome_utente = nome_utente;

@@ -19,41 +19,45 @@ namespace clientWPF
         /// </summary>
         /// <exception cref="ServerException"></exception>
         /// <exception cref="ClientException"></exception>
-        static public void Inizializza (string address, Int32 port, string directory, Int32 timeout)
+        static public void Inizializza ()
         {
             user = Properties.Settings.Default.user;
             pwd = Properties.Settings.Default.pwd;
-            base_path = directory;
-            if(user == null || pwd == null)
-                throw new ClientException("Mancano le credenziali dell'utente. Fare il login.", ClientErrorCode.CredenzialiUtenteMancanti);
-            if( base_path == null)
-                throw new ClientException("Il percorso di controllo non è specificato", ClientErrorCode.PercorsoNonSpecificato);
-            //Controllo se nome utente e password sono giusti
-            if (!Command.Logged)
+            base_path = Properties.Settings.Default.base_path;
+            if (!init)
             {
-                try
+                if (user == null || pwd == null)
+                    throw new ClientException("Mancano le credenziali dell'utente. Fare il login.", ClientErrorCode.CredenzialiUtenteMancanti);
+                if (base_path == null)
+                    throw new ClientException("Il percorso di controllo non è specificato", ClientErrorCode.PercorsoNonSpecificato);
+                //Controllo se nome utente e password sono giusti
+                if (!Command.Logged)
                 {
-                    ComandoLogin login = new ComandoLogin(user, pwd);
-                    login.esegui();
-                    ComandoEsci esci = new ComandoEsci();
-                    esci.esegui();
-                }
-                catch (ServerException e) //Se il server non è disponibile l'eccezione non viene catturata...
-                {
-                    switch (e.ErrorCode)
+                    try
                     {
-                        case ServerErrorCode.DatiErrati:
-                            throw new ClientException("Le credenziali dell'utente sono errate. Rifare il login o registrarsi.", ClientErrorCode.CredenzialiUtenteErrate);
-                        default:
-                            throw;
+                        ComandoLogin login = new ComandoLogin(user, pwd);
+                        login.esegui();
+                        ComandoEsci esci = new ComandoEsci();
+                        esci.esegui();
+                    }
+                    catch (ServerException e) //Se il server non è disponibile l'eccezione non viene catturata...
+                    {
+                        switch (e.ErrorCode)
+                        {
+                            case ServerErrorCode.DatiErrati:
+                                throw new ClientException("Le credenziali dell'utente sono errate. Rifare il login o registrarsi.", ClientErrorCode.CredenzialiUtenteErrate);
+                            default:
+                                throw;
+                        }
                     }
                 }
+                //Imposta il timer per il controllo periodico
+                checker = new Timer(Properties.Settings.Default.intervallo);
+                checker.AutoReset = true;
+                checker.Elapsed += Checker_Elapsed;
+                init = true;
             }
-            //Imposta il timer per il controllo periodico
-            checker = new Timer(timeout);
-            checker.AutoReset = true;
-            checker.Elapsed += Checker_Elapsed;
-            init = true;
+            checker.Enabled = true;
         }
 
         private static void Checker_Elapsed(object sender, ElapsedEventArgs e)
@@ -112,6 +116,14 @@ namespace clientWPF
                 fu = FileUtente.CreaNuovo(n_file[0],n_file[1],finfo.CreationTime,(int)finfo.Length);
                 c = new ComandoNuovoFile(n_file[0], n_file[1]);
                 c.esegui();
+            }
+        }
+
+        public static void StopTimer()
+        {
+            if(checker != null)
+            {
+                checker.Enabled = false;
             }
         }
     }
