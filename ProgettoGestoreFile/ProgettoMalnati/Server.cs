@@ -436,6 +436,9 @@ namespace ProgettoMalnati
                 catch (Exception e)
                 {
                     l.log("Errore nel selezionare il file corretto. " + e.Message, Level.ERR);
+                }
+                if(snap == null)
+                {
                     yield return sb.Append(CommandErrorCode.AperturaFile).Append(" File non esistente o errore strano").ToString();
                     yield break;
                 }

@@ -68,6 +68,7 @@ namespace WPFPageSwitch
             string[] entry = new string[2];
             string path_completo;
             Command c;
+            FileUtente fu;
 
             if (!init)
             {
@@ -79,33 +80,32 @@ namespace WPFPageSwitch
                 login.esegui();
             }
             FileInfo finfo;
-            foreach(FileUtente fu in list)
+            foreach(FileUtente f in list)
             {
                 //Check if still exists, and if its modified
-                entry[0] = fu.Nome;
-                entry[1] = fu.Path;
+                entry[0] = f.Nome;
+                entry[1] = f.Path;
                 if (files.Remove(entry))
                 {
                     //Il file selezionato esiste ancora...
                     path_completo = System.IO.Path.Combine(base_path, entry[0], entry[1]);
                     finfo = new FileInfo(path_completo);
-                    if (finfo.LastWriteTime != fu.TempoModifica)
+                    if (finfo.LastWriteTime != f.TempoModifica)
                     {
-                        fu.aggiornaDati((int)finfo.Length, finfo.LastWriteTime);
+                        f.aggiornaDati((int)finfo.Length, finfo.LastWriteTime);
                         c = new ComandoAggiornaContenutoFile(entry[0], entry[1], (int)finfo.Length,
-                            finfo.LastWriteTime,fu.SHA256Contenuto);
+                            finfo.LastWriteTime,f.SHA256Contenuto);
                         c.esegui();
                     }
                 }
                 else
                 {
-                    fu.Delete();
+                    f.Delete();
                     c = new ComandoEliminaFile(entry[0], entry[1]);
                     c.esegui();
                 }
             }
             //file nuovi
-            FileUtente fu;
             foreach(string[] n_file in files)
             {
                 finfo = new FileInfo(Path.Combine(base_path, n_file[0], n_file[1]));

@@ -97,7 +97,7 @@ namespace ProgettoMalnati
         {
             TcpClient c = null;
 
-            if(!waitHandles[token].ContainsKey(token))
+            if(!waitHandles.ContainsKey(token))
                 throw new Exception("Token non valido");
 
             waitHandles[token].WaitOne(timeout);
