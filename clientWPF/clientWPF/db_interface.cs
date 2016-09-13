@@ -1,8 +1,8 @@
-﻿using System.Data.SQLite;
-using System;
+﻿using System;
+using System.Data;
+using System.Data.SQLite;
 using System.Collections.Generic;
 using System.Collections;
-using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -30,6 +30,7 @@ namespace clientWPF
         static private string[] db_structure = {
                         //Tabella fileutente
                         Properties.SQLquery.tabellaFile,
+                        Properties.SQLquery.TabellaVersioni,
                                                      };
 
         public DB_Table()

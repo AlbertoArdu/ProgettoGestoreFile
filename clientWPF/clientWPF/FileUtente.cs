@@ -10,6 +10,7 @@ namespace clientWPF
 {
     class FileUtente: DB_Table
     {
+        private List<DateTime> fileVersions = null;
         private int id;
         private string __nome_file_c;
         private string __path_relativo_c;
@@ -20,6 +21,11 @@ namespace clientWPF
         private string sha_contenuto;
         private Log l;
         static private string sql_get_file_data = Properties.SQLquery.sqlGetFileData;
+        static private string sql_get_version_data = Properties.SQLquery.sqlGetVersionData;
+        static private string sql_set_file_data = Properties.SQLquery.sqlSetFileData;
+        static private string sql_add_version = Properties.SQLquery.sqlAddVersion;
+
+        public List<DateTime> Items => fileVersions;
 
         //Proprietà
         public string Nome
@@ -54,6 +60,7 @@ namespace clientWPF
 
         public FileUtente(int id): base()
         {
+
             l = Log.getLog();
             string[][] parameters = new string[1][];
 
@@ -72,6 +79,16 @@ namespace clientWPF
             this.id = id;
             this.__path_completo = Properties.Settings.Default.base_path + System.IO.Path.DirectorySeparatorChar + this.Path +
                                     System.IO.Path.DirectorySeparatorChar + this.Nome;
+            
+            fileVersions = new List<DateTime>();
+
+            this.ExecuteQuery(sql_get_version_data, parameters);
+
+            //Get the data
+            foreach (Int32 i in GetResults())
+            {
+                fileVersions.Add((DateTime)this.ResultGetValue("timestamp_vers"));
+            }
         }
         
         static public string CalcolaSHA256(FileStream f)
@@ -96,14 +113,19 @@ namespace clientWPF
                 newHash = FileUtente.CalcolaSHA256(File.Open(this.__path_completo, FileMode.Open));
             }
             this.sha_contenuto = newHash;
-            ///TODO: Memorizzare sul db
-            string[][] parameters = new string[4][];
+            string[][] parameters = new string[2][];
+            parameters[0] = new string[2] { "@id_file", this.id.ToString() };
+            parameters[1] = new string[2] { "@timestamp_vers", this.__t_modifica.ToString() };
+            this.ExecuteQuery(sql_add_version,parameters);
 
+            parameters = new string[4][];
             parameters[0] = new string[2] { "@dim", __dim.ToString() };
             parameters[1] = new string[2] { "@t_modifica", __t_modifica.ToString() };
             parameters[2] = new string[2] { "@sha_contenuto", sha_contenuto };
             parameters[3] = new string[2] { "@id", id.ToString() };
-            this.ExecuteQuery(sql_get_file_data, parameters);
+
+            this.ExecuteQuery(sql_set_file_data, parameters);
+
         }
 
         public void Delete()

@@ -52,7 +52,7 @@ namespace clientWPF
                     }
                 }
                 //Imposta il timer per il controllo periodico
-                checker = new Timer(Properties.Settings.Default.intervallo);
+                checker = new Timer(Properties.Settings.Default.intervallo * 1000);
                 checker.AutoReset = true;
                 checker.Elapsed += Checker_Elapsed;
                 init = true;
@@ -109,11 +109,11 @@ namespace clientWPF
                 }
             }
             //file nuovi
-            FileUtente fu;
+            FileUtente fu2;
             foreach(string[] n_file in files)
             {
                 finfo = new FileInfo(Path.Combine(base_path, n_file[0], n_file[1]));
-                fu = FileUtente.CreaNuovo(n_file[0],n_file[1],finfo.CreationTime,(int)finfo.Length);
+                fu2 = FileUtente.CreaNuovo(n_file[0],n_file[1],finfo.CreationTime,(int)finfo.Length);
                 c = new ComandoNuovoFile(n_file[0], n_file[1]);
                 c.esegui();
             }

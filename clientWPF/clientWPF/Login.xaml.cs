@@ -55,7 +55,7 @@ namespace  clientWPF
 		}
 		public String Password
 		{
-			private set
+			set
 			{
 				password = value;
 				tPassword.Password = value;

@@ -132,10 +132,22 @@ dim int,
 t_modifica timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, t_creazione timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
 sha_contenuto char(128));</value>
   </data>
-  <data name="sqlMemorizzaDatiFile" xml:space="preserve">
+  <data name="sqlSetFileData" xml:space="preserve">
     <value>UPDATE file SET dim = @dim, t_modifica = @t_modifica, sha_contenuto = @sha_contenuto WHERE id = @id;</value>
   </data>
   <data name="sqlNuovoFile" xml:space="preserve">
     <value>INSERT INTO file (nome_file_c, path_relativo_c, dim, t_modifica, t_creazione, sha_contenuto) VALUES(@nome_file, @path, @dim, @t_modifica, @t_creazione, @sha_contenuto);</value>
+  </data>
+  <data name="sqlGetVersionData" xml:space="preserve">
+    <value>SELECT timestamp_vers FROM versione WHERE id_file = @id_file ;</value>
+  </data>
+  <data name="TabellaVersioni" xml:space="preserve">
+    <value>create table Versioni (id_file integer, timestamp_vers timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (id_file, timestamp_vers), FOREIGN KEY id_file REFERENCES file.id);</value>
+  </data>
+  <data name="sqlAddVersion" xml:space="preserve">
+    <value>insert into Versioni(id_file,timestap_vers) VALUES (@id_file, @timestamp_vers);</value>
+  </data>
+  <data name="triggerNumeroVersioni" xml:space="preserve">
+    <value>CREATE TRIGGER max_versioni AFTER INSERT ON Versioni FOR EACH ROW BEGIN SELECT COUNT(*) INTO conteggio FROM Versioni WHERE id_file = NEW.id_file; IF conteggio &gt; 3 THEN DELETE FROM Versioni WHERE id_file = NEW.id_file AND timestamp_vers = ( SELECT MIN(timestamp_vers) FROM Versioni WHERE id_file = NEW.id_file ); END IF; END;</value>
   </data>
 </root>

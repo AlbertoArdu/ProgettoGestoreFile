@@ -1,2 +1,41 @@
 C:\Users\c.citera\Documents\Visual Studio 2015\Projects\clientWPF\clientWPF\bin\Debug\clientWPF.exe.config
 F:\Lavoro\Progetto_malnati\clientWPF\clientWPF\bin\Debug\clientWPF.exe.config
+C:\Users\c.citera\Documents\Visual Studio 2015\Projects\clientWPF\clientWPF\obj\Debug\clientWPF.csprojResolveAssemblyReference.cache
+C:\Users\c.citera\Documents\Visual Studio 2015\Projects\clientWPF\clientWPF\obj\Debug\Login.baml
+C:\Users\c.citera\Documents\Visual Studio 2015\Projects\clientWPF\clientWPF\obj\Debug\Main.baml
+C:\Users\c.citera\Documents\Visual Studio 2015\Projects\clientWPF\clientWPF\obj\Debug\Login.g.cs
+C:\Users\c.citera\Documents\Visual Studio 2015\Projects\clientWPF\clientWPF\obj\Debug\Main.g.cs
+C:\Users\c.citera\Documents\Visual Studio 2015\Projects\clientWPF\clientWPF\obj\Debug\App.g.cs
+C:\Users\c.citera\Documents\Visual Studio 2015\Projects\clientWPF\clientWPF\obj\Debug\clientWPF_MarkupCompile.cache
+C:\Users\c.citera\Documents\Visual Studio 2015\Projects\clientWPF\clientWPF\obj\Debug\clientWPF.g.resources
+C:\Users\c.citera\Documents\Visual Studio 2015\Projects\clientWPF\clientWPF\obj\Debug\clientWPF.Properties.Messaggi.resources
+C:\Users\c.citera\Documents\Visual Studio 2015\Projects\clientWPF\clientWPF\obj\Debug\clientWPF.Properties.Resources.resources
+C:\Users\c.citera\Documents\Visual Studio 2015\Projects\clientWPF\clientWPF\obj\Debug\clientWPF.Properties.SQLquery.resources
+C:\Users\c.citera\Documents\Visual Studio 2015\Projects\clientWPF\clientWPF\obj\Debug\clientWPF.Properties.DatiTest.resources
+C:\Users\c.citera\Documents\Visual Studio 2015\Projects\clientWPF\clientWPF\obj\Debug\clientWPF.csproj.GenerateResource.Cache
+F:\Lavoro\Progetto_malnati\clientWPF\clientWPF\obj\Debug\clientWPF.csprojResolveAssemblyReference.cache
+F:\Lavoro\Progetto_malnati\clientWPF\clientWPF\obj\Debug\Login.baml
+F:\Lavoro\Progetto_malnati\clientWPF\clientWPF\obj\Debug\Main.baml
+F:\Lavoro\Progetto_malnati\clientWPF\clientWPF\obj\Debug\Login.g.cs
+F:\Lavoro\Progetto_malnati\clientWPF\clientWPF\obj\Debug\Main.g.cs
+F:\Lavoro\Progetto_malnati\clientWPF\clientWPF\obj\Debug\App.g.cs
+F:\Lavoro\Progetto_malnati\clientWPF\clientWPF\obj\Debug\clientWPF_MarkupCompile.cache
+F:\Lavoro\Progetto_malnati\clientWPF\clientWPF\obj\Debug\clientWPF.g.resources
+F:\Lavoro\Progetto_malnati\clientWPF\clientWPF\obj\Debug\clientWPF.Properties.Messaggi.resources
+F:\Lavoro\Progetto_malnati\clientWPF\clientWPF\obj\Debug\clientWPF.Properties.Resources.resources
+F:\Lavoro\Progetto_malnati\clientWPF\clientWPF\obj\Debug\clientWPF.Properties.SQLquery.resources
+F:\Lavoro\Progetto_malnati\clientWPF\clientWPF\obj\Debug\clientWPF.Properties.DatiTest.resources
+F:\Lavoro\Progetto_malnati\clientWPF\clientWPF\obj\Debug\clientWPF.csproj.GenerateResource.Cache
+F:\Lavoro\Progetto_malnati\clientWPF\clientWPF\bin\Debug\clientWPF.exe
+F:\Lavoro\Progetto_malnati\clientWPF\clientWPF\bin\Debug\clientWPF.pdb
+F:\Lavoro\Progetto_malnati\clientWPF\clientWPF\bin\Debug\SQLite.Designer.dll
+F:\Lavoro\Progetto_malnati\clientWPF\clientWPF\bin\Debug\System.Data.SQLite.dll
+F:\Lavoro\Progetto_malnati\clientWPF\clientWPF\bin\Debug\EnvDTE.dll
+F:\Lavoro\Progetto_malnati\clientWPF\clientWPF\bin\Debug\Microsoft.VisualStudio.VSHelp.dll
+F:\Lavoro\Progetto_malnati\clientWPF\clientWPF\bin\Debug\Microsoft.VisualStudio.ComponentModelHost.dll
+F:\Lavoro\Progetto_malnati\clientWPF\clientWPF\bin\Debug\stdole.dll
+F:\Lavoro\Progetto_malnati\clientWPF\clientWPF\bin\Debug\Microsoft.VisualStudio.GraphModel.dll
+F:\Lavoro\Progetto_malnati\clientWPF\clientWPF\bin\Debug\Microsoft.MSXML.dll
+F:\Lavoro\Progetto_malnati\clientWPF\clientWPF\bin\Debug\it\Microsoft.VisualStudio.GraphModel.resources.dll
+F:\Lavoro\Progetto_malnati\clientWPF\clientWPF\obj\Debug\clientWPF.exe
+F:\Lavoro\Progetto_malnati\clientWPF\clientWPF\obj\Debug\clientWPF.pdb

@@ -14,22 +14,28 @@
 				</Grid>
 			</TabItem>
 			<TabItem Header="Versions">
-				<Grid Background="#FFE5E5E5">
-					<ListView Name="lVersions" Margin="10,10,10,35" SelectionMode="Single" MouseDoubleClick="lVersions_MouseDoubleClick">
-						<ListView.View>
-							<GridView>
-								<GridViewColumn Header="Version" Width="60" DisplayMemberBinding="{Binding sVersion}"/>
-								<GridViewColumn Header="NewFiles" Width="60" DisplayMemberBinding="{Binding sNewFiles}"/>
-								<GridViewColumn Header="EditFiles" Width="60" DisplayMemberBinding="{Binding sEditFiles}"/>
-								<GridViewColumn Header="DelFIles" Width="60" DisplayMemberBinding="{Binding sDelFiles}"/>
-								<GridViewColumn Header="DateTime" Width="150" DisplayMemberBinding="{Binding sDateTime}"/>
-							</GridView>
-						</ListView.View>
-					</ListView>
-					<Button Name="bRestore" Content="Restore" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="75" Margin="0,0,10,10" IsEnabled="False" Click="Restore_Click"/>
-					<Button Name="bGetVersions" Content="Get versions" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="75" Margin="10,0,0,10" IsEnabled="False" Click="GetVersions_Click"/>
-				</Grid>
-			</TabItem>
+                <Grid Background="#FFE5E5E5" Margin="0,0,2,0">
+                    <ListView Name="lDetails" Margin="10,36,245,10" MouseDoubleClick="lDetails_MouseDoubleClick">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Name" Width="80" DisplayMemberBinding="{Binding sFilename}"/>
+                                <GridViewColumn Header="Path" Width="90" DisplayMemberBinding="{Binding sPath}"/>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                    <Label Content="Files in this version:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+                    <ListView Name="lFileVersions" Margin="0,36,10,10" MouseDoubleClick="lFileVersions_MouseDoubleClick" HorizontalAlignment="Right" Width="230">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Version" Width="100" DisplayMemberBinding="{Binding sVersion}"/>
+                                <GridViewColumn Header="Timestamp" Width="125" DisplayMemberBinding="{Binding sTimestamp}"/>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                    <Label Content="Versions of selected file:" Margin="0,10,103,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="137"/>
+                    <Button Name="bGetFiles" Content="Get files" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="50" Margin="122,0,0,237" IsEnabled="False" Click="GetFiles_Click" RenderTransformOrigin="1.28,0.227"/>
+                </Grid>
+            </TabItem>
 			<TabItem Header="Settings">
 				<Grid Background="#FFE5E5E5" Margin="0,0,0,3">
 					<Label Content="Direcotry:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0"/>

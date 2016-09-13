@@ -72,7 +72,7 @@ namespace clientWPF
             get { return __connected; }
         }
         static public bool Logged { get { return __logged; } }
-        abstract public void esegui();
+        abstract public bool esegui();
     }
 
     class ComandoRegistra : Command
@@ -90,7 +90,7 @@ namespace clientWPF
         /// Registra un nuovo utente
         /// </summary>
         /// <exception>CommandExeption con un codice corrispondente all'errore riscontrato</exception>
-        public override void esegui()
+        public override bool esegui()
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(nome_comando).Append(Environment.NewLine).
@@ -107,7 +107,8 @@ namespace clientWPF
                     __logged = true;
                     break;
                 case CommandErrorCode.NomeUtenteInUso:
-                    throw new ServerException(Properties.Messaggi.nomeUtenteInUso,ServerErrorCode.NomeUtenteInUso);
+                    return false;
+//                    throw new ServerException(Properties.Messaggi.nomeUtenteInUso,ServerErrorCode.NomeUtenteInUso);
                 case CommandErrorCode.FormatoDatiErrato:
                     throw new ServerException(Properties.Messaggi.formatoDatiErrato,ServerErrorCode.FormatoDatiErrato);
                 case CommandErrorCode.MomentoSbagliato:
@@ -116,6 +117,7 @@ namespace clientWPF
                 default:
                     throw new ServerException(Properties.Messaggi.erroreServer,ServerErrorCode.Default);
             }
+            return true;
         }
     }
 
@@ -134,7 +136,7 @@ namespace clientWPF
         /// Identifica un utente con il server. E' necessario che sia il primo comando ogni nuova connessione
         /// </summary>
         /// <exception>CommandExeption con un codice corrispondente all'errore riscontrato</exception>
-        public override void esegui()
+        public override bool esegui()
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(nome_comando).Append(Environment.NewLine).
@@ -158,6 +160,7 @@ namespace clientWPF
                 default:
                     throw new ServerException(Properties.Messaggi.erroreServer, ServerErrorCode.Default);
             }
+            return false;
         }
     }
 
@@ -166,9 +169,9 @@ namespace clientWPF
         string path;
         string nome_file;
         string path_completo;
-        int dim;
-        string sha_contenuto;
-        DateTime t_creazione;
+        int dim=0;
+        string sha_contenuto = "";
+        DateTime t_creazione = DateTime.MinValue;
         FileStream file = null;
         const string nome_comando = "NEWFILE";
 
@@ -219,7 +222,7 @@ namespace clientWPF
         /// viene generato un errore.
         /// </summary>
         /// <exception>CommandExeption con un codice corrispondente all'errore riscontrato</exception>
-        public override void esegui()
+        public override bool esegui()
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(nome_comando).Append(Environment.NewLine).
@@ -271,6 +274,7 @@ namespace clientWPF
             {
                 throw new ServerException(Properties.Messaggi.erroreServer, ServerErrorCode.Default);
             }
+            return true;
         }
 
         ~ComandoNuovoFile()
@@ -323,7 +327,7 @@ namespace clientWPF
         /// dimensione file
         /// sha contenuto
         /// </returns>
-        public override void esegui()
+        public override bool esegui()
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(nome_comando).Append(Environment.NewLine).
@@ -412,6 +416,7 @@ namespace clientWPF
                 File.Delete(tmp_path);
             }
             catch {; }
+            return true;
         }
     }
 
@@ -472,7 +477,7 @@ namespace clientWPF
         /// Comando usato per aggiornare il contenuto di un file sul server.
         /// </summary>
         /// <exception>ServerExeption con un codice corrispondente all'errore riscontrato</exception>
-        public override void esegui()
+        public override bool esegui()
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(nome_comando).Append(Environment.NewLine).
@@ -536,6 +541,7 @@ namespace clientWPF
                 default:
                     throw new ServerException(Properties.Messaggi.erroreServer, ServerErrorCode.Default);
             }
+            return true;
         }
 
         ~ComandoAggiornaContenutoFile()
@@ -568,7 +574,7 @@ namespace clientWPF
         /// Setta un file come non valido. Esiste ancora.
         /// </summary>
         /// <returns></returns>
-        public override void esegui()
+        public override bool esegui()
         {
             Log l = Log.getLog();
             StringBuilder sb = new StringBuilder();
@@ -588,6 +594,7 @@ namespace clientWPF
                 default:
                     throw new ServerException();
             }
+            return true;
         }
     }
 
@@ -610,7 +617,7 @@ namespace clientWPF
 
         }
 
-        public override void esegui()
+        public override bool esegui()
         {
             StringBuilder sb = new StringBuilder().Append(nome_comando).Append(Environment.NewLine)
                 .Append(Environment.NewLine);
@@ -630,6 +637,7 @@ namespace clientWPF
             {
                 __paths.Add(response);
             }
+            return true;
         }
     }
 
@@ -654,7 +662,7 @@ namespace clientWPF
             this.path = path;
             __files = new System.Collections.Generic.List<string>();
         }
-        public override void esegui()
+        public override bool esegui()
         {
             StringBuilder sb = new StringBuilder().Append(nome_comando).Append(Environment.NewLine)
                 .Append(path).Append(Environment.NewLine)
@@ -679,6 +687,7 @@ namespace clientWPF
             {
                 __files.Add(response);
             }
+            return true;
         }
     }
 
@@ -706,7 +715,7 @@ namespace clientWPF
             __versions = new System.Collections.Generic.List<DateTime>();
         }
 
-        public override void esegui()
+        public override bool esegui()
         {
             StringBuilder sb = new StringBuilder().Append(nome_comando).Append(Environment.NewLine)
                 .Append(path).Append(Environment.NewLine)
@@ -731,14 +740,14 @@ namespace clientWPF
             {
                 __versions.Add(new DateTime(Int64.Parse(response)));
             }
-
+            return true;
         }
     }
 
     class ComandoEsci : Command
     {
         const string nome_comando = "EXIT"; 
-        public override void esegui()
+        public override bool esegui()
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(nome_comando).Append(Environment.NewLine).
@@ -746,7 +755,7 @@ namespace clientWPF
             control_stream_writer.Write(sb.ToString());
             this.control_stream_reader.Close();
             this.control_stream_writer.Close();
-           
+            return true;
         }
     }
 

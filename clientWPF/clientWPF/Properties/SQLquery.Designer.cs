@@ -61,6 +61,15 @@ namespace clientWPF.Properties {
         }
         
         /// <summary>
+        ///   Cerca una stringa localizzata simile a insert into Versioni(id_file,timestap_vers) VALUES (@id_file, @timestamp_vers);.
+        /// </summary>
+        internal static string sqlAddVersion {
+            get {
+                return ResourceManager.GetString("sqlAddVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Cerca una stringa localizzata simile a SELECT nome_file_c, path_relativo_c,t_creazione,  t_modifica, sha_contenuto, dim FROM file WHERE id = @id_file;.
         /// </summary>
         internal static string sqlGetFileData {
@@ -79,11 +88,11 @@ namespace clientWPF.Properties {
         }
         
         /// <summary>
-        ///   Cerca una stringa localizzata simile a UPDATE file SET dim = @dim, t_modifica = @t_modifica, sha_contenuto = @sha_contenuto WHERE id = @id;.
+        ///   Cerca una stringa localizzata simile a SELECT timestamp_vers FROM versione WHERE id_file = @id_file ;.
         /// </summary>
-        internal static string sqlMemorizzaDatiFile {
+        internal static string sqlGetVersionData {
             get {
-                return ResourceManager.GetString("sqlMemorizzaDatiFile", resourceCulture);
+                return ResourceManager.GetString("sqlGetVersionData", resourceCulture);
             }
         }
         
@@ -93,6 +102,15 @@ namespace clientWPF.Properties {
         internal static string sqlNuovoFile {
             get {
                 return ResourceManager.GetString("sqlNuovoFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a UPDATE file SET dim = @dim, t_modifica = @t_modifica, sha_contenuto = @sha_contenuto WHERE id = @id;.
+        /// </summary>
+        internal static string sqlSetFileData {
+            get {
+                return ResourceManager.GetString("sqlSetFileData", resourceCulture);
             }
         }
         
@@ -108,6 +126,24 @@ namespace clientWPF.Properties {
         internal static string tabellaFile {
             get {
                 return ResourceManager.GetString("tabellaFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a create table Versioni (id_file integer, timestamp_vers timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (id_file, timestamp_vers), FOREIGN KEY id_file REFERENCES file.id);.
+        /// </summary>
+        internal static string TabellaVersioni {
+            get {
+                return ResourceManager.GetString("TabellaVersioni", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a CREATE TRIGGER max_versioni AFTER INSERT ON Versioni FOR EACH ROW BEGIN SELECT COUNT(*) INTO conteggio FROM Versioni WHERE id_file = NEW.id_file; IF conteggio &gt; 3 THEN DELETE FROM Versioni WHERE id_file = NEW.id_file AND timestamp_vers = ( SELECT MIN(timestamp_vers) FROM Versioni WHERE id_file = NEW.id_file ); END IF; END;.
+        /// </summary>
+        internal static string triggerNumeroVersioni {
+            get {
+                return ResourceManager.GetString("triggerNumeroVersioni", resourceCulture);
             }
         }
     }
