@@ -15,7 +15,7 @@ namespace ProgettoMalnati
         private System.Collections.Generic.List<int> __list_ids_files;
         private string[] __path_names;
         private FileUtente[] __file_list;
-        static private string sql_get_file_ids_of_user = Properties.SQLquery.sqlGetIds;
+        static private string sql_get_file_ids_of_user = Properties.SQLquery.sqlGetIdsFiles;
         static private string sql_get_path_names = Properties.SQLquery.sqlGetPathNames;
         static private string sql_get_file_names = Properties.SQLquery.sqlGetFileNames;
         private int __max_file = 0;

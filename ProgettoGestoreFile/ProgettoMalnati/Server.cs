@@ -76,7 +76,7 @@ namespace ProgettoMalnati
             Command comando;
             StreamReader reader = new StreamReader(s.GetStream(), Encoding.ASCII);
             StreamWriter writer = new StreamWriter(s.GetStream(), Encoding.ASCII);
-
+            string[] invalid_command = { "999 Invalid Command", "" };
             while (this.__connected && !this.__stop)
             {
                 try
@@ -86,16 +86,30 @@ namespace ProgettoMalnati
                     do
                     {
                         data.Add(reader.ReadLine());
-                    } while (data.Last() != null || data.Last().Length > 0);
+                    } while (data.Last() != null && data.Last().Length > 0);
+                    l.log(new StringBuilder("Linee lette: ").Append(data.Count).ToString());
                     comando = CommandFactory.creaComando(request);
-                    foreach (string response in comando.esegui(data))
+                    if(comando == null)
                     {
-                        writer.WriteLine(response);
+                        //Comando non valido
+                        foreach (string response in invalid_command)
+                        {
+                            writer.WriteLine(response);
+                        }
+                    }
+                    else
+                    {
+                        foreach (string response in comando.esegui(data))
+                        {
+                            writer.WriteLine(response);
+                        }
+                        writer.WriteLine();
+                        writer.Flush();
                     }
                 }
                 catch(Exception e)
                 {
-                    l.log(e.Message);
+                    l.log(e.ToString());
                     throw;
                 }
 
@@ -114,6 +128,8 @@ namespace ProgettoMalnati
         {
             public static Command creaComando(string nome_comando)
             {
+                nome_comando = nome_comando.Trim();
+                Log.getLog().log(nome_comando.Length.ToString());
                 Command c = null;
                 switch (nome_comando)
                 {
@@ -148,6 +164,10 @@ namespace ProgettoMalnati
                         c = new ComandoEsci();
                         break;
                 }
+                if(c== null)
+                {
+                    Log.getLog().log("Boooooh");
+                }
                 return c;
             }
         }
@@ -178,14 +198,14 @@ namespace ProgettoMalnati
             public override IEnumerable<string> esegui(List<string> dati)
             {
                 StringBuilder sb = new StringBuilder();
-                if (user == null)
+                if (user != null)
                 {
-                    yield return sb.Append(CommandErrorCode.MomentoSbagliato).Append(" Utente già loggato. Impossibile registrarne uno nuovo").ToString();
+                    yield return sb.Append(CommandErrorCode.MomentoSbagliato.ToString("D")).Append(" Utente già loggato. Impossibile registrarne uno nuovo").ToString();
                     yield break;
                 }
                 if (dati.Count < 2)
                 {
-                    yield return sb.Append(CommandErrorCode.DatiIncompleti).Append(" Dati mancanti per la registrazione").ToString();
+                    yield return sb.Append(CommandErrorCode.DatiIncompleti.ToString("D")).Append(" Dati mancanti per la registrazione").ToString();
                     yield break;
                 }
                 else
@@ -193,22 +213,22 @@ namespace ProgettoMalnati
                     try
                     {
                         user = User.RegistraUtente(dati[0], dati[1]);
-                        sb.Append(CommandErrorCode.OK).Append(" OK");
+                        sb.Append(CommandErrorCode.OK.ToString("D")).Append(" OK");
                     } catch (DatabaseException e)
                     {
                         if(e.ErrorCode == DatabaseErrorCode.UserGiaEsistente)
                         {
-                            sb.Append(CommandErrorCode.NomeUtenteInUso).Append(" Nome utente già in uso. ");
+                            sb.Append(CommandErrorCode.NomeUtenteInUso.ToString("D")).Append(" Nome utente già in uso. ");
                             sb.Append(e.Message);
                         }
                         else if (e.ErrorCode == DatabaseErrorCode.FormatError)
                         {
-                            sb.Append(CommandErrorCode.FormatoDatiErrato).Append(" Formato dati errato. ");
+                            sb.Append(CommandErrorCode.FormatoDatiErrato.ToString("D")).Append(" Formato dati errato. ");
                             sb.Append(e.Message);
                         }
                         else
                         {
-                            sb.Append(CommandErrorCode.Default).Append(" Errore nella creazione dell'utente.");
+                            sb.Append(CommandErrorCode.Default.ToString("D")).Append(" Errore nella creazione dell'utente.");
                         }
                     }
                 }
@@ -234,12 +254,12 @@ namespace ProgettoMalnati
                 Log l = Log.getLog();
                 if (user != null)
                 {
-                    yield return sb.Append(CommandErrorCode.MomentoSbagliato).Append(" Utente già loggato.").ToString();
+                    yield return sb.Append(CommandErrorCode.MomentoSbagliato.ToString("D")).Append(" Utente già loggato.").ToString();
                     yield break;
                 }
                 if (dati.Count < 2)
                 {
-                    yield return sb.Append((int)CommandErrorCode.DatiIncompleti)
+                    yield return sb.Append(CommandErrorCode.DatiIncompleti.ToString("D"))
                                     .Append(" Dati mancanti per il login.").ToString();
                     yield break;
                 }
@@ -248,21 +268,21 @@ namespace ProgettoMalnati
                     try
                     {
                         user = User.Login(dati[0], dati[1]);
-                        sb.Append(CommandErrorCode.OK).Append(" OK");
+                        sb.Append(CommandErrorCode.OK.ToString("D")).Append(" OK");
                     }
                     catch (DatabaseException e)
                     {
                         l.log(e.Message,Level.ERR);
                         if (e.ErrorCode == DatabaseErrorCode.FormatError)
                         {
-                            sb.Append(CommandErrorCode.FormatoDatiErrato).Append(" Formato dati errato.");
+                            sb.Append(CommandErrorCode.FormatoDatiErrato.ToString("D")).Append(" Formato dati errato.");
                         }
                         else if(e.ErrorCode == DatabaseErrorCode.UserNonEsistente)
                         {
-                            sb.Append(CommandErrorCode.DatiErrati).Append(" Username o password errati");
+                            sb.Append(CommandErrorCode.DatiErrati.ToString("D")).Append(" Username o password errati");
                         }else
                         {
-                            sb.Append(CommandErrorCode.Default).Append(" Errore nella creazione dell'utente.");
+                            sb.Append(CommandErrorCode.Default.ToString("D")).Append(" Errore nella creazione dell'utente.");
                         }
                     }
                 }
@@ -291,12 +311,12 @@ namespace ProgettoMalnati
                 StringBuilder sb = new StringBuilder();
                 if (user == null)
                 {
-                    yield return sb.Append(CommandErrorCode.UtenteNonLoggato).Append(" Utente non loggato.").ToString();
+                    yield return sb.Append(CommandErrorCode.UtenteNonLoggato.ToString("D")).Append(" Utente non loggato.").ToString();
                     yield break;
                 }
                 if (dati.Count < 5)
                 {
-                    yield return sb.Append(CommandErrorCode.DatiIncompleti)
+                    yield return sb.Append(CommandErrorCode.DatiIncompleti.ToString("D"))
                                     .Append(" I dati inviati non sono sufficienti").ToString();
                     yield break;
                 }
@@ -312,7 +332,7 @@ namespace ProgettoMalnati
                     dim = Int32.Parse(dati[4]);
                 }catch(Exception e)
                 {
-                    sb.Append(CommandErrorCode.FormatoDatiErrato).Append(" Dimensione o timestamp non corretti");
+                    sb.Append(CommandErrorCode.FormatoDatiErrato.ToString("D")).Append(" Dimensione o timestamp non corretti");
                     l.log("Utente: " + user.Nome + " " + e.Message,Level.INFO);
                 }
                 // if exception occurred...
@@ -334,14 +354,14 @@ namespace ProgettoMalnati
                     switch (e.ErrorCode)
                     {
                         case DatabaseErrorCode.LimiteFileSuperato:
-                            sb.Append(CommandErrorCode.LimiteFileSuperato).Append(" L'utente ha superato il limite di file creabili.");
+                            sb.Append(CommandErrorCode.LimiteFileSuperato.ToString("D")).Append(" L'utente ha superato il limite di file creabili.");
                             break;
                         case DatabaseErrorCode.FileEsistente:
-                            sb.Append(CommandErrorCode.FileEsistente).Append(" Un file con quel nome esiste gia'.");
+                            sb.Append(CommandErrorCode.FileEsistente.ToString("D")).Append(" Un file con quel nome esiste gia'.");
                             break;
                         default:
                             l.log("Server Error!! " + e.Message,Level.ERR);
-                            sb.Append(CommandErrorCode.Default).Append(" Errore del server durante la creazione del file.");
+                            sb.Append(CommandErrorCode.Default.ToString("D")).Append(" Errore del server durante la creazione del file.");
                             break;
                     }
                     l.log("Errore nella creazione del file." + e.Message, Level.ERR);
@@ -361,7 +381,7 @@ namespace ProgettoMalnati
                 catch (Exception e)
                 {
                     l.log("Errore... " + e.Message, Level.ERR);
-                    sb.Append(CommandErrorCode.Unknown).Append(" Un errore sconosciuto è accaduto nel server.");
+                    sb.Append(CommandErrorCode.Unknown.ToString("D")).Append(" Un errore sconosciuto è accaduto nel server.");
                     snap = null;
                 }
                 if(snap == null)
@@ -370,7 +390,7 @@ namespace ProgettoMalnati
                     yield break;
                 }
                 string token = CollegamentoDati.getNewToken();
-                yield return sb.Append(CommandErrorCode.OKIntermedio).Append(" Stream dati pronto").ToString();
+                yield return sb.Append(CommandErrorCode.OKIntermedio.ToString("D")).Append(" Stream dati pronto").ToString();
                 yield return token;
                 NetworkStream stream_dati = CollegamentoDati.getCollegamentoDati(token);
                 byte[] buffer = new byte[1024];
@@ -389,7 +409,7 @@ namespace ProgettoMalnati
                     l.log("Errore nella scrittura del file" + e.Message, Level.ERR);
                     throw;
                 }
-                yield return CommandErrorCode.OK.ToString() + " Trasferimento completato con successo";
+                yield return CommandErrorCode.OK.ToString("D") + " Trasferimento completato con successo";
             }
         }
 
@@ -416,12 +436,12 @@ namespace ProgettoMalnati
                 Log l = Log.getLog();
                 if (user == null)
                 {
-                    yield return sb.Append(CommandErrorCode.UtenteNonLoggato).Append(" Utente non loggato.").ToString();
+                    yield return sb.Append(CommandErrorCode.UtenteNonLoggato.ToString("D")).Append(" Utente non loggato.").ToString();
                     yield break;
                 }
                 if (dati.Count < 3)
                 {
-                    yield return sb.Append(CommandErrorCode.DatiIncompleti)
+                    yield return sb.Append(CommandErrorCode.DatiIncompleti.ToString("D"))
                                     .Append(" I dati inviati non sono sufficienti").ToString();
                     yield break;
                 }
@@ -439,11 +459,11 @@ namespace ProgettoMalnati
                 }
                 if(snap == null)
                 {
-                    yield return sb.Append(CommandErrorCode.AperturaFile).Append(" File non esistente o errore strano").ToString();
+                    yield return sb.Append(CommandErrorCode.AperturaFile.ToString("D")).Append(" File non esistente o errore strano").ToString();
                     yield break;
                 }
                 string token = CollegamentoDati.getNewToken();
-                yield return sb.Append(CommandErrorCode.OKIntermedio).Append(" File pronto. Connettiti alla porta corrispondente").ToString();
+                yield return sb.Append(CommandErrorCode.OKIntermedio.ToString("D")).Append(" File pronto. Connettiti alla porta corrispondente").ToString();
                 yield return token;
                 yield return snap.Dim.ToString();
                 yield return snap.shaContenuto;
@@ -459,7 +479,7 @@ namespace ProgettoMalnati
                 } while (letti > 0);
                 ns.Close();
                 sb.Clear();
-                yield return sb.Append(CommandErrorCode.OK).Append(" File scritto correttamente").ToString();
+                yield return sb.Append(CommandErrorCode.OK.ToString("D")).Append(" File scritto correttamente").ToString();
             }
         }
 
@@ -487,12 +507,12 @@ namespace ProgettoMalnati
                 StringBuilder sb = new StringBuilder();
                 if(user == null)
                 {
-                    yield return sb.Append(CommandErrorCode.UtenteNonLoggato).Append(" Utente non loggato.").ToString();
+                    yield return sb.Append(CommandErrorCode.UtenteNonLoggato.ToString("D")).Append(" Utente non loggato.").ToString();
                     yield break;
                 }
                 if(dati.Count < 5)
                 {
-                    yield return sb.Append(CommandErrorCode.DatiIncompleti)
+                    yield return sb.Append(CommandErrorCode.DatiIncompleti.ToString("D"))
                                     .Append(" I dati inviati non sono sufficienti").ToString();
                     yield break;
                 }
@@ -516,7 +536,7 @@ namespace ProgettoMalnati
                 }
 
                 string token = CollegamentoDati.getNewToken();
-                yield return sb.Append(CommandErrorCode.OKIntermedio).Append(" Stream dati pronto").ToString();
+                yield return sb.Append(CommandErrorCode.OKIntermedio.ToString("D")).Append(" Stream dati pronto").ToString();
                 yield return token;
                 NetworkStream stream_dati = CollegamentoDati.getCollegamentoDati(token);
                 byte[] buffer = new byte[1024];
@@ -536,7 +556,7 @@ namespace ProgettoMalnati
                     throw;
                 }
 
-                yield return CommandErrorCode.OK.ToString()+" Trasferimento completato con successo";
+                yield return CommandErrorCode.OK.ToString("D")+" Trasferimento completato con successo";
             }
         }
 
@@ -557,12 +577,12 @@ namespace ProgettoMalnati
                 Log l = Log.getLog();
                 if (user == null)
                 {
-                    yield return sb.Append(CommandErrorCode.UtenteNonLoggato).Append(" Utente non loggato.").ToString();
+                    yield return sb.Append(CommandErrorCode.UtenteNonLoggato.ToString("D")).Append(" Utente non loggato.").ToString();
                     yield break;
                 }
                 if (dati.Count < 2)
                 {
-                    yield return sb.Append(CommandErrorCode.DatiIncompleti)
+                    yield return sb.Append(CommandErrorCode.DatiIncompleti.ToString("D"))
                                     .Append(" I dati inviati non sono sufficienti").ToString();
                     yield break;
                 }
@@ -573,7 +593,7 @@ namespace ProgettoMalnati
                 {
                     l.log("Errore nel settare il file come non valido; " + e.Message,Level.ERR);
                 }
-                yield return sb.Append(CommandErrorCode.OK).Append(" File eliminato con successo").ToString();
+                yield return sb.Append(CommandErrorCode.OK.ToString("D")).Append(" File eliminato con successo").ToString();
             }
         }
 
@@ -592,18 +612,18 @@ namespace ProgettoMalnati
                 StringBuilder sb = new StringBuilder();
                 if (user == null)
                 {
-                    yield return sb.Append(CommandErrorCode.UtenteNonLoggato).Append(" Utente non loggato.").ToString();
+                    yield return sb.Append(CommandErrorCode.UtenteNonLoggato.ToString("D")).Append(" Utente non loggato.").ToString();
                     yield break;
                 }
                 string[] paths = null;
                 try
                 {
                     paths = user.FileList.PathNames;
-                    sb.Append(CommandErrorCode.OK).Append(" OK");
+                    sb.Append(CommandErrorCode.OK.ToString("D")).Append(" OK");
                 }
                 catch
                 {
-                    sb.Append(CommandErrorCode.Unknown).Append(" Un errore sconosciuto è accaduto nel server");
+                    sb.Append(CommandErrorCode.Unknown.ToString("D")).Append(" Un errore sconosciuto è accaduto nel server");
                 }
                 yield return sb.ToString();
                 if (paths == null)
@@ -633,12 +653,12 @@ namespace ProgettoMalnati
                 StringBuilder sb = new StringBuilder();
                 if (user == null)
                 {
-                    yield return sb.Append(CommandErrorCode.UtenteNonLoggato).Append(" Utente non loggato.").ToString();
+                    yield return sb.Append(CommandErrorCode.UtenteNonLoggato.ToString("D")).Append(" Utente non loggato.").ToString();
                     yield break;
                 }
                 if(dati.Count < 1)
                 {
-                    yield return sb.Append(CommandErrorCode.DatiIncompleti).Append(" Manca il path.").ToString();
+                    yield return sb.Append(CommandErrorCode.DatiIncompleti.ToString("D")).Append(" Manca il path.").ToString();
                     yield break;
                 }
 
@@ -646,11 +666,11 @@ namespace ProgettoMalnati
                 try
                 {
                     files = user.FileList.FileNames(dati[0]);
-                    sb.Append(CommandErrorCode.OK).Append(" OK");
+                    sb.Append(CommandErrorCode.OK.ToString("D")).Append(" OK");
                 }
                 catch
                 {
-                    sb.Append(CommandErrorCode.Unknown).Append(" Un errore sconosciuto è accaduto nel server");
+                    sb.Append(CommandErrorCode.Unknown.ToString("D")).Append(" Un errore sconosciuto è accaduto nel server");
                 }
                 yield return sb.ToString();
                 if (files == null)
@@ -680,12 +700,12 @@ namespace ProgettoMalnati
                 StringBuilder sb = new StringBuilder();
                 if (user == null)
                 {
-                    yield return sb.Append(CommandErrorCode.UtenteNonLoggato).Append(" Utente non loggato.").ToString();
+                    yield return sb.Append(CommandErrorCode.UtenteNonLoggato.ToString("D")).Append(" Utente non loggato.").ToString();
                     yield break;
                 }
                 if (dati.Count < 2)
                 {
-                    yield return sb.Append(CommandErrorCode.DatiIncompleti).Append(" Manca il path o il nome del file.").ToString();
+                    yield return sb.Append(CommandErrorCode.DatiIncompleti.ToString("D")).Append(" Manca il path o il nome del file.").ToString();
                     yield break;
                 }
 
@@ -693,11 +713,11 @@ namespace ProgettoMalnati
                 try
                 {
                     versioni = user.FileList[dati[0],dati[1]].Snapshots.timestampList;
-                    sb.Append(CommandErrorCode.OK).Append(" OK");
+                    sb.Append(CommandErrorCode.OK.ToString("D")).Append(" OK");
                 }
                 catch
                 {
-                    sb.Append(CommandErrorCode.Unknown).Append(" Un errore sconosciuto è accaduto nel server");
+                    sb.Append(CommandErrorCode.Unknown.ToString("D")).Append(" Un errore sconosciuto è accaduto nel server");
                 }
                 yield return sb.ToString();
                 if (versioni == null)
@@ -716,7 +736,7 @@ namespace ProgettoMalnati
             {
                 StringBuilder sb = new StringBuilder();
                 user.Logout();
-                yield return sb.Append(CommandErrorCode.OK).Append(" Connessione terminata con successo").ToString();
+                yield return sb.Append(CommandErrorCode.OK.ToString("D")).Append(" Connessione terminata con successo").ToString();
             }
         }
 

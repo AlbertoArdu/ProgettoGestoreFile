@@ -33,9 +33,11 @@ namespace ProgettoMalnati
             while (true)
             {
                 client = acceptor.AcceptTcpClient();
+                l.log("Nuova connessione");
                 s_list.Add(new Server(client));
+                l.log("Thread creato");
 
-                foreach(Server s in s_list)
+                foreach (Server s in s_list)
                 {
                     if (!s.Connected)
                     {

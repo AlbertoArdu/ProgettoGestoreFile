@@ -15,7 +15,7 @@ namespace ProgettoMalnati
         private DateTime[] __timestampList;
         private int snapshotPerFile = Properties.ApplicationSettings.Default.snapshot_per_file;
 
-        static private string sql_get_file_ids_of_user = Properties.SQLquery.sqlGetIds;
+        static private string sql_get_file_ids_of_user = Properties.SQLquery.sqlGetIdsSnapshots;
         static private string sql_get_versions = Properties.SQLquery.sqlGetVersions;
 
         //Proprieta

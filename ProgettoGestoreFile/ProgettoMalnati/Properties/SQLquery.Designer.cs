@@ -142,11 +142,20 @@ namespace ProgettoMalnati.Properties {
         }
         
         /// <summary>
-        ///   Cerca una stringa localizzata simile a SELECT id FROM snapshots WHERE id_file = @id_file ORDER BY t_inserimento DESC;.
+        ///   Cerca una stringa localizzata simile a SELECT id FROM fileutente WHERE nome_utente = @nome_utente ORDER BY t_creazione DESC;.
         /// </summary>
-        internal static string sqlGetIds {
+        internal static string sqlGetIdsFiles {
             get {
-                return ResourceManager.GetString("sqlGetIds", resourceCulture);
+                return ResourceManager.GetString("sqlGetIdsFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a SELECT id FROM snapshots WHERE id_file = @id_file ORDER BY t_modifica DESC;.
+        /// </summary>
+        internal static string sqlGetIdsSnapshots {
+            get {
+                return ResourceManager.GetString("sqlGetIdsSnapshots", resourceCulture);
             }
         }
         

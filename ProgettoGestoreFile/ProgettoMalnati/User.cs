@@ -114,12 +114,13 @@ namespace ProgettoMalnati
             }
             string[][] parameters = new string[1][];
             DB_Table db = new DB_Table();
-            int conteggio = 0;
-            parameters[0] = new string[2] { "@id", nome_utente };
+            long conteggio = 0;
+            parameters[0] = new string[2] { "@nome", nome_utente };
             db.ExecuteQuery(Properties.SQLquery.sqlControllaNomeUtente, parameters);
             foreach(Int32 i in db.GetResults())
             {
-                conteggio = (int)db.ResultGetValue("conteggio");
+                object o = db.ResultGetValue("conteggio");
+                conteggio = (long)db.ResultGetValue("conteggio");
             }
             if (conteggio > 0)
                 return false;
@@ -187,7 +188,7 @@ namespace ProgettoMalnati
             password = TrasformaPassword(password);
             //provo a mettere il nuovo utente: se ricevo un'eccezione particolare il nome utente e duplicato
             DB_Table db = new DB_Table();
-            string[][] parameters = new string[3][];
+            string[][] parameters = new string[2][];
             parameters[0] = new string[2] { "@nome", nome };
             parameters[1] = new string[2] { "@password", password };
             try{
