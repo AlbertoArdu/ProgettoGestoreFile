@@ -8,7 +8,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("sync.png")]
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("user.png")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("sync.ico")]
 
 

@@ -21,7 +21,7 @@
       <Value Profile="(Default)">3</Value>
     </Setting>
     <Setting Name="ip_address" Type="System.String" Scope="User">
-      <Value Profile="(Default)">192.168.1.34</Value>
+      <Value Profile="(Default)">127.0.0.1</Value>
     </Setting>
     <Setting Name="port" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">7777</Value>

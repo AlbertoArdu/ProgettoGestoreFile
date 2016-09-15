@@ -29,7 +29,7 @@ namespace clientWPF
     /// </summary>
     public partial class Main : Window
     {
-        private List<FileUtente> fileList = null;
+        //private List<FileUtente> fileList = null;
         private bool loggedin = false;
         private NotifyIcon notifyIcon;
         private System.Windows.Forms.ContextMenu notifyIconMenu;
@@ -43,7 +43,7 @@ namespace clientWPF
 
             //initialize tray icon
             notifyIcon = new NotifyIcon();
-            Stream iconStream = System.Windows.Application.GetResourceStream(new Uri("pack://application:,,,/clientWPF;component/sync.png")).Stream;
+            Stream iconStream = System.Windows.Application.GetResourceStream(new Uri("pack://application:,,,/clientWPF;component/sync.ico")).Stream;
             notifyIcon.Icon = new System.Drawing.Icon(iconStream);
             notifyIconMenu = new System.Windows.Forms.ContextMenu();
             System.Windows.Forms.MenuItem mnuItemSyncNow = new System.Windows.Forms.MenuItem();
@@ -204,7 +204,7 @@ namespace clientWPF
                             //loginAuthorized = await syncManager.login(tAddress.Text, Convert.ToInt32(tPort.Text), lw.Username, lw.Password, tDirectory.Text, true);
                             if (!loginAuthorized)
                             {
-                                lw.ErrorMessage = "Registration faild";
+                                lw.ErrorMessage = "Registration failed";
                             }
                             break;
                         default:
@@ -337,7 +337,7 @@ namespace clientWPF
                     string selectedFilePath = ((VersionListViewItem)lDetails.SelectedItem).sPath;
 
                     FileUtenteList fileUtenteList = new FileUtenteList();
-                    FileUtente selectedFileUtente = fileUtenteList[selectedFileName, selectedFilePath];
+                    selectedFileUtente = fileUtenteList[selectedFileName, selectedFilePath];
 
                     lFileVersions.Items.Clear();
                     foreach (DateTime fv in selectedFileUtente.Items)

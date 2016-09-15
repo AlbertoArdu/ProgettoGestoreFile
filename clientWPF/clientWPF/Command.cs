@@ -24,7 +24,7 @@ namespace clientWPF
     /// </example>
     abstract class Command
     {
-        Log l;
+        protected Log l;
         static protected TcpClient s;
         static protected bool __logged = false;
         static private bool __connected = false;
@@ -55,6 +55,7 @@ namespace clientWPF
                     __connected = true;
                     control_stream_reader = new StreamReader(s.GetStream(),Encoding.ASCII);
                     control_stream_writer = new StreamWriter(s.GetStream(),Encoding.ASCII);
+                    l.log("Connected!");
                 }
                 catch (Exception e)
                 {
@@ -98,6 +99,8 @@ namespace clientWPF
                 Append(password).Append(Environment.NewLine).
                 Append(Environment.NewLine);
             control_stream_writer.Write(sb.ToString());
+            control_stream_writer.Flush();
+            l.log("Data has been sent");
             string response = control_stream_reader.ReadLine();
             response = response.Trim();
             CommandErrorCode errorCode = (CommandErrorCode)Int32.Parse(response.Split(' ')[0]); //Extract code from response
@@ -144,6 +147,8 @@ namespace clientWPF
                 Append(password).Append(Environment.NewLine).
                 Append(Environment.NewLine);
             control_stream_writer.Write(sb.ToString());
+            control_stream_writer.Flush();
+
             string response = control_stream_reader.ReadLine();
             response = response.Trim();
             CommandErrorCode errorCode = (CommandErrorCode)Int32.Parse(response.Split(' ')[0]); //Extract code from response
@@ -233,6 +238,7 @@ namespace clientWPF
                 Append(dim).Append(Environment.NewLine).
                 Append(Environment.NewLine);
             control_stream_writer.Write(sb.ToString());
+            control_stream_writer.Flush();
             string response = control_stream_reader.ReadLine();
             response = response.Trim();
             CommandErrorCode errorCode = (CommandErrorCode)Int32.Parse(response.Split(' ')[0]); //Extract code from response
@@ -268,6 +274,7 @@ namespace clientWPF
                 while ((size = file.Read(buffer, 0, size)) != 0)
                 {
                     data_stream.Write(buffer, 0, size);
+                    control_stream_writer.Flush();
                 }
             }
             catch
@@ -336,6 +343,7 @@ namespace clientWPF
                 Append(t_creazione.Ticks).Append(Environment.NewLine).
                 Append(Environment.NewLine);
             control_stream_writer.Write(sb.ToString());
+            control_stream_writer.Flush();
             string response = control_stream_reader.ReadLine();
             response = response.Trim();
             CommandErrorCode errorCode = (CommandErrorCode)Int32.Parse(response.Split(' ')[0]); //Extract code from response
@@ -376,6 +384,7 @@ namespace clientWPF
                     //nella cartella dell'utente
                     tot_read += size;
                     tmp_file.Write(buffer, 0, size);
+                    control_stream_writer.Flush();
                 }
             }
             catch
@@ -488,6 +497,7 @@ namespace clientWPF
                 Append(dim).Append(Environment.NewLine).
                 Append(Environment.NewLine);
             control_stream_writer.Write(sb.ToString());
+            control_stream_writer.Flush();
             string response = control_stream_reader.ReadLine();
             response = response.Trim();
             CommandErrorCode errorCode = (CommandErrorCode)Int32.Parse(response.Split(' ')[0]); //Extract code from response
@@ -523,6 +533,7 @@ namespace clientWPF
                 while ((size = file.Read(buffer, 0, size)) != 0)
                 {
                     data_stream.Write(buffer, 0, size);
+                    control_stream_writer.Flush();
                 }
             }
             catch
@@ -583,6 +594,7 @@ namespace clientWPF
                 Append(path).Append(Environment.NewLine).
                 Append(Environment.NewLine);
             control_stream_writer.Write(sb.ToString());
+            control_stream_writer.Flush();
             string response = control_stream_reader.ReadLine();
             response = response.Trim();
             CommandErrorCode errorCode = (CommandErrorCode)Int32.Parse(response.Split(' ')[0]); //Extract code from response
@@ -622,6 +634,7 @@ namespace clientWPF
             StringBuilder sb = new StringBuilder().Append(nome_comando).Append(Environment.NewLine)
                 .Append(Environment.NewLine);
             control_stream_writer.Write(sb.ToString());
+            control_stream_writer.Flush();
             string response = control_stream_reader.ReadLine();
             response = response.Trim();
             CommandErrorCode errorCode = (CommandErrorCode)Int32.Parse(response.Split(' ')[0]); //Extract code from response
@@ -669,6 +682,7 @@ namespace clientWPF
                 .Append(Environment.NewLine);
 
             control_stream_writer.Write(sb.ToString());
+            control_stream_writer.Flush();
             string response = control_stream_reader.ReadLine();
             response = response.Trim();
             CommandErrorCode errorCode = (CommandErrorCode)Int32.Parse(response.Split(' ')[0]); //Extract code from response
@@ -722,6 +736,7 @@ namespace clientWPF
                 .Append(Environment.NewLine);
 
             control_stream_writer.Write(sb.ToString());
+            control_stream_writer.Flush();
             string response = control_stream_reader.ReadLine();
             response = response.Trim();
             CommandErrorCode errorCode = (CommandErrorCode)Int32.Parse(response.Split(' ')[0]); //Extract code from response
@@ -753,6 +768,7 @@ namespace clientWPF
             sb.Append(nome_comando).Append(Environment.NewLine).
                 Append(Environment.NewLine);
             control_stream_writer.Write(sb.ToString());
+            control_stream_writer.Flush();
             this.control_stream_reader.Close();
             this.control_stream_writer.Close();
             return true;

@@ -163,8 +163,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="sync.png" />
     <Resource Include="user.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="sync.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
