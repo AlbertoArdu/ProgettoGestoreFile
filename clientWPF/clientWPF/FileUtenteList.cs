@@ -74,11 +74,11 @@ namespace clientWPF
             string[] tmp;
             string[] f_info = new string[2];
             int index = 0;
-
+            string tmp_path;
             while (pending.Count > 0)
             {
-                rootFolderPath = (string)pending.Dequeue();
-                tmp = Directory.GetFiles(rootFolderPath);
+                tmp_path = (string)pending.Dequeue();
+                tmp = Directory.GetFiles(tmp_path);
                 for (int i = 0; i < tmp.Length; i++)
                 {
                     f_info[0] = Path.GetFileName(tmp[i]);

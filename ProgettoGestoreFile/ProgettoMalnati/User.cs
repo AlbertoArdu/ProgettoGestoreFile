@@ -64,7 +64,7 @@ namespace ProgettoMalnati
         private User(string nome, string password) 
             : base()
         {
-            Console.Write("Creo un utente: nome ->"+nome+"; pass->"+password+"\n");            
+            //Console.Write("Creo un utente: nome ->"+nome+"; pass->"+password+"\n");            
             string[][] parameters = new string[2][];
             parameters[0] = new string[2] { "@nome", nome };
             parameters[1] = new string[2] { "@password", password };

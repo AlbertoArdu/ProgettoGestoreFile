@@ -53,8 +53,6 @@ namespace clientWPF
                 {
                     s.Connect(server_addr, server_port);
                     __connected = true;
-                    control_stream_reader = new StreamReader(s.GetStream(),Encoding.ASCII);
-                    control_stream_writer = new StreamWriter(s.GetStream(),Encoding.ASCII);
                     l.log("Connected!");
                 }
                 catch (Exception e)
@@ -63,6 +61,17 @@ namespace clientWPF
                     throw new ClientException("Errore di connessione: " + e.Message, ClientErrorCode.ServerNonDisponibile);
                 }
             }
+            try
+            {
+                control_stream_reader = new StreamReader(s.GetStream(), Encoding.ASCII);
+                control_stream_writer = new StreamWriter(s.GetStream(), Encoding.ASCII);
+            }
+            catch(Exception e)
+            {
+                l.log("Error in taking the streams: "+e.Message);
+                throw;
+            }
+            
         }
         //Proprietà
         /// <summary>
@@ -156,16 +165,15 @@ namespace clientWPF
             {
                 case CommandErrorCode.OK:
                     __logged = true;
-                    break;
+                    return true;
                 case CommandErrorCode.FormatoDatiErrato:
-                    throw new ServerException(Properties.Messaggi.formatoDatiErrato, ServerErrorCode.FormatoDatiErrato);
+                    return false;
                 case CommandErrorCode.MomentoSbagliato:
-                    throw new ServerException(Properties.Messaggi.momentoSbagliato, ServerErrorCode.MomentoSbagliato);
+                    return true;
                 case CommandErrorCode.DatiIncompleti:
                 default:
                     throw new ServerException(Properties.Messaggi.erroreServer, ServerErrorCode.Default);
             }
-            return false;
         }
     }
 
