@@ -112,18 +112,7 @@ namespace ProgettoMalnati
             {
                 return false;
             }
-            string[][] parameters = new string[1][];
-            DB_Table db = new DB_Table();
-            long conteggio = 0;
-            parameters[0] = new string[2] { "@nome", nome_utente };
-            db.ExecuteQuery(Properties.SQLquery.sqlControllaNomeUtente, parameters);
-            foreach(Int32 i in db.GetResults())
-            {
-                object o = db.ResultGetValue("conteggio");
-                conteggio = (long)db.ResultGetValue("conteggio");
-            }
-            if (conteggio > 0)
-                return false;
+            
             return true;
         }
 

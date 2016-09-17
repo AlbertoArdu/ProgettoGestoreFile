@@ -12,7 +12,6 @@ F:\Lavoro\Progetto_malnati\ProgettoGestoreIFile\ProgettoMalnati\obj\x86\Debug\Pr
 F:\Lavoro\Progetto_malnati\ProgettoGestoreFile\ProgettoMalnati\bin\Debug\ProgettoMalnati.exe.config
 F:\Lavoro\Progetto_malnati\ProgettoGestoreFile\ProgettoMalnati\obj\x86\Debug\ProgettoMalnati.exe
 F:\Lavoro\Progetto_malnati\ProgettoGestoreFile\ProgettoMalnati\obj\x86\Debug\ProgettoMalnati.pdb
-F:\Lavoro\Progetto_malnati\ProgettoGestoreFile\ProgettoMalnati\obj\x86\Debug\ProgettoMalnati.csprojResolveAssemblyReference.cache
 F:\Lavoro\Progetto_malnati\ProgettoGestoreFile\ProgettoMalnati\obj\x86\Debug\ProgettoMalnati.Properties.DatiTest.resources
 F:\Lavoro\Progetto_malnati\ProgettoGestoreFile\ProgettoMalnati\obj\x86\Debug\ProgettoMalnati.Properties.SQLquery.resources
 F:\Lavoro\Progetto_malnati\ProgettoGestoreFile\ProgettoMalnati\obj\x86\Debug\ProgettoMalnati.csproj.GenerateResource.Cache
@@ -25,3 +24,4 @@ F:\Lavoro\Progetto_malnati\ProgettoGestoreFile\ProgettoMalnati\bin\Debug\System.
 F:\Lavoro\Progetto_malnati\ProgettoGestoreFile\ProgettoMalnati\bin\Debug\System.Runtime.CompilerServices.VisualC.dll
 F:\Lavoro\Progetto_malnati\ProgettoGestoreFile\ProgettoMalnati\bin\Debug\EntityFramework.xml
 F:\Lavoro\Progetto_malnati\ProgettoGestoreFile\ProgettoMalnati\bin\Debug\EntityFramework.SqlServer.xml
+F:\Lavoro\Progetto_malnati\ProgettoGestoreFile\ProgettoMalnati\obj\x86\Debug\ProgettoMalnati.csprojResolveAssemblyReference.cache

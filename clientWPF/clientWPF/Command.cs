@@ -34,6 +34,7 @@ namespace clientWPF
         protected NetworkStream data_stream = null;
         private IPAddress server_addr;
         private int server_port;
+        protected string error_message;
 
         public Command()
         {
@@ -81,6 +82,9 @@ namespace clientWPF
         {
             get { return __connected; }
         }
+
+        public string ErrorMessage => error_message;
+
         static public bool Logged { get { return __logged; } }
         abstract public bool esegui();
     }
@@ -111,6 +115,11 @@ namespace clientWPF
             control_stream_writer.Flush();
             l.log("Data has been sent");
             string response = control_stream_reader.ReadLine();
+            if(response == null)
+            {
+                error_message = Properties.Messaggi.erroreServer;
+                throw new ServerException(Properties.Messaggi.erroreServer, ServerErrorCode.Default);
+            }
             response = response.Trim();
             CommandErrorCode errorCode = (CommandErrorCode)Int32.Parse(response.Split(' ')[0]); //Extract code from response
             switch (errorCode)
@@ -119,14 +128,18 @@ namespace clientWPF
                     __logged = true;
                     break;
                 case CommandErrorCode.NomeUtenteInUso:
+                    error_message = Properties.Messaggi.nomeUtenteInUso;
                     return false;
 //                    throw new ServerException(Properties.Messaggi.nomeUtenteInUso,ServerErrorCode.NomeUtenteInUso);
                 case CommandErrorCode.FormatoDatiErrato:
+                    error_message = Properties.Messaggi.formatoDatiErrato;
                     throw new ServerException(Properties.Messaggi.formatoDatiErrato,ServerErrorCode.FormatoDatiErrato);
                 case CommandErrorCode.MomentoSbagliato:
-                    throw new ServerException(Properties.Messaggi.momentoSbagliato,ServerErrorCode.MomentoSbagliato);
+                    error_message = Properties.Messaggi.momentoSbagliato;
+                    throw new ServerException(Properties.Messaggi.momentoSbagliato, ServerErrorCode.MomentoSbagliato);
                 case CommandErrorCode.DatiIncompleti:
                 default:
+                    error_message = Properties.Messaggi.erroreServer;
                     throw new ServerException(Properties.Messaggi.erroreServer,ServerErrorCode.Default);
             }
             return true;

@@ -89,7 +89,7 @@ namespace clientWPF
 
                     files.Add( f_info);
                 }
-                tmp = Directory.GetDirectories(rootFolderPath);
+                tmp = Directory.GetDirectories(tmp_path);
                 for (int i = 0; i < tmp.Length; i++)
                 {
                     pending.Enqueue(tmp[i]);

@@ -62,8 +62,9 @@ namespace  clientWPF
 			}
 			get
 			{
-				SHA256Managed hashstring = new SHA256Managed();
-				return Encoding.ASCII.GetString(hashstring.ComputeHash(Encoding.ASCII.GetBytes(password + username)));
+                //	SHA256Managed hashstring = new SHA256Managed();
+                //	return Encoding.ASCII.GetString(hashstring.ComputeHash(Encoding.ASCII.GetBytes(password + username)));
+                return password;
 			}
 		}
 		public String ErrorMessage

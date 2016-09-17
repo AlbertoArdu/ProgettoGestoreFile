@@ -109,17 +109,23 @@ namespace ProgettoMalnati
                 }
                 catch(Exception e)
                 {
-                    l.log(e.ToString());
-                    throw;
+                    l.log(e.Message);
+                    this.__stop = true;
                 }
 
                 if (this.__stop)
                 {
-                    writer.WriteLine(CommandErrorCode.Abort+" Abort");
-                    s.Close();
+                    try
+                    {
+                        writer.WriteLine(CommandErrorCode.Abort + " Abort");
+                        s.Close();
+                    }
+                    catch
+                    {
+                        ;
+                    }
                 }
             }
-
             return; //Il thread muore qui...
         }
 
@@ -163,10 +169,9 @@ namespace ProgettoMalnati
                     case "EXIT":
                         c = new ComandoEsci();
                         break;
-                }
-                if(c== null)
-                {
-                    Log.getLog().log("Boooooh");
+                    default:
+                        c = new ComandoDefault();
+                        break;
                 }
                 return c;
             }
@@ -739,6 +744,13 @@ namespace ProgettoMalnati
                 yield return sb.Append(CommandErrorCode.OK.ToString("D")).Append(" Connessione terminata con successo").ToString();
             }
         }
-
+        private class ComandoDefault : Command
+        {
+            public override IEnumerable<string> esegui(List<string> dati)
+            {
+                StringBuilder sb = new StringBuilder();
+                yield return sb.Append(CommandErrorCode.Default.ToString("D")).Append(" Comando non compreso").ToString();
+            }
+        }
     }
 }

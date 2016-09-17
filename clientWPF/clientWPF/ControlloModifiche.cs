@@ -70,6 +70,9 @@ namespace clientWPF
 
         public static void Check()
         {
+            if (!Directory.Exists(base_path))
+                return;
+
             lock (syncLock)
             {
                 List<string[]> files = FileUtenteList.exploreFileSystem(base_path);

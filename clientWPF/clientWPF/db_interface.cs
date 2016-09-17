@@ -44,7 +44,7 @@ namespace clientWPF
                 if (!File.Exists(nome_file_db))
                 {
                     l.log("DB non esistente. Devo crearlo");
-                    //SQLiteConnection.CreateFile("MyDatabase.sqlite");
+                    SQLiteConnection.CreateFile(nome_file_db);
                     DB_Table.sql_con = new SQLiteConnection(s);
                     DB_Table.sql_con.Open();
                     Crea_DB();

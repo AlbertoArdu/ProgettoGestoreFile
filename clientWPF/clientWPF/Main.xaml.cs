@@ -216,7 +216,7 @@ namespace clientWPF
                         bLogInOut.Content = "Logout";
                         lw.Close();
                         connectionSettings.writeSetting("account", "username", lw.Username);
-                        connectionSettings.writeSetting("account", "password", lw.Username);
+                        connectionSettings.writeSetting("account", "password", lw.Password);
                         bStart.IsEnabled = true;
                         loggedin = true;
                         updateStatus("Logged in");

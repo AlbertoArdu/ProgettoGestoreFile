@@ -13,6 +13,7 @@ namespace clientWPF
         // Errori brutti
         Default,
         Abort,
+        NotImplemented,
         DatiIncompleti,
         FormatoDatiErrato,
         MomentoSbagliato,
@@ -29,4 +30,5 @@ namespace clientWPF
         AperturaFile,
         Unknown = -1
     }
+
 }

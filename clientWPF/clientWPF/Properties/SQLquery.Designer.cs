@@ -130,7 +130,7 @@ namespace clientWPF.Properties {
         }
         
         /// <summary>
-        ///   Cerca una stringa localizzata simile a create table Versioni (id_file integer, timestamp_vers timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (id_file, timestamp_vers), FOREIGN KEY id_file REFERENCES file.id);.
+        ///   Cerca una stringa localizzata simile a create table Versioni (id_file integer, timestamp_vers timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (id_file, timestamp_vers), FOREIGN KEY (id_file) REFERENCES file(id) on delete cascade);.
         /// </summary>
         internal static string TabellaVersioni {
             get {
@@ -139,7 +139,7 @@ namespace clientWPF.Properties {
         }
         
         /// <summary>
-        ///   Cerca una stringa localizzata simile a CREATE TRIGGER max_versioni AFTER INSERT ON Versioni FOR EACH ROW BEGIN SELECT COUNT(*) INTO conteggio FROM Versioni WHERE id_file = NEW.id_file; IF conteggio &gt; 3 THEN DELETE FROM Versioni WHERE id_file = NEW.id_file AND timestamp_vers = ( SELECT MIN(timestamp_vers) FROM Versioni WHERE id_file = NEW.id_file ); END IF; END;.
+        ///   Cerca una stringa localizzata simile a CREATE TRIGGER max_versioni AFTER INSERT ON Versioni FOR EACH ROW BEGIN DELETE FROM Versioni WHERE timestamp_vers = (SELECT MIN(timestamp_vers) FROM Versioni	WHERE id_file = NEW.id_file )	AND id_file IN (SELECT id_file FROM Versioni WHERE id_file = NEW.id_file GROUP BY id_file HAVING COUNT(*) &gt; 3);.
         /// </summary>
         internal static string triggerNumeroVersioni {
             get {
