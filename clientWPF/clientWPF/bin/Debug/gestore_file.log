@@ -1,2 +1,3 @@
-17-09 01:23:43.370	Command.cs	Line: 57	Function: .ctor	Connected!
-17-09 01:23:43.372	Command.cs	Line: 116	Function: esegui	Data has been sent
+17-09 20:17:25.209	Command.cs	Line: 58	Function: .ctor	Connected!
+17-09 20:17:55.998	db_interface.cs	Line: 46	Function: .ctor	DB non esistente. Devo crearlo
+17-09 20:17:56.668	db_interface.cs	Line: 51	Function: .ctor	DB creato

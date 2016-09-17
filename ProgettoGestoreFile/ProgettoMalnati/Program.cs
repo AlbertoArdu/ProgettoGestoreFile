@@ -30,6 +30,9 @@ namespace ProgettoMalnati
             acceptor.AllowNatTraversal (true);
             acceptor.Start(Properties.ApplicationSettings.Default.max_connessioni_in_sospeso);
             TcpClient client;
+
+            CollegamentoDati.Inizializza();
+
             while (true)
             {
                 client = acceptor.AcceptTcpClient();

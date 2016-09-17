@@ -70,7 +70,7 @@ namespace clientWPF.Properties {
         }
         
         /// <summary>
-        ///   Cerca una stringa localizzata simile a SELECT nome_file_c, path_relativo_c,t_creazione,  t_modifica, sha_contenuto, dim FROM file WHERE id = @id_file;.
+        ///   Cerca una stringa localizzata simile a SELECT nome_file_c, path_relativo_c, t_creazione,  t_modifica, sha_contenuto, dim FROM file WHERE id = @id_file;.
         /// </summary>
         internal static string sqlGetFileData {
             get {
@@ -88,7 +88,7 @@ namespace clientWPF.Properties {
         }
         
         /// <summary>
-        ///   Cerca una stringa localizzata simile a SELECT timestamp_vers FROM versione WHERE id_file = @id_file ;.
+        ///   Cerca una stringa localizzata simile a SELECT timestamp_vers FROM versioni WHERE id_file = @id_file ;.
         /// </summary>
         internal static string sqlGetVersionData {
             get {
@@ -120,7 +120,7 @@ namespace clientWPF.Properties {
         ///nome_file_c varchar(50), 
         ///path_relativo_c varchar(100),
         ///dim int, 
-        ///t_modifica timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, t_creazione timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        ///t_modifica datetime NOT NULL DEFAULT CURRENT_TIMESTAMP, t_creazione datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
         ///sha_contenuto char(128));.
         /// </summary>
         internal static string tabellaFile {
@@ -130,7 +130,7 @@ namespace clientWPF.Properties {
         }
         
         /// <summary>
-        ///   Cerca una stringa localizzata simile a create table Versioni (id_file integer, timestamp_vers timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (id_file, timestamp_vers), FOREIGN KEY (id_file) REFERENCES file(id) on delete cascade);.
+        ///   Cerca una stringa localizzata simile a create table versioni (id_file integer, timestamp_vers datetime NOT NULL DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (id_file, timestamp_vers), FOREIGN KEY (id_file) REFERENCES file(id) on delete cascade);.
         /// </summary>
         internal static string TabellaVersioni {
             get {

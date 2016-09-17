@@ -161,7 +161,7 @@ namespace ProgettoMalnati
             }
 
             parameters = new string[4][];
-            parameters[0] = new string[2] { "@t_modifica", t_creazione.ToString("u") };
+            parameters[0] = new string[2] { "@t_creazione", t_creazione.ToString("u") };
             parameters[1] = new string[2] { "@path_relativo_c", path_relativo };
             parameters[2] = new string[2] { "@nome_file_c", nome_file };
             parameters[3] = new string[2] { "@nome_utente", this.__nome_utente };

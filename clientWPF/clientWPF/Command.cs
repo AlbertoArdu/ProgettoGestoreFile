@@ -46,6 +46,7 @@ namespace clientWPF
             }
             else
             {
+                __logged = false;
                 server_addr = IPAddress.Parse(Properties.Settings.Default.ip_address);
                 server_port = Properties.Settings.Default.port;
 
@@ -115,10 +116,10 @@ namespace clientWPF
             control_stream_writer.Flush();
             l.log("Data has been sent");
             string response = control_stream_reader.ReadLine();
-            if(response == null)
+            if (response == null)
             {
-                error_message = Properties.Messaggi.erroreServer;
-                throw new ServerException(Properties.Messaggi.erroreServer, ServerErrorCode.Default);
+                error_message = Properties.Messaggi.erroreConnessioneServer;
+                throw new ServerException(Properties.Messaggi.erroreServer, ServerErrorCode.ConnessioneInterrotta);
             }
             response = response.Trim();
             CommandErrorCode errorCode = (CommandErrorCode)Int32.Parse(response.Split(' ')[0]); //Extract code from response
@@ -172,6 +173,11 @@ namespace clientWPF
             control_stream_writer.Flush();
 
             string response = control_stream_reader.ReadLine();
+            if (response == null)
+            {
+                error_message = Properties.Messaggi.erroreConnessioneServer;
+                throw new ServerException(Properties.Messaggi.erroreServer, ServerErrorCode.ConnessioneInterrotta);
+            }
             response = response.Trim();
             CommandErrorCode errorCode = (CommandErrorCode)Int32.Parse(response.Split(' ')[0]); //Extract code from response
             switch (errorCode)
@@ -228,10 +234,14 @@ namespace clientWPF
             {
                     throw new Exception("Errore nel leggere i parametri del file. Forse i parametri sono sbagliati. "+e.Message);
             }
-            if(dim < 0)
-                dim = (int)(finfo.Length);
-            if(t_creazione == DateTime.MinValue)
-                t_creazione = finfo.CreationTime;
+            if (dim < 0)
+                this.dim = (int)(finfo.Length);
+            else
+                this.dim = dim;
+            if (t_creazione == DateTime.MinValue)
+                this.t_creazione = finfo.CreationTime;
+            else
+                this.t_creazione = t_creazione;
 
             file = File.Open(this.path_completo,FileMode.Open);
             if (sha_contenuto == null)
@@ -239,7 +249,14 @@ namespace clientWPF
                 SHA256 sha_obj = SHA256Managed.Create();
                 byte[] hash_val;
                 hash_val = sha_obj.ComputeHash(this.file);
+                StringBuilder hex = new StringBuilder(hash_val.Length * 2);
+                foreach (byte b in hash_val)
+                    hex.AppendFormat("{0:x2}", b);
+                this.sha_contenuto = hex.ToString();
             }
+            else
+                this.sha_contenuto = sha_contenuto;
+
             this.file.Position = 0;
         }
         /// <summary>
@@ -261,6 +278,11 @@ namespace clientWPF
             control_stream_writer.Write(sb.ToString());
             control_stream_writer.Flush();
             string response = control_stream_reader.ReadLine();
+            if (response == null)
+            {
+                error_message = Properties.Messaggi.erroreConnessioneServer;
+                throw new ServerException(Properties.Messaggi.erroreServer, ServerErrorCode.ConnessioneInterrotta);
+            }
             response = response.Trim();
             CommandErrorCode errorCode = (CommandErrorCode)Int32.Parse(response.Split(' ')[0]); //Extract code from response
             switch (errorCode)
@@ -366,6 +388,11 @@ namespace clientWPF
             control_stream_writer.Write(sb.ToString());
             control_stream_writer.Flush();
             string response = control_stream_reader.ReadLine();
+            if (response == null)
+            {
+                error_message = Properties.Messaggi.erroreConnessioneServer;
+                throw new ServerException(Properties.Messaggi.erroreServer, ServerErrorCode.ConnessioneInterrotta);
+            }
             response = response.Trim();
             CommandErrorCode errorCode = (CommandErrorCode)Int32.Parse(response.Split(' ')[0]); //Extract code from response
             switch (errorCode)
@@ -520,6 +547,11 @@ namespace clientWPF
             control_stream_writer.Write(sb.ToString());
             control_stream_writer.Flush();
             string response = control_stream_reader.ReadLine();
+            if (response == null)
+            {
+                error_message = Properties.Messaggi.erroreConnessioneServer;
+                throw new ServerException(Properties.Messaggi.erroreServer, ServerErrorCode.ConnessioneInterrotta);
+            }
             response = response.Trim();
             CommandErrorCode errorCode = (CommandErrorCode)Int32.Parse(response.Split(' ')[0]); //Extract code from response
             switch (errorCode)
@@ -563,6 +595,10 @@ namespace clientWPF
             }
             //Leggo la risposta (se tutto è andato bene o c'è stato un errore)
             response = control_stream_reader.ReadLine();
+            if (response == null)
+            {
+                throw new ServerException("La connessione con il server è caduta improvvisamente", ServerErrorCode.ConnessioneInterrotta);
+            }
             response = response.Trim();
             errorCode = (CommandErrorCode)Int32.Parse(response.Split(' ')[0]); //Extract code from response
             switch (errorCode)
@@ -617,6 +653,11 @@ namespace clientWPF
             control_stream_writer.Write(sb.ToString());
             control_stream_writer.Flush();
             string response = control_stream_reader.ReadLine();
+            if (response == null)
+            {
+                error_message = Properties.Messaggi.erroreConnessioneServer;
+                throw new ServerException(Properties.Messaggi.erroreServer, ServerErrorCode.ConnessioneInterrotta);
+            }
             response = response.Trim();
             CommandErrorCode errorCode = (CommandErrorCode)Int32.Parse(response.Split(' ')[0]); //Extract code from response
             switch (errorCode)
@@ -657,6 +698,11 @@ namespace clientWPF
             control_stream_writer.Write(sb.ToString());
             control_stream_writer.Flush();
             string response = control_stream_reader.ReadLine();
+            if (response == null)
+            {
+                error_message = Properties.Messaggi.erroreConnessioneServer;
+                throw new ServerException(Properties.Messaggi.erroreServer, ServerErrorCode.ConnessioneInterrotta);
+            }
             response = response.Trim();
             CommandErrorCode errorCode = (CommandErrorCode)Int32.Parse(response.Split(' ')[0]); //Extract code from response
             switch (errorCode)
@@ -705,6 +751,11 @@ namespace clientWPF
             control_stream_writer.Write(sb.ToString());
             control_stream_writer.Flush();
             string response = control_stream_reader.ReadLine();
+            if (response == null)
+            {
+                error_message = Properties.Messaggi.erroreConnessioneServer;
+                throw new ServerException(Properties.Messaggi.erroreServer, ServerErrorCode.ConnessioneInterrotta);
+            }
             response = response.Trim();
             CommandErrorCode errorCode = (CommandErrorCode)Int32.Parse(response.Split(' ')[0]); //Extract code from response
             switch (errorCode)
@@ -759,6 +810,11 @@ namespace clientWPF
             control_stream_writer.Write(sb.ToString());
             control_stream_writer.Flush();
             string response = control_stream_reader.ReadLine();
+            if (response == null)
+            {
+                error_message = Properties.Messaggi.erroreConnessioneServer;
+                throw new ServerException(Properties.Messaggi.erroreServer, ServerErrorCode.ConnessioneInterrotta);
+            }
             response = response.Trim();
             CommandErrorCode errorCode = (CommandErrorCode)Int32.Parse(response.Split(' ')[0]); //Extract code from response
             switch (errorCode)

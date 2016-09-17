@@ -74,6 +74,7 @@ namespace ProgettoMalnati
         {
             string request = "";
             Command comando;
+            User user = null;
             StreamReader reader = new StreamReader(s.GetStream(), Encoding.ASCII);
             StreamWriter writer = new StreamWriter(s.GetStream(), Encoding.ASCII);
             string[] invalid_command = { "999 Invalid Command", "" };
@@ -89,6 +90,7 @@ namespace ProgettoMalnati
                     } while (data.Last() != null && data.Last().Length > 0);
                     l.log(new StringBuilder("Linee lette: ").Append(data.Count).ToString());
                     comando = CommandFactory.creaComando(request);
+                    comando.user = user;
                     if(comando == null)
                     {
                         //Comando non valido
@@ -106,10 +108,12 @@ namespace ProgettoMalnati
                         writer.WriteLine();
                         writer.Flush();
                     }
+                    user = comando.user;
                 }
                 catch(Exception e)
                 {
                     l.log(e.Message);
+                    user = null;
                     this.__stop = true;
                 }
 
@@ -179,7 +183,7 @@ namespace ProgettoMalnati
 
         private abstract class Command
         {
-            protected User user = null;
+            public User user = null;
             /// <summary>
             /// Metodo astratto di esecuzione di un comando.
             /// </summary>
@@ -352,7 +356,7 @@ namespace ProgettoMalnati
 
                 try
                 {
-                    nuovo = user.FileList.nuovoFile(nome_file, path_relativo);
+                    nuovo = user.FileList.nuovoFile(nome_file, path_relativo,timestamp);
                 }
                 catch (DatabaseException e)
                 {

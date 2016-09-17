@@ -123,6 +123,9 @@
   <data name="datiInconsistenti" xml:space="preserve">
     <value>"La dimensione o l'hash del file proveniente dal server non corrispondono al file scaricato"</value>
   </data>
+  <data name="erroreConnessioneServer" xml:space="preserve">
+    <value>"La connessione con il server si è interrotta. Riprovare"</value>
+  </data>
   <data name="erroreServer" xml:space="preserve">
     <value>"Un errore sconosciuto è accaduto sul server. Riprovare più tardi"</value>
   </data>

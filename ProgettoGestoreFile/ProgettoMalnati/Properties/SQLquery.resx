@@ -156,14 +156,14 @@
     <value>SELECT DISTINCT path_relativo_c FROM fileutente WHERE nome_utente = @nome_utente;</value>
   </data>
   <data name="sqlGetSnapshotData" xml:space="preserve">
-    <value>SELECT dim, t_modifica, sha_contenuto, nome_locale_s FROM snapshots WHERE id = @id;</value>
+    <value>SELECT dim, t_modifica, sha_contenuto, nome_locale_s, valido FROM snapshots WHERE id = @id;</value>
     <comment>Query SQL per scaricare i dati di uno snapshot</comment>
   </data>
   <data name="sqlGetVersions" xml:space="preserve">
     <value>SELECT t_modifica FROM snapshots WHERE id_file = @id_file;</value>
   </data>
   <data name="sqlInsertSnapshotData" xml:space="preserve">
-    <value>INSERT INTO snapshots (dim, t_modifica, sha_contenuto, nome_locale_s) VALUES (@dim, @t_modifica, @sha_contenuto, @nome_locale_s);</value>
+    <value>INSERT INTO snapshots (id_file, dim, t_modifica, sha_contenuto, nome_locale_s) VALUES (@id_file, @dim, @t_modifica, @sha_contenuto, @nome_locale_s);</value>
     <comment>Query SQL per creare una nuova entry nella tabella snapshot</comment>
   </data>
   <data name="sqlNuovoFile" xml:space="preserve">

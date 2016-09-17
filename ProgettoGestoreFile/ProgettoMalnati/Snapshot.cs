@@ -306,7 +306,8 @@ namespace ProgettoMalnati
         {
             //Controllo che gli argomenti non abbiano caratteri strani
             Snapshot s = null;
-
+            if (base_path == null)
+                base_path = Properties.ApplicationSettings.Default.base_path + Path.DirectorySeparatorChar + "users_files";
             // Genero un nome casuale per il file in locale e controllo che non esista
             string nome_locale;
             do

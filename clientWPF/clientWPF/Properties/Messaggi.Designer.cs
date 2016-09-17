@@ -79,6 +79,15 @@ namespace clientWPF.Properties {
         }
         
         /// <summary>
+        ///   Cerca una stringa localizzata simile a &quot;La connessione con il server si è interrotta. Riprovare&quot;.
+        /// </summary>
+        public static string erroreConnessioneServer {
+            get {
+                return ResourceManager.GetString("erroreConnessioneServer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Cerca una stringa localizzata simile a &quot;Un errore sconosciuto è accaduto sul server. Riprovare più tardi&quot;.
         /// </summary>
         public static string erroreServer {

@@ -16,7 +16,7 @@ namespace ProgettoMalnati
     /// Intanto il thread server richiede a questa classe il socket con il token che ha inviato
     /// e viene messo in attesa fintantoché il client non è connesso e ha consegnato il token.
     /// </summary>
-    class CollegamentoDati
+    static class CollegamentoDati
     {
 
         static private Thread t;

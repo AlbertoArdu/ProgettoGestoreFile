@@ -169,7 +169,7 @@ namespace ProgettoMalnati.Properties {
         }
         
         /// <summary>
-        ///   Cerca una stringa localizzata simile a SELECT dim, t_modifica, sha_contenuto, nome_locale_s FROM snapshots WHERE id = @id;.
+        ///   Cerca una stringa localizzata simile a SELECT dim, t_modifica, sha_contenuto, nome_locale_s, valido FROM snapshots WHERE id = @id;.
         /// </summary>
         internal static string sqlGetSnapshotData {
             get {
@@ -187,7 +187,7 @@ namespace ProgettoMalnati.Properties {
         }
         
         /// <summary>
-        ///   Cerca una stringa localizzata simile a INSERT INTO snapshots (dim, t_modifica, sha_contenuto, nome_locale_s) VALUES (@dim, @t_modifica, @sha_contenuto, @nome_locale_s);.
+        ///   Cerca una stringa localizzata simile a INSERT INTO snapshots (id_file, dim, t_modifica, sha_contenuto, nome_locale_s) VALUES (@id_file, @dim, @t_modifica, @sha_contenuto, @nome_locale_s);.
         /// </summary>
         internal static string sqlInsertSnapshotData {
             get {

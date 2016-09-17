@@ -22,6 +22,7 @@ namespace clientWPF
         LimiteFileSuperato,
         FileEsistente,
         CollegamentoDatiNonDisponibile,
+        ConnessioneInterrotta,
     }
     class ServerException: Exception
     {

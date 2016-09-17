@@ -23,6 +23,7 @@ namespace clientWPF
         static private string sql_get_file_data = Properties.SQLquery.sqlGetFileData;
         static private string sql_get_version_data = Properties.SQLquery.sqlGetVersionData;
         static private string sql_set_file_data = Properties.SQLquery.sqlSetFileData;
+        static private string sql_nuovo_file = Properties.SQLquery.sqlNuovoFile;
         static private string sql_add_version = Properties.SQLquery.sqlAddVersion;
 
         public List<DateTime> Items => fileVersions;
@@ -64,17 +65,23 @@ namespace clientWPF
             l = Log.getLog();
             string[][] parameters = new string[1][];
 
-            parameters[0] = new string[2] { "@id", id.ToString() };
+            parameters[0] = new string[2] { "@id_file", id.ToString() };
             this.ExecuteQuery(sql_get_file_data, parameters);
             //Get the data
+            object o;
             foreach (Int32 i in GetResults())
             {
-                this.__nome_file_c = (string)(this.ResultGetValue("nome_file_c"));
-                this.__t_creazione = (DateTime)(this.ResultGetValue("t_creazione"));
-                this.__path_relativo_c = (string)(this.ResultGetValue("path_relativo_c"));
-                this.__t_modifica = (DateTime)(this.ResultGetValue("t_modifica"));
-                this.__dim = Int32.Parse((string)(this.ResultGetValue("dim")));
-                this.sha_contenuto = (string)(this.ResultGetValue("sha_contenuto"));
+                o = this.ResultGetValue("nome_file_c");
+                this.__nome_file_c = (string)(o);
+                o = this.ResultGetValue("path_relativo_c");
+                this.__path_relativo_c = (string)(o);
+                this.__dim = (Int32)(this.ResultGetValue("dim"));
+                o = this.ResultGetValue("sha_contenuto");
+                this.sha_contenuto = (string)(o);
+                o = this.ResultGetValue("t_modifica");
+                this.__t_modifica = (DateTime)(o);
+                o = this.ResultGetValue("t_creazione");
+                this.__t_creazione = (DateTime)(o);
             }
             this.id = id;
             this.__path_completo = Properties.Settings.Default.base_path + System.IO.Path.DirectorySeparatorChar + this.Path +
@@ -141,13 +148,13 @@ namespace clientWPF
             string[][] parameters = new string[6][];
 
             parameters[0] = new string[2] { "@dim", dim.ToString() };
-            parameters[1] = new string[2] { "@t_modifica", t_creazione.ToString() };
-            parameters[2] = new string[2] { "@t_creazione", t_creazione.ToString() };
+            parameters[1] = new string[2] { "@t_modifica", t_creazione.ToString("u") };
+            parameters[2] = new string[2] { "@t_creazione", t_creazione.ToString("u") };
             parameters[3] = new string[2] { "@sha_contenuto", sha_contenuto };
             parameters[4] = new string[2] { "@nome_file", nome_file };
             parameters[5] = new string[2] { "@path", path };
 
-            db.ExecuteQuery(sql_get_file_data, parameters);
+            db.ExecuteQuery(sql_nuovo_file, parameters);
             id = (int)db.getLastInsertedId();
             return new FileUtente(id);
         }

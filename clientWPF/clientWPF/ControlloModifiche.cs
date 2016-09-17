@@ -27,6 +27,11 @@ namespace clientWPF
             user = connectionSetting.readSetting("account","username");
             pwd = connectionSetting.readSetting("account", "password");
             base_path = connectionSetting.readSetting("account", "directory");
+            Properties.Settings.Default.user = user;
+            Properties.Settings.Default.pwd = pwd;
+            Properties.Settings.Default.base_path = base_path;
+            Properties.Settings.Default.Save();
+
             if (!init)
             {
                 if (user == null || pwd == null)
@@ -99,7 +104,7 @@ namespace clientWPF
                     if (files.Remove(entry))
                     {
                         //Il file selezionato esiste ancora...
-                        path_completo = System.IO.Path.Combine(base_path, entry[0], entry[1]);
+                        path_completo = base_path + entry[1] + Path.DirectorySeparatorChar + entry[0];
                         finfo = new FileInfo(path_completo);
                         if (finfo.LastWriteTime != fu.TempoModifica)
                         {
@@ -120,7 +125,8 @@ namespace clientWPF
                 FileUtente fu2;
                 foreach (string[] n_file in files)
                 {
-                    finfo = new FileInfo(Path.Combine(base_path, n_file[0], n_file[1]));
+                    string file_path_completo = base_path + n_file[1] + Path.DirectorySeparatorChar + n_file[0];
+                    finfo = new FileInfo(file_path_completo);
                     fu2 = FileUtente.CreaNuovo(n_file[0], n_file[1], finfo.CreationTime, (int)finfo.Length);
                     c = new ComandoNuovoFile(n_file[0], n_file[1]);
                     c.esegui();

@@ -223,7 +223,7 @@ namespace clientWPF
                         //StartSync_Click(null, null); // start sync
                     }
                 }
-                catch (ServerException ex)
+                catch (Exception ex) when (ex is ServerException || ex is ClientException)
                 {
                     lw.ErrorMessage = ex.Message;
                     loginAuthorized = false;
