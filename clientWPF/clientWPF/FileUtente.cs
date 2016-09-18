@@ -48,10 +48,32 @@ namespace clientWPF
         }
 
         public DateTime TempoCreazione => __t_creazione;
+        public DateTime TempoModifica
+        {
+            get
+            {
+                return __t_modifica;
+            }
+            set
+            {
+                string sql = "UPDATE file SET t_modifica = @t_modifica WHERE id = @id;";
+                string[][] parameters = new string[2][];
+                parameters[0] = new string[2] { "@t_modifica", value.ToString("u") };
+                parameters[1] = new string[2] { "@id", this.id.ToString() };
+                try
+                {
+                    this.ExecuteQuery(sql, parameters);
+                }
+                catch (Exception e)
+                {
+                    l.log("Errore nell'aggiornare il timestamp nel database: " + e.Message, Level.ERR);
+                    throw;
+                }
+                __t_modifica = value;
+            }
+        }
         //Modificabili solo dalla funzione di aggiornamento
-        public DateTime TempoModifica => __t_modifica;
         public int Dimensione => __dim;
-
         public string SHA256Contenuto
         {
             get

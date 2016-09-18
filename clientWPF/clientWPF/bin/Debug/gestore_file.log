@@ -1,1 +1,2 @@
-18-09 23:03:26.403	Command.cs	Line: 58	Function: .ctor	Connected!
+18-09 23:51:06.554	Command.cs	Line: 58	Function: .ctor	Connected!
+18-09 23:53:32.408	db_interface.cs	Line: 75	Function: Finalize	Warning! La connessione è già stata chiusa ma non so come mai -.-. Impossibile accedere a un oggetto eliminato.Nome oggetto: 'SQLiteConnection'.

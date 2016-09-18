@@ -248,7 +248,7 @@ namespace clientWPF
                                 
                                 if (!loginAuthorized)
                                 {
-                                    lw.ErrorMessage = "Login faild";
+                                    lw.ErrorMessage = "Login failed";
                                 }
                                 break;
                             case Login.LoginResponse.REGISTER:

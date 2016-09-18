@@ -15,6 +15,7 @@ namespace clientWPF
         static private bool init = false;
         static private ConnectionSettings connectionSetting;
         static private readonly object syncLock = new object();
+        static private int interval;
         /// <summary>
         /// Inizializza il controllo periodico del contenuto della cartella.
         /// Controlla anche le credenziali con il server testando il login.
@@ -27,6 +28,8 @@ namespace clientWPF
             user = connectionSetting.readSetting("account","username");
             pwd = connectionSetting.readSetting("account", "password");
             base_path = connectionSetting.readSetting("account", "directory");
+            interval = Int32.Parse(connectionSetting.readSetting("connection", "syncTime"));
+
             Properties.Settings.Default.user = user;
             Properties.Settings.Default.pwd = pwd;
             Properties.Settings.Default.base_path = base_path;
@@ -60,7 +63,7 @@ namespace clientWPF
                     }
                 }
                 //Imposta il timer per il controllo periodico
-                checker = new Timer(Properties.Settings.Default.intervallo * 1000);
+                checker = new Timer(interval * 1000);
                 checker.AutoReset = true;
                 checker.Elapsed += Checker_Elapsed;
                 init = true;
@@ -110,10 +113,20 @@ namespace clientWPF
                         finfo = new FileInfo(path_completo);
                         if (finfo.LastWriteTime != fu.TempoModifica)
                         {
-                            fu.aggiornaDati((int)finfo.Length, finfo.LastWriteTime);
-                            c = new ComandoAggiornaContenutoFile(entry[0], entry[1], (int)finfo.Length,
-                                finfo.LastWriteTime, fu.SHA256Contenuto);
-                            c.esegui();
+                            FileStream fs = File.Open(path_completo, FileMode.Open);
+                            string new_sha = FileUtente.CalcolaSHA256(fs);
+                            if (new_sha != fu.SHA256Contenuto)
+                            {
+                                fu.aggiornaDati((int)finfo.Length, finfo.LastWriteTime);
+                                c = new ComandoAggiornaContenutoFile(entry[0], entry[1], (int)finfo.Length,
+                                    finfo.LastWriteTime, fu.SHA256Contenuto);
+                                c.esegui();
+                            }
+                            else
+                            {
+                                //Aggiornare il timestamp di modifica
+                                fu.TempoModifica = finfo.LastWriteTime;
+                            }
                         }
                     }
                     else

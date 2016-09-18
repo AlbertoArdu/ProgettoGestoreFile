@@ -190,6 +190,9 @@ namespace clientWPF
                 case CommandErrorCode.OK:
                     __logged = true;
                     return true;
+                case CommandErrorCode.DatiErrati:
+                    this.error_message = "Dati del login errati";
+                    return false;
                 case CommandErrorCode.FormatoDatiErrato:
                     return false;
                 case CommandErrorCode.MomentoSbagliato:
