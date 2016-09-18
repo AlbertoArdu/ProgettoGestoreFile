@@ -177,5 +177,21 @@ namespace clientWPF
             command.CommandText = sql;
             return (long)command.ExecuteScalar();
         }
+
+        public void BeginTransaction()
+        {
+            string sql = "BEGIN TRANSACTION;";
+            this.ExecuteQuery(sql);
+        }
+        public void CommitTransaction()
+        {
+            string sql = "COMMIT TRANSACTION;";
+            this.ExecuteQuery(sql);
+        }
+        public void RollbackTransaction()
+        {
+            string sql = "ROLLBACK TRANSACTION;";
+            this.ExecuteQuery(sql);
+        }
     }
 }

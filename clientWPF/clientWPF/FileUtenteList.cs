@@ -15,8 +15,8 @@ namespace clientWPF
         private System.Collections.Generic.List<int> __list_ids_files;
         private System.Collections.Generic.List<int> __list_deleted_ids;
 
-        private List<FileUtente> __file_list;
-        private List<FileUtente> __deleted_list;
+        private FileUtente[] __file_list;
+        private FileUtente[] __deleted_list;
         static private string sql_get_file_ids = Properties.SQLquery.sqlGetId;
         string sql_get_deleted_ids = Properties.SQLquery.sqlGetDeletedIds;
         //Proprieta
@@ -26,9 +26,6 @@ namespace clientWPF
         {
             get
             {
-                if(index > __file_list.Count - 1)
-                    __file_list.Add(new FileUtente(__list_ids_files[index]));
-
                 if (__file_list[index] == null)
                 {
                     __file_list[index] = new FileUtente(__list_ids_files[index]);
@@ -51,16 +48,15 @@ namespace clientWPF
             }
         }
 
-        public List<FileUtente> Deleted
+        public FileUtente[] Deleted
         {
             get
             {
-                if (__deleted_list.Count == 0)
+                int i = 0;
+                foreach (int id in __list_deleted_ids)
                 {
-                    foreach (int id in __list_deleted_ids)
-                    {
-                        __deleted_list.Add(new FileUtente(id));
-                    }
+                    if(__deleted_list[i] == null)
+                        __deleted_list[i++] = (new FileUtente(id));
                 }
                 return __deleted_list;
             }
@@ -83,8 +79,8 @@ namespace clientWPF
             {
                 this.__list_deleted_ids.Add(Int32.Parse(this.ResultGetValue("id").ToString()));
             }
-            this.__file_list = new List<FileUtente>(this.__list_ids_files.Count);
-            this.__deleted_list = new List<FileUtente>(this.__list_deleted_ids.Count);
+            this.__file_list = new FileUtente[this.__list_ids_files.Count];
+            this.__deleted_list = new FileUtente[this.__list_deleted_ids.Count];
         }
         /// <summary>
         /// Restituisce tutti i file in una cartella, scendendo ricorsivamente nelle sottocartelle
@@ -151,10 +147,10 @@ namespace clientWPF
             if ((index = __list_ids_files.IndexOf(id)) == -1)
                 throw new ArgumentException("L'id fornito non appartiene ad alcun file");
             __file_list[index].Valido = false;
-            __deleted_list.Add(__file_list[index]);
-            __file_list.RemoveAt(index);
             __list_deleted_ids.Add(id);
             __list_ids_files.RemoveAt(index);
+            __file_list = new FileUtente[__list_ids_files.Count];
+            __deleted_list = new FileUtente[__list_deleted_ids.Count];
         }
     }
 }

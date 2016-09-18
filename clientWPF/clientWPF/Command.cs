@@ -654,8 +654,10 @@ namespace clientWPF
                 while ((size = file.Read(buffer, 0, size)) != 0)
                 {
                     data_stream.Write(buffer, 0, size);
-                    control_stream_writer.Flush();
+                    data_stream.Flush();
                 }
+                data_stream.Close();
+                file.Close();
             }
             catch
             {

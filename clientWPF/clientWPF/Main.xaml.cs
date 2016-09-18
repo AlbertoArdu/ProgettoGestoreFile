@@ -82,12 +82,19 @@ namespace clientWPF
                 lDetails.Items.Clear();
                 lFileVersions.Items.Clear();
 
-                List<string[]> files = FileUtenteList.exploreFileSystem(connectionSettings.readSetting("account", "directory"));
+
+                FileUtenteList list = new FileUtenteList();
+                foreach (FileUtente fu in list)
+                {
+                    lDetails.Items.Add(new VersionListViewItem(fu.Nome, fu.Path));
+                }
+                /*List<string[]> files = FileUtenteList.exploreFileSystem(connectionSettings.readSetting("account", "directory"));
                 foreach (string[] n_file in files)
                 {
                     string file_path_completo = connectionSettings.readSetting("account", "directory") + n_file[1];
                     lDetails.Items.Add(new VersionListViewItem(n_file[0], file_path_completo));
-                }
+                }*/
+
                 lDetails.SelectedIndex = 0;
 
             }
@@ -226,8 +233,8 @@ namespace clientWPF
                 while (!loginAuthorized)
                 {
                     lw.showLogin();
-                    /*try
-                    {*/
+                    try
+                    {
                         switch (lw.waitResponse())
                         {
                             case Login.LoginResponse.CANCEL:
@@ -268,11 +275,11 @@ namespace clientWPF
                             updateStatus("Logged in");
                         }
                     }
-                    /*catch (Exception ex) when (ex is ServerException || ex is ClientException)
+                    catch (Exception ex) when (ex is ServerException || ex is ClientException)
                     {
                         lw.ErrorMessage = ex.Message;
                         loginAuthorized = false;
-                    }*/
+                    }
                 }
                 bLogInOut.IsEnabled = true;
             }

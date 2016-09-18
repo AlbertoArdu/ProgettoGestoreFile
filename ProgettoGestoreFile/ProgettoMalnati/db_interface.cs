@@ -88,7 +88,7 @@ namespace ProgettoMalnati
                 command.CommandText = sql;
                 command.ExecuteNonQuery();
             }
-
+            /*
             //Alcuni valori di test:
             Properties.DatiTest.Culture = CultureInfo.CurrentCulture;
             ResourceSet rs = Properties.DatiTest.ResourceManager
@@ -99,7 +99,7 @@ namespace ProgettoMalnati
                 command.CommandText = sql.Value.ToString();
                 command.ExecuteNonQuery();
             }
-            
+            */
         }
 
         /// <summary>
