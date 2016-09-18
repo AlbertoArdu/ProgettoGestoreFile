@@ -25,3 +25,27 @@ F:\Lavoro\Progetto_malnati\clientWPF\clientWPF\obj\Debug\clientWPF.csproj.Genera
 F:\Lavoro\Progetto_malnati\clientWPF\clientWPF\obj\Debug\clientWPF.exe
 F:\Lavoro\Progetto_malnati\clientWPF\clientWPF\obj\Debug\clientWPF.pdb
 F:\Lavoro\Progetto_malnati\clientWPF\clientWPF\obj\Debug\clientWPF.csprojResolveAssemblyReference.cache
+C:\Users\c.citera\Documents\Visual Studio 2015\Projects\clientWPF\clientWPF\bin\Debug\clientWPF.exe.config
+C:\Users\c.citera\Documents\Visual Studio 2015\Projects\clientWPF\clientWPF\obj\Debug\clientWPF.exe
+C:\Users\c.citera\Documents\Visual Studio 2015\Projects\clientWPF\clientWPF\obj\Debug\clientWPF.pdb
+C:\Users\c.citera\Documents\Visual Studio 2015\Projects\clientWPF\clientWPF\bin\Debug\clientWPF.exe
+C:\Users\c.citera\Documents\Visual Studio 2015\Projects\clientWPF\clientWPF\bin\Debug\clientWPF.pdb
+C:\Users\c.citera\Documents\Visual Studio 2015\Projects\clientWPF\clientWPF\bin\Debug\EnvDTE.dll
+C:\Users\c.citera\Documents\Visual Studio 2015\Projects\clientWPF\clientWPF\bin\Debug\Microsoft.VisualStudio.VSHelp.dll
+C:\Users\c.citera\Documents\Visual Studio 2015\Projects\clientWPF\clientWPF\bin\Debug\Microsoft.VisualStudio.ComponentModelHost.dll
+C:\Users\c.citera\Documents\Visual Studio 2015\Projects\clientWPF\clientWPF\bin\Debug\stdole.dll
+C:\Users\c.citera\Documents\Visual Studio 2015\Projects\clientWPF\clientWPF\bin\Debug\Microsoft.VisualStudio.GraphModel.dll
+C:\Users\c.citera\Documents\Visual Studio 2015\Projects\clientWPF\clientWPF\bin\Debug\Microsoft.MSXML.dll
+C:\Users\c.citera\Documents\Visual Studio 2015\Projects\clientWPF\clientWPF\obj\Debug\clientWPF.csprojResolveAssemblyReference.cache
+C:\Users\c.citera\Documents\Visual Studio 2015\Projects\clientWPF\clientWPF\obj\Debug\Login.baml
+C:\Users\c.citera\Documents\Visual Studio 2015\Projects\clientWPF\clientWPF\obj\Debug\Main.baml
+C:\Users\c.citera\Documents\Visual Studio 2015\Projects\clientWPF\clientWPF\obj\Debug\Login.g.cs
+C:\Users\c.citera\Documents\Visual Studio 2015\Projects\clientWPF\clientWPF\obj\Debug\Main.g.cs
+C:\Users\c.citera\Documents\Visual Studio 2015\Projects\clientWPF\clientWPF\obj\Debug\App.g.cs
+C:\Users\c.citera\Documents\Visual Studio 2015\Projects\clientWPF\clientWPF\obj\Debug\clientWPF_MarkupCompile.cache
+C:\Users\c.citera\Documents\Visual Studio 2015\Projects\clientWPF\clientWPF\obj\Debug\clientWPF.g.resources
+C:\Users\c.citera\Documents\Visual Studio 2015\Projects\clientWPF\clientWPF\obj\Debug\clientWPF.Properties.Messaggi.resources
+C:\Users\c.citera\Documents\Visual Studio 2015\Projects\clientWPF\clientWPF\obj\Debug\clientWPF.Properties.Resources.resources
+C:\Users\c.citera\Documents\Visual Studio 2015\Projects\clientWPF\clientWPF\obj\Debug\clientWPF.Properties.SQLquery.resources
+C:\Users\c.citera\Documents\Visual Studio 2015\Projects\clientWPF\clientWPF\obj\Debug\clientWPF.Properties.DatiTest.resources
+C:\Users\c.citera\Documents\Visual Studio 2015\Projects\clientWPF\clientWPF\obj\Debug\clientWPF.csproj.GenerateResource.Cache

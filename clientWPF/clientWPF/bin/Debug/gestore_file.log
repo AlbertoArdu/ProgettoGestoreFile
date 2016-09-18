@@ -1,3 +1,2 @@
-18-09 17:56:24.305	Command.cs	Line: 58	Function: .ctor	Connected!
-18-09 17:57:02.503	db_interface.cs	Line: 46	Function: .ctor	DB non esistente. Devo crearlo
-18-09 17:57:03.180	db_interface.cs	Line: 51	Function: .ctor	DB creato
+18-09 18:23:38.424	Command.cs	Line: 62	Function: .ctor	No connection could be made because the target machine actively refused it 127.0.0.1:7777
+18-09 18:23:46.380	Command.cs	Line: 62	Function: .ctor	No connection could be made because the target machine actively refused it 127.0.0.1:7777

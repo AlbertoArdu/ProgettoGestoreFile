@@ -29,13 +29,15 @@ namespace clientWPF
     /// </summary>
     public partial class Main : Window
     {
-        //private List<FileUtente> fileList = null;
+        
         private bool loggedin = false;
         private NotifyIcon notifyIcon;
         private System.Windows.Forms.ContextMenu notifyIconMenu;
         private ConnectionSettings connectionSettings;
         private FileUtente selectedFileUtente;
         private DateTime selectedFileVersion;
+        private DateTime deletedFileVersion;
+        private FileUtente deletedFileUtente;
 
         public Main()
         {
@@ -58,7 +60,7 @@ namespace clientWPF
             notifyIcon.ContextMenu = notifyIconMenu;
             notifyIcon.BalloonTipTitle = "App minimized to tray";
             notifyIcon.BalloonTipText = "Sync sill running.";
-            //notifyIcon.Visible = true;
+            
 
             // Settings
             connectionSettings = new ConnectionSettings();
@@ -71,7 +73,49 @@ namespace clientWPF
         private void syncMenuItem(object sender, System.EventArgs e)
         {
             ControlloModifiche.Check();
-            //this.Hide();
+        }
+
+        private void GetFiles()
+        {
+            try
+            {
+                lDetails.Items.Clear();
+                lFileVersions.Items.Clear();
+
+                List<string[]> files = FileUtenteList.exploreFileSystem(connectionSettings.readSetting("account", "directory"));
+                foreach (string[] n_file in files)
+                {
+                    string file_path_completo = connectionSettings.readSetting("account", "directory") + n_file[1];
+                    lDetails.Items.Add(new VersionListViewItem(n_file[0], file_path_completo));
+                }
+                lDetails.SelectedIndex = 0;
+
+            }
+            catch (Exception ex)
+            {
+                updateStatus(ex.Message);
+            }
+        }
+
+        private void GetDelFiles()
+        {
+            try
+            {
+                lDeletedFiles.Items.Clear();
+
+                FileUtenteList fileUtenteList = new FileUtenteList();
+
+                foreach (FileUtente fu in fileUtenteList.Deleted)
+                {
+                    lDeletedFiles.Items.Add(new VersionListViewItem(fu.Nome, fu.Path));
+                }
+                lDeletedFiles.SelectedIndex = 0;
+
+            }
+            catch (Exception ex)
+            {
+                updateStatus(ex.Message);
+            }
         }
 
         private void StartSync_Click(object sender, EventArgs e)
@@ -89,9 +133,10 @@ namespace clientWPF
                 lDetails.Items.Clear();
                 lFileVersions.Items.Clear();
                 ControlloModifiche.Inizializza();
+                this.GetFiles();
+                this.GetDelFiles();
                 bStop.IsEnabled = true;
                 bSyncNow.IsEnabled = true;
-                bGetFiles.IsEnabled = true;
                 tDirectory.IsEnabled = false;
                 tTimeout.IsEnabled = false;
                 bBrowse.IsEnabled = false;
@@ -108,7 +153,7 @@ namespace clientWPF
 
         private void StopSync_Click(object sender, EventArgs e)
         {
-            // stop the sync manager
+            
             try
             {
                 lDetails.Items.Clear();
@@ -129,7 +174,7 @@ namespace clientWPF
             FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
             folderBrowserDialog.Description = "Select the folder to sync";
             folderBrowserDialog.ShowNewFolderButton = true;
-            //folderBrowserDialog.RootFolder = Environment.SpecialFolder.Personal;
+            
             if (folderBrowserDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 tDirectory.Text = folderBrowserDialog.SelectedPath;
@@ -160,7 +205,6 @@ namespace clientWPF
         {
             bStop.IsEnabled = false;
             bSyncNow.IsEnabled = false;
-            bGetFiles.IsEnabled = false;
             ControlloModifiche.StopTimer();
             bStart.IsEnabled = true;
             tDirectory.IsEnabled = true;
@@ -172,64 +216,66 @@ namespace clientWPF
 
         private void openLogin()
         {
-            Login lw = new Login();
-            bool loginAuthorized = false;
-            bLogInOut.IsEnabled = false;
-            lw.Username = connectionSettings.readSetting("account", "username");
-            lw.Password = connectionSettings.readSetting("account", "password");
-            while (!loginAuthorized)
+            if (!loggedin)
             {
-                lw.showLogin();
-                try
+                Login lw = new Login();
+                bool loginAuthorized = false;
+                bLogInOut.IsEnabled = false;
+                lw.Username = connectionSettings.readSetting("account", "username");
+                lw.Password = connectionSettings.readSetting("account", "password");
+                while (!loginAuthorized)
                 {
-                    switch (lw.waitResponse())
+                    lw.showLogin();
+                    try
                     {
-                        case Login.LoginResponse.CANCEL:
-                            //System.Windows.Application.Current.Shutdown();
+                        switch (lw.waitResponse())
+                        {
+                            case Login.LoginResponse.CANCEL:
+                                
+                                lw.Close();
+                                bLogInOut.IsEnabled = true;
+                                return;
+                            case Login.LoginResponse.LOGIN:
+                                Command loginComm = new ComandoLogin(lw.Username, lw.Password);
+                                loginAuthorized = loginComm.esegui();
+                                
+                                if (!loginAuthorized)
+                                {
+                                    lw.ErrorMessage = "Login faild";
+                                }
+                                break;
+                            case Login.LoginResponse.REGISTER:
+                                Command regComm = new ComandoRegistra(lw.Username, lw.Password);
+                                loginAuthorized = regComm.esegui();
+                               
+                                if (!loginAuthorized)
+                                {
+                                    lw.ErrorMessage = "Registration failed";
+                                }
+                                break;
+                            default:
+                                throw new Exception("Not implemented");
+                        }
+                        if (loginAuthorized)
+                        {
+                            lUsername.Content = lw.Username;
+                            bLogInOut.Content = "Logout";
                             lw.Close();
-                            bLogInOut.IsEnabled = true;
-                            return;
-                        case Login.LoginResponse.LOGIN:
-                            Command loginComm = new ComandoLogin(lw.Username, lw.Password);
-                            loginAuthorized = loginComm.esegui();
-                            //loginAuthorized = await syncManager.login(tAddress.Text, Convert.ToInt32(tPort.Text), lw.Username, lw.Password);
-                            if (!loginAuthorized)
-                            {
-                                lw.ErrorMessage = "Login faild";
-                            }
-                            break;
-                        case Login.LoginResponse.REGISTER:
-                            Command regComm = new ComandoRegistra(lw.Username, lw.Password);
-                            loginAuthorized = regComm.esegui();
-                            //loginAuthorized = await syncManager.login(tAddress.Text, Convert.ToInt32(tPort.Text), lw.Username, lw.Password, tDirectory.Text, true);
-                            if (!loginAuthorized)
-                            {
-                                lw.ErrorMessage = "Registration failed";
-                            }
-                            break;
-                        default:
-                            throw new Exception("Not implemented");
+                            connectionSettings.writeSetting("account", "username", lw.Username);
+                            connectionSettings.writeSetting("account", "password", lw.Password);
+                            bStart.IsEnabled = true;
+                            loggedin = true;
+                            updateStatus("Logged in");
+                        }
                     }
-                    if (loginAuthorized)
+                    catch (Exception ex) when (ex is ServerException || ex is ClientException)
                     {
-                        lUsername.Content = lw.Username;
-                        bLogInOut.Content = "Logout";
-                        lw.Close();
-                        connectionSettings.writeSetting("account", "username", lw.Username);
-                        connectionSettings.writeSetting("account", "password", lw.Password);
-                        bStart.IsEnabled = true;
-                        loggedin = true;
-                        updateStatus("Logged in");
-                        //StartSync_Click(null, null); // start sync
+                        lw.ErrorMessage = ex.Message;
+                        loginAuthorized = false;
                     }
                 }
-                catch (Exception ex) when (ex is ServerException || ex is ClientException)
-                {
-                    lw.ErrorMessage = ex.Message;
-                    loginAuthorized = false;
-                }
+                bLogInOut.IsEnabled = true;
             }
-            bLogInOut.IsEnabled = true;
         }
 
         private void LogInOut_Click(object sender, RoutedEventArgs e)
@@ -249,11 +295,8 @@ namespace clientWPF
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            // Start the login procedure
             this.Dispatcher.BeginInvoke((Action)(() =>
             {
-                // TODO login at startup
-                // i have to create the connection in order to perform the login
                 openLogin();
             }));
         }
@@ -269,6 +312,8 @@ namespace clientWPF
         private void bSyncNow_Click(object sender, RoutedEventArgs e)
         {
             ControlloModifiche.Check();
+            this.GetFiles();
+            this.GetDelFiles();
         }
 
         private void Window_StateChanged(object sender, EventArgs e)
@@ -278,7 +323,6 @@ namespace clientWPF
                 case WindowState.Maximized:
                     break;
                 case WindowState.Minimized:
-                    // Do your stuff
                     notifyIcon.Visible = true;
                     notifyIcon.ShowBalloonTip(1000);
                     this.Hide();
@@ -292,38 +336,9 @@ namespace clientWPF
         private void notifyIcon_Click(object o, EventArgs ea)
         {
             this.Show();
-
-            // this.Activate();
-            //this.Focus(); // todo focus
-
             this.WindowState = WindowState.Normal;
             this.Activate();
             notifyIcon.Visible = false;
-        }
-
-        private void GetFiles_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                bGetFiles.IsEnabled = false;
-                lDetails.Items.Clear();
-                lFileVersions.Items.Clear();
-
-                FileUtenteList fileUtenteList = new FileUtenteList();
-                int i = 0;
-                for (FileUtente fu = fileUtenteList[i]; i< fileUtenteList.Length; i++)
-                { 
-                    lDetails.Items.Add(new VersionListViewItem(fu.Nome, fu.Path));
-                }
-                lDetails.SelectedIndex = 0;
-
-                bGetFiles.IsEnabled = true;
-            }
-            catch (Exception ex)
-            {
-                bGetFiles.IsEnabled = true;
-                updateStatus(ex.Message);
-            }
         }
 
         private void lDetails_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -342,7 +357,7 @@ namespace clientWPF
                     lFileVersions.Items.Clear();
                     foreach (DateTime fv in selectedFileUtente.Items)
                     {
-                        lFileVersions.Items.Add(new FileVersionListViewItem(selectedFileUtente.Nome, fv));
+                        lFileVersions.Items.Add(new FileVersionListViewItem(fv));
                     }
                     break;
                 }
@@ -358,7 +373,7 @@ namespace clientWPF
                 if (obj.GetType() == typeof(System.Windows.Controls.ListViewItem))
                 {
                     DateTime selectedVersion = ((FileVersionListViewItem)lFileVersions.SelectedItem).sTimestamp;
-                    
+
                     foreach (DateTime fv in selectedFileUtente.Items)
                     {
                         if (selectedVersion == fv)
@@ -375,16 +390,12 @@ namespace clientWPF
                             {
                                 Command getVersComm = new ComandoScaricaFile(selectedFileUtente.Nome, selectedFileUtente.Path, selectedFileVersion);
                                 getVersComm.esegui();
-                                //versions = await syncManager.getVersions();
                             }
                             else
                             {
                                 Command loginComm = new ComandoLogin(connectionSettings.readSetting("account", "username"), connectionSettings.readSetting("account", "password"));
                                 loginComm.esegui();
                             }
-
-                            //await syncManager.restoreFileVersion(selectedFileName, selectedVersion);
-                            //System.Windows.MessageBox.Show("Restore Done!", "Restoring system");
                         }
                         catch (ServerException ex)
                         {
@@ -397,6 +408,84 @@ namespace clientWPF
             }
 
         }
+
+        private void lDeletedFiles_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            DependencyObject obj = (DependencyObject)e.OriginalSource;
+            while (obj != null && obj != lDeletedFiles)
+            {
+                if (obj.GetType() == typeof(System.Windows.Controls.ListViewItem))
+                {
+                    string deletedFileName = ((VersionListViewItem)lDeletedFiles.SelectedItem).sFilename;
+                    string deletedFilePath = ((VersionListViewItem)lDeletedFiles.SelectedItem).sPath;
+
+                    FileUtenteList fileUtenteList = new FileUtenteList();
+                    deletedFileUtente = fileUtenteList[deletedFileName, deletedFilePath];
+
+                    foreach (FileUtente fu in fileUtenteList.Deleted)
+                    {
+                        if (deletedFileName == fu.Nome && deletedFilePath == fu.Path)
+                        {
+                            deletedFileUtente = fu;
+                            break;
+                        }
+                    }
+
+                    lDeletedFileVersions.Items.Clear();
+                    foreach (DateTime fv in deletedFileUtente.Items)
+                    {
+                        lDeletedFileVersions.Items.Add(new FileVersionListViewItem(fv));
+                    }
+                    break;
+                }
+                obj = VisualTreeHelper.GetParent(obj);
+            }
+        }
+
+        private void lDeletedFileVersions_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            DependencyObject obj = (DependencyObject)e.OriginalSource;
+            while (obj != null && obj != lDeletedFiles)
+            {
+                if (obj.GetType() == typeof(System.Windows.Controls.ListViewItem))
+                {
+                    DateTime deletedVersion = ((FileVersionListViewItem)lDeletedFileVersions.SelectedItem).sTimestamp;
+
+                    foreach (DateTime fv in deletedFileUtente.Items)
+                    {
+                        if (deletedVersion == fv)
+                            deletedFileVersion = fv;
+                    }
+
+                    MessageBoxResult res = System.Windows.MessageBox.Show("Do you want to restore file \"" + deletedFileUtente.Nome + "\" with version " + deletedVersion + " ?", "Restore system", System.Windows.MessageBoxButton.YesNo);
+
+                    if (res == MessageBoxResult.Yes)
+                    {
+                        try
+                        {
+                            if (Command.Logged == true)
+                            {
+                                Command getVersComm = new ComandoScaricaFile(deletedFileUtente.Nome, deletedFileUtente.Path, deletedFileVersion);
+                                getVersComm.esegui();
+                            }
+                            else
+                            {
+                                Command loginComm = new ComandoLogin(connectionSettings.readSetting("account", "username"), connectionSettings.readSetting("account", "password"));
+                                loginComm.esegui();
+                            }
+                        }
+                        catch (ServerException ex)
+                        {
+                            System.Windows.MessageBox.Show("Restore failed\n" + ex.Message, "Restoring system", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
+                    }
+                    break;
+                }
+                obj = VisualTreeHelper.GetParent(obj);
+            }
+
+        }
+
     }
 
     class VersionListViewItem
@@ -412,11 +501,9 @@ namespace clientWPF
 
     class FileVersionListViewItem
     {
-        public string sVersion { get; set; }
         public DateTime sTimestamp { get; set; }
-        public FileVersionListViewItem(string version, DateTime timestamp)
+        public FileVersionListViewItem(DateTime timestamp)
         {
-            sVersion = version;
             sTimestamp = timestamp;
         }
     }
