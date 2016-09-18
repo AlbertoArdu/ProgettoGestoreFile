@@ -9,7 +9,7 @@ namespace clientWPF
 {
     static class ControlloModifiche
     {
-        static Timer checker;
+        static public Timer checker;
         static string user, pwd;
         static string base_path;
         static private bool init = false;

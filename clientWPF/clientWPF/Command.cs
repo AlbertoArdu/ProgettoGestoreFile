@@ -396,7 +396,7 @@ namespace clientWPF
             this.path_completo = new StringBuilder(path).Append(path).Append(Path.DirectorySeparatorChar).Append(nome_file).ToString();
             tmp_path = Path.GetTempFileName();
             tmp_file = File.Open(this.tmp_path, FileMode.Open);
-
+            this.t_creazione = timestamp;
         }
 
         /// <summary>
@@ -440,6 +440,7 @@ namespace clientWPF
                         string token = control_stream_reader.ReadLine();
                         this.dim = Int32.Parse(control_stream_reader.ReadLine());
                         this.sha_contenuto = control_stream_reader.ReadLine();
+                        control_stream_reader.ReadLine();
                         data_stream = CollegamentoDati.getCollegamentoDati(token);
                     }
                     catch
