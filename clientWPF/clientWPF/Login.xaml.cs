@@ -14,107 +14,100 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace  clientWPF
+namespace clientWPF
 {
-	/// <summary>
-	/// Interaction logic for Login.xaml
-	/// </summary>
-	public partial class Login : Window
-	{
-		public enum LoginResponse { LOGIN, REGISTER, CANCEL };
-		private LoginResponse lastResponse;
-		private String username, password;
+    /// <summary>
+    /// Interaction logic for Login.xaml
+    /// </summary>
+    public partial class Login : Window
+    {
+        public enum LoginResponse { LOGIN, REGISTER, CANCEL };
+        private LoginResponse lastResponse;
+        private String username, password;
 
-		public Login()
-		{
-			InitializeComponent();
-			lError.Content = "";
-		}
+        public Login()
+        {
+            InitializeComponent();
+            lError.Content = "";
+        }
 
-		public void showLogin()
-		{
-			this.ShowDialog();
-		}
+        public void showLogin()
+        {
+            this.ShowDialog();
+        }
 
-		public LoginResponse waitResponse()
-		{
-			return lastResponse;
-		}
+        public LoginResponse waitResponse()
+        {
+            return lastResponse;
+        }
 
-		public String Username
-		{
-			set
-			{
-				username = value;
-				tUsername.Text = value;
-			}
-			get
-			{
-				return username;
-			}
-		}
-		public String Password
-		{
-			set
-			{
-				password = value;
-				tPassword.Password = value;
-			}
-			get
-			{
-                //	SHA256Managed hashstring = new SHA256Managed();
-                //	return Encoding.ASCII.GetString(hashstring.ComputeHash(Encoding.ASCII.GetBytes(password + username)));
+        public String Username
+        {
+            set
+            {
+                username = value;
+                tUsername.Text = value;
+            }
+            get
+            {
+                return username;
+            }
+        }
+        public String Password
+        {
+            set
+            {
+                password = value;
+                tPassword.Password = value;
+            }
+            get
+            {
                 return password;
-			}
-		}
-		public String ErrorMessage
-		{
-			set
-			{
-				lError.Content = value;
-			}
-		}
+            }
+        }
+        public String ErrorMessage
+        {
+            set
+            {
+                lError.Content = value;
+            }
+        }
 
-		private void LogIn_Click(object sender, RoutedEventArgs e)
-		{
-			username = tUsername.Text;
-			password = tPassword.Password;
-			if (username == "" || password == "")
-			{
-				this.ErrorMessage = "Username and passwrod cannot be empty";
-				return;
-			}
-			lastResponse = LoginResponse.LOGIN;
-			this.Hide();
-		}
+        private void LogIn_Click(object sender, RoutedEventArgs e)
+        {
+            username = tUsername.Text;
+            password = tPassword.Password;
+            if (username == "" || password == "")
+            {
+                this.ErrorMessage = "Username and passwrod cannot be empty";
+                return;
+            }
+            lastResponse = LoginResponse.LOGIN;
+            this.Hide();
+        }
 
-		private void Register_Click(object sender, RoutedEventArgs e)
-		{
-			username = tUsername.Text;
-			password = tPassword.Password;
-			if (username == "" || password == "")
-			{
-				this.ErrorMessage = "Username and passwrod cannot be empty";
-				return;
-			}
-			lastResponse = LoginResponse.REGISTER;
-			this.Hide();
-		}
-		private void Cancel_Click(object sender, RoutedEventArgs e)
-		{
-			lastResponse = LoginResponse.CANCEL;
-			this.Hide();
-		}
+        private void Register_Click(object sender, RoutedEventArgs e)
+        {
+            username = tUsername.Text;
+            password = tPassword.Password;
+            if (username == "" || password == "")
+            {
+                this.ErrorMessage = "Username and passwrod cannot be empty";
+                return;
+            }
+            lastResponse = LoginResponse.REGISTER;
+            this.Hide();
+        }
 
-		private void Window_Closed(object sender, EventArgs e)
-		{
-			lastResponse = LoginResponse.CANCEL;
-			this.Hide();
-		}
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            lastResponse = LoginResponse.CANCEL;
+            this.Hide();
+        }
 
-		private void Window_Loaded(object sender, RoutedEventArgs e)
-		{
-			FocusManager.SetFocusedElement(this, tUsername);
-		}
-	}
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            FocusManager.SetFocusedElement(this, tUsername);
+        }
+    }
 }
