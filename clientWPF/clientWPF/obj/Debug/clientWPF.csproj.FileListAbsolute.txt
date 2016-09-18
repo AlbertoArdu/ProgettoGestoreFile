@@ -49,3 +49,6 @@ C:\Users\c.citera\Documents\Visual Studio 2015\Projects\clientWPF\clientWPF\obj\
 C:\Users\c.citera\Documents\Visual Studio 2015\Projects\clientWPF\clientWPF\obj\Debug\clientWPF.Properties.SQLquery.resources
 C:\Users\c.citera\Documents\Visual Studio 2015\Projects\clientWPF\clientWPF\obj\Debug\clientWPF.Properties.DatiTest.resources
 C:\Users\c.citera\Documents\Visual Studio 2015\Projects\clientWPF\clientWPF\obj\Debug\clientWPF.csproj.GenerateResource.Cache
+C:\Users\c.citera\Documents\GitHub\ProgettoGestoreFile\clientWPF\clientWPF\bin\Debug\clientWPF.exe.config
+C:\Users\c.citera\Documents\GitHub\ProgettoGestoreFile\clientWPF\clientWPF\obj\Debug\clientWPF.exe
+C:\Users\c.citera\Documents\GitHub\ProgettoGestoreFile\clientWPF\clientWPF\obj\Debug\clientWPF.pdb

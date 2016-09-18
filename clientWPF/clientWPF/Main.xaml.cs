@@ -287,6 +287,8 @@ namespace clientWPF
                 bLogInOut.Content = "Login";
                 bStart.IsEnabled = false;
                 loggedin = false;
+                Command logoutComm = new ComandoEsci();
+                logoutComm.esegui();
             }
             lDetails.Items.Clear();
             lFileVersions.Items.Clear();
