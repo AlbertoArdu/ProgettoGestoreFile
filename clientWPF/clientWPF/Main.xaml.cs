@@ -226,8 +226,8 @@ namespace clientWPF
                 while (!loginAuthorized)
                 {
                     lw.showLogin();
-                    try
-                    {
+                    /*try
+                    {*/
                         switch (lw.waitResponse())
                         {
                             case Login.LoginResponse.CANCEL:
@@ -268,11 +268,11 @@ namespace clientWPF
                             updateStatus("Logged in");
                         }
                     }
-                    catch (Exception ex) when (ex is ServerException || ex is ClientException)
+                    /*catch (Exception ex) when (ex is ServerException || ex is ClientException)
                     {
                         lw.ErrorMessage = ex.Message;
                         loginAuthorized = false;
-                    }
+                    }*/
                 }
                 bLogInOut.IsEnabled = true;
             }
