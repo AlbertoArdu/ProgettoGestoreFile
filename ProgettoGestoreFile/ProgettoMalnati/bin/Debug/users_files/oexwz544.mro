@@ -1,0 +1,189 @@
+<?php
+/* @var $this ConfEmailController */
+/* @var $model ConfEmail */
+/* @var $form CActiveForm */
+/* @var 'protocolDropDownList' => $protocolDropDownList */
+/* @var 'emailProviderDropDownList' => $emailProviderDropDownList */
+/* @var $os string */
+
+?>
+
+<script type="text/javascript">
+	
+	/* ---------------------------------------------------------
+	// This function is now in the main view (emailConsole.php)
+	// ---------------------------------------------------------
+	var datiAjax = null;
+	var sourceUrl = "<?php echo CHtml::normalizeUrl(array('site/getProvider'));?>";
+	// sourceUrl=sourceUrl.trim().replace(/ /g, '%20');
+	// console.log(sourceUrl);
+
+	$.ajax({
+		type: 'GET',
+		cache: false,
+		url: sourceUrl,
+		dataType: 'json',
+		success: function(data){
+			console.log(data);
+			datiAjax = data;
+			}
+	});
+	// ---------------------------------------------------------
+	*/ 
+
+	function formFill(selectedProvider){
+		if(datiAjax != null){
+			if(selectedProvider != ''){
+				ConfEmail_porta_server_entrata.value=datiAjax['email'][selectedProvider]['inbox_port'];
+				ConfEmail_porta_smtp.value=datiAjax['email'][selectedProvider]['outbox_port'];
+				ConfEmail_server_entrata.value=datiAjax['email'][selectedProvider]['inbox_address'];
+				ConfEmail_server_smtp.value=datiAjax['email'][selectedProvider]['outbox_address'];
+				$("select#ConfEmail_protocollo").val(datiAjax['email'][selectedProvider]['inbox_protocol']) ;
+				ConfEmail_provider.value=selectedProvider;
+			} else {
+				ConfEmail_porta_server_entrata.value='';
+				ConfEmail_porta_smtp.value='';
+				ConfEmail_server_entrata.value='';
+				ConfEmail_server_smtp.value='';
+				$("select#ConfEmail_protocollo").val(null) ;
+				ConfEmail_provider.value='';
+				$('#otherProvidersDropdown').select2('val','');
+			}
+		}
+	}
+
+	$(document).ready(function(){
+		// This function is now in the main view (emailConsole.php)
+		//$("img").error(function () { $(this).hide(); }); 
+		
+		jQuery.noConflict();
+
+		$("#otherProvidersDropdown").select2({
+		    placeholder: "Altro..."	,
+		    width: '140px',
+		    dropdownAutoWidth: true,
+		    allowClear: true
+		});
+
+		$('.btnEmailProvider').on('click', function () {
+			var selectedProvider = this.getAttribute('value');
+			console.log(selectedProvider);
+			formFill(selectedProvider);
+		});
+
+		$("#otherProvidersDropdown").on('click', function(){
+			//console.log("Selected value is: " + $(this).select2("val"));
+			var selectedProvider = $(this).select2("val");
+			console.log(selectedProvider);
+			formFill(selectedProvider);
+		});
+	});
+</script>
+
+<div class="form">
+	<?php $form=$this->beginWidget('CActiveForm', array(
+		'id'=>'conf-email-ios-formemail-form',
+		'enableClientValidation'=>true,
+		'clientOptions' => array(
+		    'validateOnSubmit'=>true,
+	    	'validateOnChange'=>false,
+	    	'validateOnType'=>false,
+	        ),
+		'action' => CHtml::normalizeUrl(array('site/formemail&os=' . $os)),
+		)); 
+	?>
+
+	<p class="note">Fields with <span class="required">*</span> are required.</p>
+
+	<?php echo $form->error($model,'cellulare'); ?>
+
+	<?php echo $form->errorSummary($model); ?>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'provider'); ?>
+		<?php echo $form->hiddenField($model,'provider'); ?>
+		<div class="input-group input-group-lg select2-bootstrap-prepend" id="emailBtnGroup">
+		<span class="input-group-btn">
+		<button type="button" class="btn btn-default btn-xl btnEmailProvider" value="">Azzera campi</button>
+			<?php 
+				$MAX_BUTTONS = 3;
+				$i = 0;
+				foreach ($emailProviderDropDownList as $key => $value) {
+					if($i < $MAX_BUTTONS)
+						echo '<button type="button" class="btn btn-default btn-xl btnEmailProvider" value="'.$key.'"><img src="img/ico/'.$key.'.png" height="24" width="24"> '.$value.'</button>';
+					else
+						$otherProvidersDropdownList[$key] = $value;
+					$i++;
+				} 
+			?>
+		</span>
+			<select id="otherProvidersDropdown" class="">
+				<option value=""></option>
+				<?php
+					foreach ($otherProvidersDropdownList as $key => $value) {
+						echo '<option value="'.$key.'">'.$value.'</option>';
+					}
+				?>
+			</select>
+		</div>
+	</div>
+	
+	<div class="row">
+		<?php echo $form->labelEx($model,'protocollo'); ?>
+		<?php echo $form->dropDownList($model,'protocollo',$protocolDropDownList,array('prompt' => 'Seleziona un protocollo...')); ?>
+		<?php echo $form->error($model,'protocollo'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'porta_server_entrata');?>
+		<?php echo $form->textField($model,'porta_server_entrata'); ?>
+		<?php echo $form->error($model,'porta_server_entrata'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'porta_smtp'); ?>
+		<?php echo $form->textField($model,'porta_smtp'); ?>
+		<?php echo $form->error($model,'porta_smtp'); ?>
+	</div>
+
+	<div class="row">
+		<?php if(isset($_GET['cellulare']))
+				echo $form->hiddenField($model,'cellulare',array('value' => $_GET['cellulare'])); 
+			else
+				echo $form->hiddenField($model,'cellulare'); 
+		?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'mittente'); ?>
+		<?php echo $form->textField($model,'mittente'); ?>
+		<?php echo $form->error($model,'mittente'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'ind_email'); ?>
+		<?php echo $form->textField($model,'ind_email'); ?>
+		<?php echo $form->error($model,'ind_email'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'server_entrata'); ?>
+		<?php echo $form->textField($model,'server_entrata'); ?>
+		<?php echo $form->error($model,'server_entrata'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'server_smtp'); ?>
+		<?php echo $form->textField($model,'server_smtp'); ?>
+		<?php echo $form->error($model,'server_smtp'); ?>
+	</div>
+
+
+	<div class="row buttons">
+		<?php echo CHtml::submitButton('Submit'); ?>
+	</div>
+
+	<?php $this->endWidget(); ?>
+
+</div><!-- form -->
+

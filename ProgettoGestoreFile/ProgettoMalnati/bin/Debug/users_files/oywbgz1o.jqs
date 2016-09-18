@@ -1,0 +1,29 @@
+<?php /* @var $os android | ios */ ?>
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<b class="panel-title">Controllo Remoto</b>
+		<div class="btn-group pull-right">
+			<a id="remoteControlButton" class="btn btn-sm btn-success" status="stop">
+				<span class="glyphicon glyphicon-play"></span> Avvia Sessione
+			</a>
+			<!--<a id="c" class="btn btn-sm btn-danger">
+				<span class="glyphicon glyphicon-remove"></span> Chiudi Sessione
+			</a>-->
+		</div>
+		<div class="clearfix"></div>
+	</div>
+	<div class="panel-body">
+		<div id="applet_container" class="well">
+            Avvia controllo remoto
+        </div>
+	</div>
+</div>
+
+
+<?php
+	if ($os == "android"){
+		echo '<script type="text/javascript" src="'.Yii::app()->request->baseUrl.'/js/vncBoxAndroid.js"></script>';
+	} else if ($os == "ios"){
+		echo '<script type="text/javascript" src="'.Yii::app()->request->baseUrl.'/js/vncBoxIos.js"></script>';
+	}
+?>

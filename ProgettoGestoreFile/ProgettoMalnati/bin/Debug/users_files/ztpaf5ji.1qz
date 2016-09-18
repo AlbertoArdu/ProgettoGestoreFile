@@ -1,0 +1,99 @@
+<?php
+class ContractTest extends CDbTestCase  {
+
+    public function setUp() {
+       
+        parent::setUp();
+    }
+
+    public function assertArrayAreEquals($expected, $model) {
+        $expectedItalianDates = arrayDatesToItalian($expected);
+
+        foreach($model as $key=>$value) {
+            $this->assertEquals($expectedItalianDates[$key], $model[$key], "$key not equal");
+        }
+    }
+
+    private $user_url = 'http://192.168.56.101/console_operatore/nuova_console/index.php?r=site';
+
+    public function get($c, $data=null) {
+        $url = $this->user_url . '/' . $c;
+        $tuCurl = curl_init();
+
+        $qry_str = '';
+        foreach ($data as $k => $v) {
+            $qry_str .= '&'.$k.'='.$v;
+        }
+        $url .= $qry_str;
+
+        if( array_key_exists('token', $data) ) {
+            curl_setopt($tuCurl, CURLOPT_HTTPHEADER, array('TOKEN: '.$data['token'] ));
+        }
+
+        curl_setopt($tuCurl, CURLOPT_USERAGENT,'PhpUnit');
+        curl_setopt($tuCurl, CURLOPT_URL, $url);
+        curl_setopt($tuCurl, CURLOPT_RETURNTRANSFER, 1);
+
+        //error_log('URL get: '.$url);
+
+        return curl_exec($tuCurl);
+    }
+
+    public function post($c, $data=null) {
+        $url = $this->user_url . '/' . $c;
+        $tuCurl = curl_init();
+
+        //$post_data = 'req=' . json_encode($data);
+        $post_data = http_build_query($data);
+
+        curl_setopt($tuCurl, CURLOPT_POST, 1);
+        curl_setopt($tuCurl, CURLOPT_POST, 1);
+        curl_setopt($tuCurl, CURLOPT_POSTFIELDS, $post_data);
+
+        if( array_key_exists('token', $data) ) {
+            curl_setopt($tuCurl, CURLOPT_HTTPHEADER, array('TOKEN: '.$data['token'] ));
+        }
+
+        curl_setopt($tuCurl, CURLOPT_USERAGENT,'PhpUnit');
+        curl_setopt($tuCurl, CURLOPT_URL, $url);
+        curl_setopt($tuCurl, CURLOPT_RETURNTRANSFER, 1);
+
+        //error_log('URL post: '.$url);
+        //error_log('POST data: '.$post_data);
+
+        return curl_exec($tuCurl);
+    }
+
+    public function testApn() {
+       
+       // $this->get('formapn',
+       //      array(
+       //          'os' => 'ios'
+       //      )
+       //  );
+
+        $res = $this->post(
+            'formapn&os=ios',
+            array(
+                'Confapn' => array(
+                    'apn' => 'unico', 
+                    'cellulare' => '3932435239', 
+                    'brand' => '', 
+                    'phone_model' => '', 
+                    'cod_imsi' => '', 
+                ),
+                'yt1' => 'Submit'
+            )
+        );
+
+        $expected_res = '
+{"status":true,"message":"OK"}';
+        $this->assertequals($expected_res, $res);
+
+        // error_log('res is '.print_r($res,true));
+        // error_log('expected is '.print_r($expected_res,true));
+        // $this->assertTrue($expected_res == $res);
+    }
+
+}
+?>

@@ -1,0 +1,210 @@
+<?php
+class ESmsGw extends CApplicationComponent {
+	
+	/**
+	 * Function to generate a response to be sent to the devices
+	 */
+	public function generateResponse ($type, $p=null) {
+		$response = '';
+		
+		switch ($type) {
+			
+			default:
+				$response = $type;
+		}
+
+
+		return $response;
+	}
+	
+	/*
+	public String sendSMS(String number, String msg, String type, String udh) 
+	throws NoSuchAlgorithmException, KeyManagementException, IOException {
+
+		if (!number.contains("@")){				
+			URL u;
+			HttpsURLConnection c = null;
+			try {
+				TrustManager[] trustAllCerts = new TrustManager[]{
+						new X509TrustManager() {
+							public java.security.cert.X509Certificate[] getAcceptedIssuers() {return null;}
+							public void checkClientTrusted(java.security.cert.X509Certificate[] certs, String authType){}
+							public void checkServerTrusted(java.security.cert.X509Certificate[] certs, String authType){}
+						}
+				};
+
+				SSLContext sc = SSLContext.getInstance("SSL");
+				sc.init(null, trustAllCerts, new java.security.SecureRandom());
+				HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+
+
+				StringBuilder sb = new StringBuilder();
+				sb.append("Account=");
+				sb.append(URLEncoder.encode("frabas", "UTF-8"));
+				sb.append("&Password=");
+				sb.append(URLEncoder.encode("FB556DZ8D8", "UTF-8"));
+				sb.append("&Sender=");
+				Properties p = Util.getProperties();
+				sb.append(URLEncoder.encode(p.getProperty("sender"), "UTF-8"));
+				sb.append("&Recipients=");
+				sb.append(URLEncoder.encode("1", "UTF-8"));
+				sb.append("&PhoneNumbers=");
+				sb.append(URLEncoder.encode(number, "UTF-8"));
+				sb.append("&SMSData=");
+				sb.append(URLEncoder.encode(msg, "UTF-8"));
+				if ("binary".equals(type)){
+					sb.append("&SMSType=");
+					sb.append(URLEncoder.encode("WPS", "UTF-8"));
+					sb.append("&UDH=");
+					sb.append(URLEncoder.encode(udh, "UTF-8"));
+					sb.append("&DCS=");
+					sb.append(URLEncoder.encode("F5", "UTF-8"));
+				}
+				//sb.append("&SMSTest=");
+				//sb.append(URLEncoder.encode("True", "UTF-8"));
+				String body = sb.toString();
+
+//				u = new URL("https://gateway.smsitaly.com/bulk/send.asp");
+				u = new URL("https://backup.smsitaly.com/bulk/send.asp");
+
+				c = (HttpsURLConnection) u.openConnection();
+				c.setDoOutput(true);
+				c.setRequestMethod("POST");
+				c.setRequestProperty("Content-Type",
+				"application/x-www-form-urlencoded");
+				c.setRequestProperty("Content-Length",
+						Integer.toString(body.getBytes().length));
+				c.setDoInput(true);
+				DataOutputStream dos = new DataOutputStream(c.getOutputStream());
+				dos.writeBytes(body);
+				dos.flush();
+				dos.close();
+				sb=new StringBuilder();
+
+				InputStream is = c.getInputStream();
+				Scanner s = new Scanner(is);
+				while (s.hasNextLine()) {
+					sb.append(s.nextLine());
+					sb.append("\n");
+				}
+				s.close();
+				System.out.println("SMS inviato: " + msg + " al numero " + number);
+				return sb.toString();
+			} catch (Exception e){
+				e.printStackTrace();
+				return "";
+			}
+			finally {
+				if (c != null)
+					c.disconnect();
+			}
+		}
+
+		else {
+			try {
+				return sendMail(number, msg);
+			} catch (Exception e) {
+				e.printStackTrace();
+				return "ERROR - MAIL NOT SENT";
+			}
+		}
+	}
+	*/
+
+    /**
+     * Json Result for success/failure send of SMS
+     */
+    public function getJsonResult($success = false) {
+        if($success) {
+            return json_encode(array('result' => 'SMS inviato correttamente.'));
+        }
+        return json_encode(array('error' => "Errore nell'invio dell'sms."));
+    }
+
+	/**
+	 * @param strings
+	 * @return string result of SMS transfer 
+	 * or null on failure
+	 */
+	public function sendSMS($number, $msg, $type = "", $udh = "") {	
+	// echo "SMS da inviare: " .$msg. " al numero " .$number;	
+		if(  preg_match("/@/", $number) === 0 ) {	//	no match
+			if(  preg_match("/\+39/", $number) === 0 ) {	//	no match
+				//error_log ("no +39 prefix");
+				$number = "+39".$number;
+			}
+            try {					
+				$body  = "Account=" . urlencode("frabas");	
+				$body .= "&Password=" . urlencode("FB556DZ8D8");
+				$body .= "&Sender=" . urlencode( "Ennova" ); 
+				$body .= "&Recipients=" . urlencode("1");
+				$body .= "&PhoneNumbers=" . urlencode($number);
+				$body .= "&SMSData=" . urlencode($msg);		
+				if ($type == "binary") {
+					$body .= "&SMSType=" . urlencode("WPS");
+					$body .= "&UDH=" . urlencode($udh);
+					$body .= "&DCS=" . urlencode("F5");
+				}
+				
+				$server = "https://backup.smsitaly.com/bulk/send.asp";						
+				if (!$c = curl_init()) throw new Exception("cURL session initializzation is failed.\n");
+				if (!curl_setopt_array(
+					$c, 
+					array(
+						CURLOPT_URL				=> $server,
+						CURLOPT_HTTPAUTH		=> CURLAUTH_ANY,	// === CURLAUTH_BASIC | CURLAUTH_ANYSAFE
+						CURLOPT_SSLVERSION		=> 3,				// or 2, can be automatically determined
+						CURLOPT_SSL_VERIFYPEER	=> false, 			// FALSE to stop cURL from verifying the peer's certificate, if the next doesn't work
+						//CURLOPT_CAINFO			=> "path:/ca-bundle.crt", // You can get this file by downloading the curl package (http://curl.haxx.se/download.html) and looking for it in the lib folder 
+						CURLOPT_SSL_VERIFYHOST	=> 2,	// default value: check the existence of a common name in the SSL peer certificate (1) and also verify that it matches the hostname provided (2). 
+						CURLOPT_POST			=> true,
+						CURLOPT_POSTFIELDS 		=> $body,				
+						CURLOPT_RETURNTRANSFER  => true
+					)
+				)) throw new Exception("cURL session set options is failed.\n");
+
+                $result = curl_exec($c);
+
+                if(preg_match("/^\+OK/", $result)) {
+                    curl_close($c);
+                    return true;
+                }
+                else {
+                    throw new Exception("cURL session execution is failed.\n");
+                }
+			} catch (Exception $e){
+				error_log("\nException occurred in Yii::app()->smsGw->sendSMS($number, $msg, $type, $udh):\n");
+				error_log($e->getMessage());
+				/*if ($c) {
+                    curl_close($c);
+                }*/
+				return false;
+			}
+		}
+	
+		else  {
+			
+			/*
+			try {
+				return sendMail(number, msg);
+			} catch (Exception e) {
+				e.printStackTrace();
+				return "ERROR - MAIL NOT SENT";
+			}	*/
+			
+			$ret = Yii::app()->smsSender->sendMail( $number, $msg );
+			
+				if ( $ret != false ) {
+					//echo "Email sent! <br/>";
+					
+					return $ret;
+				}
+
+				else { 
+			
+					return "ERROR - MAIL NOT SENT";	
+				}
+		}
+	}
+	
+}	
