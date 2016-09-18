@@ -174,7 +174,7 @@
     <comment>Query SQL per scaricare i dati di un utente</comment>
   </data>
   <data name="sqlStoreSnapshotData" xml:space="preserve">
-    <value>UPDATE snapshots SET dim = @dim, t_modifica = @t_modifica, sha_contenuto = @sha_contenuto, nome_locale_s = @nome_locale_s, valido = @valido WHERE id = @id;</value>
+    <value>UPDATE snapshots SET dim = @dim, t_modifica = @t_modifica, sha_contenuto = @sha_contenuto, nome_locale_s = @nome_locale_s WHERE id = @id;</value>
     <comment>Query SQL per aggiornare un entry della tabella snapshot</comment>
   </data>
   <data name="tabellaFileUtente" xml:space="preserve">

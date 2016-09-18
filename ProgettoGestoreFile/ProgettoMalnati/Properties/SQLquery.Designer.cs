@@ -214,7 +214,7 @@ namespace ProgettoMalnati.Properties {
         }
         
         /// <summary>
-        ///   Cerca una stringa localizzata simile a UPDATE snapshots SET dim = @dim, t_modifica = @t_modifica, sha_contenuto = @sha_contenuto, nome_locale_s = @nome_locale_s, valido = @valido WHERE id = @id;.
+        ///   Cerca una stringa localizzata simile a UPDATE snapshots SET dim = @dim, t_modifica = @t_modifica, sha_contenuto = @sha_contenuto, nome_locale_s = @nome_locale_s WHERE id = @id;.
         /// </summary>
         internal static string sqlStoreSnapshotData {
             get {
