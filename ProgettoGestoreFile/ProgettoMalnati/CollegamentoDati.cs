@@ -42,6 +42,7 @@ namespace ProgettoMalnati
             waitHandles = new Dictionary<string, AutoResetEvent>();
             t = new Thread(CollegamentoDati.gestisciConnessioneDati);
             acceptor = TcpListener.Create(port);
+            acceptor.Start(Properties.ApplicationSettings.Default.max_connessioni_in_sospeso);
             t.Start();
         }
 
@@ -51,6 +52,7 @@ namespace ProgettoMalnati
             string token;
             while (true)
             {
+
                 c = acceptor.AcceptTcpClient();
                 NetworkStream stream = c.GetStream();
                 byte[] tmp = new byte[token_length];
@@ -58,7 +60,7 @@ namespace ProgettoMalnati
                 token = System.Convert.ToBase64String(tmp);
                 lock (lockDictionary)
                 {
-                    socket_dati_in_sospeso.Add(token, c);
+                    socket_dati_in_sospeso[token] = c;
                     waitHandles[token].Set();
                 }
             }
@@ -100,7 +102,8 @@ namespace ProgettoMalnati
             if(!waitHandles.ContainsKey(token))
                 throw new Exception("Token non valido");
 
-            waitHandles[token].WaitOne(timeout);
+            //waitHandles[token].WaitOne(timeout);
+            waitHandles[token].WaitOne(-1);
             lock (lockDictionary)
             {
                 if (!socket_dati_in_sospeso.ContainsKey(token))
@@ -109,10 +112,6 @@ namespace ProgettoMalnati
                 }
                 c = socket_dati_in_sospeso[token];
                 socket_dati_in_sospeso.Remove(token);
-            }
-
-            lock (lockDictionary)
-            {
                 waitHandles.Remove(token);
             }
             return c.GetStream();

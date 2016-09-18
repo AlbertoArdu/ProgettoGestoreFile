@@ -283,6 +283,12 @@ namespace clientWPF
                 error_message = Properties.Messaggi.erroreConnessioneServer;
                 throw new ServerException(Properties.Messaggi.erroreServer, ServerErrorCode.ConnessioneInterrotta);
             }
+            response = control_stream_reader.ReadLine();
+            if (response == null)
+            {
+                error_message = Properties.Messaggi.erroreConnessioneServer;
+                throw new ServerException(Properties.Messaggi.erroreServer, ServerErrorCode.ConnessioneInterrotta);
+            }
             response = response.Trim();
             CommandErrorCode errorCode = (CommandErrorCode)Int32.Parse(response.Split(' ')[0]); //Extract code from response
             switch (errorCode)
@@ -319,11 +325,39 @@ namespace clientWPF
                     data_stream.Write(buffer, 0, size);
                     control_stream_writer.Flush();
                 }
+                data_stream.Close();
             }
             catch
             {
                 throw new ServerException(Properties.Messaggi.erroreServer, ServerErrorCode.Default);
             }
+            response = control_stream_reader.ReadLine();
+            if (response == null)
+            {
+                error_message = Properties.Messaggi.erroreConnessioneServer;
+                throw new ServerException(Properties.Messaggi.erroreServer, ServerErrorCode.ConnessioneInterrotta);
+            }
+            response = response.Trim();
+            errorCode = (CommandErrorCode)Int32.Parse(response.Split(' ')[0]); //Extract code from response
+            control_stream_reader.ReadLine();
+            switch (errorCode)
+            {
+                case CommandErrorCode.OK:
+                   
+                    break;
+                case CommandErrorCode.FormatoDatiErrato:
+                    throw new ServerException(Properties.Messaggi.formatoDatiErrato, ServerErrorCode.FormatoDatiErrato);
+                case CommandErrorCode.UtenteNonLoggato:
+                    throw new ServerException(Properties.Messaggi.nonLoggato, ServerErrorCode.UtenteNonLoggato);
+                case CommandErrorCode.FileEsistente:
+                    throw new ServerException(Properties.Messaggi.fileEsistente, ServerErrorCode.FileEsistente);
+                case CommandErrorCode.LimiteFileSuperato:
+                    throw new ServerException(Properties.Messaggi.limiteFileSuperato, ServerErrorCode.LimiteFileSuperato);
+                case CommandErrorCode.DatiIncompleti:
+                default:
+                    throw new ServerException(Properties.Messaggi.erroreServer, ServerErrorCode.Default);
+            }
+
             return true;
         }
 

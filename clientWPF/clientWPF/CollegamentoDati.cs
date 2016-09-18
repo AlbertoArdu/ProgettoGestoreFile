@@ -29,7 +29,7 @@ namespace clientWPF
             IPAddress server_addr = IPAddress.Parse(Properties.Settings.Default.ip_address);
             NetworkStream netS = null;
             port = Properties.Settings.Default.data_port;
-            byte[] tmp = new byte[token_length = 20];
+            byte[] tmp = new byte[token_length];
             tmp = System.Convert.FromBase64String(token);
             c = new TcpClient();
             try
