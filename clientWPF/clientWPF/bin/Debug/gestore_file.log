@@ -1,3 +1,3 @@
-18-09 13:04:14.148	Command.cs	Line: 58	Function: .ctor	Connected!
-18-09 13:04:29.062	db_interface.cs	Line: 46	Function: .ctor	DB non esistente. Devo crearlo
-18-09 13:04:29.752	db_interface.cs	Line: 51	Function: .ctor	DB creato
+18-09 17:56:24.305	Command.cs	Line: 58	Function: .ctor	Connected!
+18-09 17:57:02.503	db_interface.cs	Line: 46	Function: .ctor	DB non esistente. Devo crearlo
+18-09 17:57:03.180	db_interface.cs	Line: 51	Function: .ctor	DB creato

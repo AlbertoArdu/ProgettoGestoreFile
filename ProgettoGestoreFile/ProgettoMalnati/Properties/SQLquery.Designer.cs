@@ -97,7 +97,7 @@ namespace ProgettoMalnati.Properties {
         }
         
         /// <summary>
-        ///   Cerca una stringa localizzata simile a SELECT id FROM fileutente WHERE valido = false AND nome_utente = @nome_utente AND t_creazione = ( SELECT MIN(t_creazione) FROM fileutente WHERE valido = false AND nome_utente = @nome_utente);.
+        ///   Cerca una stringa localizzata simile a SELECT id FROM fileutente WHERE valido = &apos;TRUE&apos; AND nome_utente = @nome_utente AND t_creazione = ( SELECT MIN(t_creazione) FROM fileutente WHERE valido = &apos;TRUE&apos; AND nome_utente = @nome_utente);.
         /// </summary>
         internal static string sqlCercaFileDaDistruggere {
             get {
@@ -214,7 +214,7 @@ namespace ProgettoMalnati.Properties {
         }
         
         /// <summary>
-        ///   Cerca una stringa localizzata simile a UPDATE snapshots SET dim = @dim, t_modifica = @t_modifica, sha_contenuto = @sha_contenuto, nome_locale_s = @nome_locale_s WHERE id = @id;.
+        ///   Cerca una stringa localizzata simile a UPDATE snapshots SET dim = @dim, t_modifica = @t_modifica, sha_contenuto = @sha_contenuto, nome_locale_s = @nome_locale_s, valido = @valido WHERE id = @id;.
         /// </summary>
         internal static string sqlStoreSnapshotData {
             get {

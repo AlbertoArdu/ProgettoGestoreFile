@@ -70,7 +70,16 @@ namespace clientWPF.Properties {
         }
         
         /// <summary>
-        ///   Cerca una stringa localizzata simile a SELECT nome_file_c, path_relativo_c, t_creazione,  t_modifica, sha_contenuto, dim FROM file WHERE id = @id_file;.
+        ///   Cerca una stringa localizzata simile a SELECT id FROM file WHERE valido = &apos;FALSE&apos;;.
+        /// </summary>
+        internal static string sqlGetDeletedIds {
+            get {
+                return ResourceManager.GetString("sqlGetDeletedIds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a SELECT nome_file_c, path_relativo_c, t_creazione,  t_modifica, sha_contenuto, dim, valido FROM file WHERE id = @id_file;.
         /// </summary>
         internal static string sqlGetFileData {
             get {
@@ -79,7 +88,7 @@ namespace clientWPF.Properties {
         }
         
         /// <summary>
-        ///   Cerca una stringa localizzata simile a SELECT id FROM file;.
+        ///   Cerca una stringa localizzata simile a SELECT id FROM file WHERE valido = &apos;TRUE&apos;;.
         /// </summary>
         internal static string sqlGetId {
             get {
@@ -106,7 +115,7 @@ namespace clientWPF.Properties {
         }
         
         /// <summary>
-        ///   Cerca una stringa localizzata simile a UPDATE file SET dim = @dim, t_modifica = @t_modifica, sha_contenuto = @sha_contenuto WHERE id = @id;.
+        ///   Cerca una stringa localizzata simile a UPDATE file SET dim = @dim, t_modifica = @t_modifica, sha_contenuto = @sha_contenuto, valido = @valido WHERE id = @id;.
         /// </summary>
         internal static string sqlSetFileData {
             get {
@@ -121,7 +130,7 @@ namespace clientWPF.Properties {
         ///path_relativo_c varchar(100),
         ///dim int, 
         ///t_modifica datetime NOT NULL DEFAULT CURRENT_TIMESTAMP, t_creazione datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        ///sha_contenuto char(128));.
+        ///sha_contenuto char(128), valido BOOLEAN DEFAULT TRUE);.
         /// </summary>
         internal static string tabellaFile {
             get {

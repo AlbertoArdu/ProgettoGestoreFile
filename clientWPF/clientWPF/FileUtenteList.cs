@@ -13,9 +13,12 @@ namespace clientWPF
     {
         //Attributi
         private System.Collections.Generic.List<int> __list_ids_files;
-        private FileUtente[] __file_list;
-        static private string sql_get_file_ids = Properties.SQLquery.sqlGetId;
+        private System.Collections.Generic.List<int> __list_deleted_ids;
 
+        private List<FileUtente> __file_list;
+        private List<FileUtente> __deleted_list;
+        static private string sql_get_file_ids = Properties.SQLquery.sqlGetId;
+        string sql_get_deleted_ids = Properties.SQLquery.sqlGetDeletedIds;
         //Proprieta
         public int Length => __list_ids_files.Count;
 
@@ -45,18 +48,38 @@ namespace clientWPF
             }
         }
 
+        public List<FileUtente> Deleted
+        {
+            get
+            {
+                
+                foreach(int id in __list_deleted_ids)
+                {
+                    __deleted_list.Add(new FileUtente(id));
+                }
+                return __deleted_list;
+            }
+        }
         //Costruttori
         public FileUtenteList(): base()
         {
             //this.__max_file = Properties.Settings.Default.numero_file;
             this.__list_ids_files = new System.Collections.Generic.List<int>();
+            this.__list_deleted_ids = new System.Collections.Generic.List<int>();
             this.ExecuteQuery(sql_get_file_ids, null);
             //Get the data
             foreach (int i in this.GetResults())
             {
                 this.__list_ids_files.Add(Int32.Parse(this.ResultGetValue("id").ToString()));
             }
-            this.__file_list = new FileUtente[this.__list_ids_files.Count];
+            this.ExecuteQuery(sql_get_deleted_ids, null);
+            //Get the data
+            foreach (int i in this.GetResults())
+            {
+                this.__list_deleted_ids.Add(Int32.Parse(this.ResultGetValue("id").ToString()));
+            }
+            this.__file_list = new List<FileUtente>(this.__list_ids_files.Count);
+            this.__deleted_list = new List<FileUtente>(this.__list_deleted_ids.Count);
         }
         /// <summary>
         /// Restituisce tutti i file in una cartella, scendendo ricorsivamente nelle sottocartelle
@@ -72,7 +95,6 @@ namespace clientWPF
             pending.Enqueue(rootFolderPath);
             List<string[]> files = new List<string[]>();
             string[] tmp;
-            string[] f_info = new string[2];
             int index = 0;
             string tmp_path;
             while (pending.Count > 0)
@@ -81,13 +103,14 @@ namespace clientWPF
                 tmp = Directory.GetFiles(tmp_path);
                 for (int i = 0; i < tmp.Length; i++)
                 {
+                    string[] f_info = new string[2];
                     f_info[0] = Path.GetFileName(tmp[i]);
                     f_info[1] = Path.GetDirectoryName(tmp[i]);
                     index = f_info[1].IndexOf(rootFolderPath);
                     f_info[1] = (index < 0) ?
                         f_info[1] : f_info[1].Remove(index, rootFolderPath.Length);
-
-                    files.Add( f_info);
+                    f_info[1] = (f_info[1].Length == 0) ? "\\." : f_info[1];
+                    files.Add(f_info);
                 }
                 tmp = Directory.GetDirectories(tmp_path);
                 for (int i = 0; i < tmp.Length; i++)
@@ -98,8 +121,6 @@ namespace clientWPF
             return files;
         }
 
-        //Distruttore
-        //Metodi
 
         /// <summary>
         ///     Usata per ciclare sui file di un utente.
@@ -116,6 +137,19 @@ namespace clientWPF
                 yield return this[index];
             }
         }
-        //Metodi Statici
+
+        public void Delete(int id)
+        {
+            int index;
+            if (__list_deleted_ids.Contains(id))
+                return;
+            if ((index = __list_ids_files.IndexOf(id)) == -1)
+                throw new ArgumentException("L'id fornito non appartiene ad alcun file");
+            __file_list[index].Valido = false;
+            __deleted_list.Add(__file_list[index]);
+            __file_list.RemoveAt(index);
+            __list_deleted_ids.Add(id);
+            __list_ids_files.RemoveAt(index);
+        }
     }
 }

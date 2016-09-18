@@ -36,7 +36,7 @@
       <Value Profile="(Default)">4</Value>
     </Setting>
     <Setting Name="numero_file" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">20</Value>
+      <Value Profile="(Default)">40</Value>
     </Setting>
     <Setting Name="tcp_port_dati" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">8888</Value>

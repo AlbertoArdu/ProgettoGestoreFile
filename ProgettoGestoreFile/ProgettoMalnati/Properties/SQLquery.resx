@@ -130,7 +130,7 @@
     <value>UPDATE fileutente SET path_relativo_c = @path_relativo_c WHERE id=@id;</value>
   </data>
   <data name="sqlCercaFileDaDistruggere" xml:space="preserve">
-    <value>SELECT id FROM fileutente WHERE valido = false AND nome_utente = @nome_utente AND t_creazione = ( SELECT MIN(t_creazione) FROM fileutente WHERE valido = false AND nome_utente = @nome_utente);</value>
+    <value>SELECT id FROM fileutente WHERE valido = 'TRUE' AND nome_utente = @nome_utente AND t_creazione = ( SELECT MIN(t_creazione) FROM fileutente WHERE valido = 'TRUE' AND nome_utente = @nome_utente);</value>
   </data>
   <data name="sqlCheckUtente" xml:space="preserve">
     <value>SELECT * FROM utenti WHERE nome = @nome AND password = @password;</value>
@@ -174,7 +174,7 @@
     <comment>Query SQL per scaricare i dati di un utente</comment>
   </data>
   <data name="sqlStoreSnapshotData" xml:space="preserve">
-    <value>UPDATE snapshots SET dim = @dim, t_modifica = @t_modifica, sha_contenuto = @sha_contenuto, nome_locale_s = @nome_locale_s WHERE id = @id;</value>
+    <value>UPDATE snapshots SET dim = @dim, t_modifica = @t_modifica, sha_contenuto = @sha_contenuto, nome_locale_s = @nome_locale_s, valido = @valido WHERE id = @id;</value>
     <comment>Query SQL per aggiornare un entry della tabella snapshot</comment>
   </data>
   <data name="tabellaFileUtente" xml:space="preserve">

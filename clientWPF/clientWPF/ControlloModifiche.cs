@@ -116,7 +116,7 @@ namespace clientWPF
                     }
                     else
                     {
-                        fu.Delete();
+                        list.Delete(fu.Id);
                         c = new ComandoEliminaFile(entry[0], entry[1]);
                         c.esegui();
                     }

@@ -17,6 +17,7 @@ namespace clientWPF
         private string __path_completo;
         private DateTime __t_creazione;
         private DateTime __t_modifica;
+        private bool __valido;
         private int __dim;
         private string sha_contenuto;
         private Log l;
@@ -29,6 +30,8 @@ namespace clientWPF
         public List<DateTime> Items => fileVersions;
 
         //Proprietà
+        public int Id => id;
+
         public string Nome
         {
             get{ return __nome_file_c; }
@@ -82,6 +85,8 @@ namespace clientWPF
                 this.__t_modifica = (DateTime)(o);
                 o = this.ResultGetValue("t_creazione");
                 this.__t_creazione = (DateTime)(o);
+                o = this.ResultGetValue("valido");
+                this.__valido = (bool)(o);
             }
             this.id = id;
             this.__path_completo = Properties.Settings.Default.base_path + System.IO.Path.DirectorySeparatorChar + this.Path +
@@ -125,19 +130,41 @@ namespace clientWPF
             parameters[1] = new string[2] { "@timestamp_vers", this.__t_modifica.ToString() };
             this.ExecuteQuery(sql_add_version,parameters);
 
-            parameters = new string[4][];
+            parameters = new string[5][];
             parameters[0] = new string[2] { "@dim", __dim.ToString() };
             parameters[1] = new string[2] { "@t_modifica", __t_modifica.ToString() };
             parameters[2] = new string[2] { "@sha_contenuto", sha_contenuto };
             parameters[3] = new string[2] { "@id", id.ToString() };
+            parameters[4] = new string[2] { "@valido", __valido ? "TRUE" : "FALSE" };
 
             this.ExecuteQuery(sql_set_file_data, parameters);
 
         }
 
-        public void Delete()
+        public bool Valido
         {
-            throw new NotImplementedException();
+            get
+            {
+                return __valido;
+            }
+            set
+            {
+                string sql = "UPDATE file SET valido = @valido WHERE id = @id;";
+                string[][] parameters = new string[3][];
+                parameters[0] = new string[2] { "@valido", value ? "TRUE" : "FALSE" };
+                parameters[1] = new string[2] { "@id", this.id.ToString() };
+                try
+                {
+                    this.ExecuteQuery(sql, parameters);
+                }
+                catch (Exception e)
+                {
+                    l.log("Errore nel settare il file come invalido nel database: " + e.Message, Level.ERR);
+                    throw;
+                }
+
+                __valido = value;
+            }
         }
 
         static public FileUtente CreaNuovo(string nome_file, string path, DateTime t_creazione, int dim, string sha_contenuto = null)

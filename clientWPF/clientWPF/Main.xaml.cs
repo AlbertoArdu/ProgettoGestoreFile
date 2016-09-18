@@ -357,7 +357,7 @@ namespace clientWPF
             {
                 if (obj.GetType() == typeof(System.Windows.Controls.ListViewItem))
                 {
-                    DateTime selectedVersion = DateTime.Parse(((FileVersionListViewItem)lFileVersions.SelectedItem).sVersion);
+                    DateTime selectedVersion = ((FileVersionListViewItem)lFileVersions.SelectedItem).sTimestamp;
                     
                     foreach (DateTime fv in selectedFileUtente.Items)
                     {

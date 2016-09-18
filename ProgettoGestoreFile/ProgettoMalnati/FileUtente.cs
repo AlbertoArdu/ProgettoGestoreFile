@@ -63,7 +63,7 @@ namespace ProgettoMalnati
             {
                 string sql = "UPDATE fileutente SET valido = @valido WHERE id = @id AND nome_utente = @nome_utente;";
                 string[][] parameters = new string[3][];
-                parameters[0] = new string[2] { "@valido", value.ToString() };
+                parameters[0] = new string[2] { "@valido", value ? "TRUE" : "FALSE" };
                 parameters[1] = new string[2] { "@id", this.id.ToString() };
                 parameters[2] = new string[2] { "@nome_utente", this.__nome_utente };
                 try
