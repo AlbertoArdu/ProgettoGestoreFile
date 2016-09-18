@@ -145,7 +145,7 @@ sha_contenuto char(128), valido BOOLEAN DEFAULT TRUE);</value>
     <value>create table versioni (id_file integer, timestamp_vers datetime NOT NULL DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (id_file, timestamp_vers), FOREIGN KEY (id_file) REFERENCES file(id) on delete cascade);</value>
   </data>
   <data name="sqlAddVersion" xml:space="preserve">
-    <value>insert into Versioni(id_file,timestap_vers) VALUES (@id_file, @timestamp_vers);</value>
+    <value>insert into versioni(id_file,timestamp_vers) VALUES (@id_file, @timestamp_vers);</value>
   </data>
   <data name="triggerNumeroVersioni" xml:space="preserve">
     <value>CREATE TRIGGER max_versioni AFTER INSERT ON Versioni FOR EACH ROW BEGIN DELETE FROM Versioni WHERE timestamp_vers = (SELECT MIN(timestamp_vers) FROM Versioni	WHERE id_file = NEW.id_file )	AND id_file IN (SELECT id_file FROM Versioni WHERE id_file = NEW.id_file GROUP BY id_file HAVING COUNT(*) &gt; 3);</value>

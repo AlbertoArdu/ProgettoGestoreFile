@@ -558,7 +558,7 @@ namespace ProgettoMalnati
                     {
                         letti = stream_dati.Read(buffer, 0, 1024);
                         snap.scriviBytes(buffer, letti);
-                    } while (letti == 1024);
+                    } while (letti != 0);
                     snap.completaScrittura();
                 }
                 catch( Exception e)

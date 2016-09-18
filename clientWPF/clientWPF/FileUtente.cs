@@ -127,12 +127,12 @@ namespace clientWPF
             this.sha_contenuto = newHash;
             string[][] parameters = new string[2][];
             parameters[0] = new string[2] { "@id_file", this.id.ToString() };
-            parameters[1] = new string[2] { "@timestamp_vers", this.__t_modifica.ToString() };
+            parameters[1] = new string[2] { "@timestamp_vers", this.__t_modifica.ToString("u") };
             this.ExecuteQuery(sql_add_version,parameters);
 
             parameters = new string[5][];
             parameters[0] = new string[2] { "@dim", __dim.ToString() };
-            parameters[1] = new string[2] { "@t_modifica", __t_modifica.ToString() };
+            parameters[1] = new string[2] { "@t_modifica", __t_modifica.ToString("u") };
             parameters[2] = new string[2] { "@sha_contenuto", sha_contenuto };
             parameters[3] = new string[2] { "@id", id.ToString() };
             parameters[4] = new string[2] { "@valido", __valido ? "TRUE" : "FALSE" };

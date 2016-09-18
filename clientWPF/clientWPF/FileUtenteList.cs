@@ -26,7 +26,10 @@ namespace clientWPF
         {
             get
             {
-                if(__file_list[index] == null)
+                if(index > __file_list.Count - 1)
+                    __file_list.Add(new FileUtente(__list_ids_files[index]));
+
+                if (__file_list[index] == null)
                 {
                     __file_list[index] = new FileUtente(__list_ids_files[index]);
                 }
@@ -52,10 +55,12 @@ namespace clientWPF
         {
             get
             {
-                
-                foreach(int id in __list_deleted_ids)
+                if (__deleted_list.Count == 0)
                 {
-                    __deleted_list.Add(new FileUtente(id));
+                    foreach (int id in __list_deleted_ids)
+                    {
+                        __deleted_list.Add(new FileUtente(id));
+                    }
                 }
                 return __deleted_list;
             }

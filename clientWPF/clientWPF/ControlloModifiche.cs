@@ -101,8 +101,10 @@ namespace clientWPF
                     //Check if still exists, and if its modified
                     entry[0] = fu.Nome;
                     entry[1] = fu.Path;
-                    if (files.Remove(entry))
+                    int index;
+                    if ((index = files.FindIndex(fTest => (fTest[0] == entry[0] && fTest[1] == entry[1]))) >= 0)
                     {
+                        files.RemoveAt(index);
                         //Il file selezionato esiste ancora...
                         path_completo = base_path + entry[1] + Path.DirectorySeparatorChar + entry[0];
                         finfo = new FileInfo(path_completo);

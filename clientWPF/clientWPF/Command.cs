@@ -165,6 +165,9 @@ namespace clientWPF
         /// <exception>CommandExeption con un codice corrispondente all'errore riscontrato</exception>
         public override bool esegui()
         {
+            if (Logged)
+                return true;
+
             StringBuilder sb = new StringBuilder();
             sb.Append(nome_comando).Append(Environment.NewLine).
                 Append(nome_utente).Append(Environment.NewLine).
@@ -574,10 +577,13 @@ namespace clientWPF
                 throw new Exception("Errore nel leggere i parametri del file. Forse i parametri sono sbagliati. " + e.Message);
             }
             if (dim < 0)
-                dim = (int)(finfo.Length);
+                this.dim = (int)(finfo.Length);
+            else
+                this.dim = dim;
             if (t_modifica == DateTime.MinValue)
-                t_modifica = finfo.LastWriteTime;
-
+                this.t_modifica = finfo.LastWriteTime;
+            else
+                this.t_modifica = t_modifica;
             file = File.Open(this.path_completo, FileMode.Open);
             if (sha_contenuto == null)
             {
@@ -585,6 +591,10 @@ namespace clientWPF
                 byte[] hash_val;
                 hash_val = sha_obj.ComputeHash(this.file);
                 this.sha_contenuto = System.Convert.ToBase64String(hash_val);
+            }
+            else
+            {
+                this.sha_contenuto = sha_contenuto;
             }
             this.file.Position = 0;
         }

@@ -61,7 +61,7 @@ namespace clientWPF.Properties {
         }
         
         /// <summary>
-        ///   Cerca una stringa localizzata simile a insert into Versioni(id_file,timestap_vers) VALUES (@id_file, @timestamp_vers);.
+        ///   Cerca una stringa localizzata simile a insert into versioni(id_file,timestamp_vers) VALUES (@id_file, @timestamp_vers);.
         /// </summary>
         internal static string sqlAddVersion {
             get {
