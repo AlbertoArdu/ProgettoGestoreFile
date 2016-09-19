@@ -65,3 +65,11 @@ C:\Users\c.citera\Documents\GitHub\ProgettoGestoreFile\clientWPF\clientWPF\obj\D
 C:\Users\c.citera\Documents\GitHub\ProgettoGestoreFile\clientWPF\clientWPF\obj\Debug\clientWPF.Properties.SQLquery.resources
 C:\Users\c.citera\Documents\GitHub\ProgettoGestoreFile\clientWPF\clientWPF\obj\Debug\clientWPF.Properties.DatiTest.resources
 C:\Users\c.citera\Documents\GitHub\ProgettoGestoreFile\clientWPF\clientWPF\obj\Debug\clientWPF.csproj.GenerateResource.Cache
+C:\Users\c.citera\Documents\GitHub\ProgettoGestoreFile\clientWPF\clientWPF\bin\Debug\clientWPF.exe
+C:\Users\c.citera\Documents\GitHub\ProgettoGestoreFile\clientWPF\clientWPF\bin\Debug\clientWPF.pdb
+C:\Users\c.citera\Documents\GitHub\ProgettoGestoreFile\clientWPF\clientWPF\bin\Debug\EnvDTE.dll
+C:\Users\c.citera\Documents\GitHub\ProgettoGestoreFile\clientWPF\clientWPF\bin\Debug\Microsoft.VisualStudio.VSHelp.dll
+C:\Users\c.citera\Documents\GitHub\ProgettoGestoreFile\clientWPF\clientWPF\bin\Debug\Microsoft.VisualStudio.ComponentModelHost.dll
+C:\Users\c.citera\Documents\GitHub\ProgettoGestoreFile\clientWPF\clientWPF\bin\Debug\stdole.dll
+C:\Users\c.citera\Documents\GitHub\ProgettoGestoreFile\clientWPF\clientWPF\bin\Debug\Microsoft.VisualStudio.GraphModel.dll
+C:\Users\c.citera\Documents\GitHub\ProgettoGestoreFile\clientWPF\clientWPF\bin\Debug\Microsoft.MSXML.dll

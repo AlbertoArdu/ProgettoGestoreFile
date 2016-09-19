@@ -73,6 +73,8 @@ namespace clientWPF
         private void syncMenuItem(object sender, System.EventArgs e)
         {
             ControlloModifiche.Check();
+            GetFiles();
+            GetDelFiles();
         }
 
         private void GetFiles()
@@ -86,7 +88,7 @@ namespace clientWPF
                 FileUtenteList list = new FileUtenteList();
                 foreach (FileUtente fu in list)
                 {
-                    lDetails.Items.Add(new VersionListViewItem(fu.Nome, fu.Path));
+                    lDetails.Items.Add(new VersionListViewItem(fu.Nome, fu.Path, fu.TempoModifica));
                 }
                 /*List<string[]> files = FileUtenteList.exploreFileSystem(connectionSettings.readSetting("account", "directory"));
                 foreach (string[] n_file in files)
@@ -114,7 +116,7 @@ namespace clientWPF
 
                 foreach (FileUtente fu in fileUtenteList.Deleted)
                 {
-                    lDeletedFiles.Items.Add(new VersionListViewItem(fu.Nome, fu.Path));
+                    lDeletedFiles.Items.Add(new VersionListViewItem(fu.Nome, fu.Path, fu.TempoModifica));
                 }
                 lDeletedFiles.SelectedIndex = 0;
 
@@ -389,7 +391,7 @@ namespace clientWPF
                             selectedFileVersion = fv;
                     }
 
-                    MessageBoxResult res = System.Windows.MessageBox.Show("Do you want to restore file \"" + selectedFileUtente.Nome + "\" with version number " + selectedVersion + " ?", "Restore system", System.Windows.MessageBoxButton.YesNo);
+                    MessageBoxResult res = System.Windows.MessageBox.Show("Do you want to restore file \"" + selectedFileUtente.Nome + "\" with version of " + selectedVersion + " ?", "Restore system", System.Windows.MessageBoxButton.YesNo);
 
                     if (res == MessageBoxResult.Yes)
                     {
@@ -501,10 +503,12 @@ namespace clientWPF
     {
         public string sFilename { get; set; }
         public string sPath { get; set; }
-        public VersionListViewItem(string filename, string path)
+        public DateTime sTime { get; set; }
+        public VersionListViewItem(string filename, string path, DateTime time)
         {
             sFilename = filename;
             sPath = path;
+            sTime = time;
         }
     }
 

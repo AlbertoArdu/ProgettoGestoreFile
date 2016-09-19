@@ -107,9 +107,11 @@ namespace clientWPF
                     string[] f_info = new string[2];
                     f_info[0] = Path.GetFileName(tmp[i]);
                     f_info[1] = Path.GetDirectoryName(tmp[i]);
-                    index = f_info[1].IndexOf(rootFolderPath);
+                    f_info[1] = Path.GetDirectoryName(tmp[i]);
+                    //index = f_info[1].IndexOf(rootFolderPath);
+                    index = f_info[1].IndexOf(rootFolderPath.Substring(0, rootFolderPath.Length - 1));
                     f_info[1] = (index < 0) ?
-                        f_info[1] : f_info[1].Remove(index, rootFolderPath.Length);
+                        f_info[1] : f_info[1].Remove(index, rootFolderPath.Length - 1);
                     f_info[1] = (f_info[1].Length == 0) ? "\\." : f_info[1];
                     files.Add(f_info);
                 }
