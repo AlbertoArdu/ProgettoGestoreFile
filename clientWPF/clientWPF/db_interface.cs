@@ -24,8 +24,6 @@ namespace clientWPF
         static String nome_file_db = Properties.Settings.Default.nome_db;
         static private int count_ref = 0;
         static private SQLiteConnection sql_con = null;
-        static private object lockVar = new object();
-        static private bool locked = false;
 
         private Log l;
 
@@ -34,32 +32,6 @@ namespace clientWPF
                         Properties.SQLquery.tabellaFile,
                         Properties.SQLquery.TabellaVersioni,
                                                      };
-        static public string HashDB
-        {
-            get
-            {
-                return FileUtente.CalcolaSHA256(File.Open(nome_file_db,FileMode.Open));
-            }
-        }
-
-        static public bool DBEsiste => File.Exists(nome_file_db);
-
-        static public bool LockDB()
-        {
-            lock (lockVar)
-            {
-                if(locked == true)
-                {
-                    return false;
-                }
-                else
-                {
-                    locked = true;
-                    return true;
-                }
-            }
-            
-        }
 
         public DB_Table()
         {

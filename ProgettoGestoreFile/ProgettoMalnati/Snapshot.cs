@@ -10,7 +10,7 @@ using System.Threading;
 
 namespace ProgettoMalnati
 {
-    
+
     class Snapshot : DB_Table
     {
         //Attributi
@@ -35,7 +35,7 @@ namespace ProgettoMalnati
         private static string sql_insert_data = Properties.SQLquery.sqlInsertSnapshotData;
 
         //Proprieta
-        public int Dim 
+        public int Dim
         {
             get { return __dim; }
         }
@@ -78,18 +78,18 @@ namespace ProgettoMalnati
             }
         }
         //Costruttori
-        public Snapshot(int id_file,int id)
+        public Snapshot(int id_file, int id)
             : base()
         {
             CultureInfo en = new CultureInfo("en-US");
             Thread.CurrentThread.CurrentCulture = en;
 
             l = Log.getLog();
-            if(base_path == null)
+            if (base_path == null)
                 base_path = Properties.ApplicationSettings.Default.base_path + Path.DirectorySeparatorChar + "users_files";
             string[][] parameters = new string[1][];
             parameters[0] = new string[2] { "@id", id.ToString() };
-            this.ExecuteQuery(sql_get_snapshot_data,parameters);
+            this.ExecuteQuery(sql_get_snapshot_data, parameters);
             if (this.hasResults())
             {
                 //Get the data
@@ -107,14 +107,14 @@ namespace ProgettoMalnati
             }
             else
             {
-                throw new DatabaseException("Impossibile ricavare i dati su uno snapshot.",DatabaseErrorCode.NoDati);
+                throw new DatabaseException("Impossibile ricavare i dati su uno snapshot.", DatabaseErrorCode.NoDati);
             }
         }
 
         //Distruttore
         ~Snapshot()
         {
-            if(this.cambioContenutoIniziato)
+            if (this.cambioContenutoIniziato)
             {
                 try
                 {
@@ -122,9 +122,9 @@ namespace ProgettoMalnati
                     this.__scrittura_contenuto.Close();
                     string tmp_nome_da_sostituire = base_path + Path.DirectorySeparatorChar + this.__nome_locale;
                     File.Delete(tmp_nome_da_sostituire);
-                    File.Move(tmp_nome_da_sostituire+".tmp", tmp_nome_da_sostituire);
+                    File.Move(tmp_nome_da_sostituire + ".tmp", tmp_nome_da_sostituire);
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     l.log(e.Message, Level.ERR);
                 }
@@ -139,7 +139,7 @@ namespace ProgettoMalnati
         public int leggiBytesDalContenuto(byte[] b, Int32 size)
         {
             if (this.cambioContenutoIniziato)
-                throw new DatabaseException("Impossibile leggere il contenuto di uno snapshot mentre è in corso una modifica.",DatabaseErrorCode.SnapshotInScrittura);
+                throw new DatabaseException("Impossibile leggere il contenuto di uno snapshot mentre è in corso una modifica.", DatabaseErrorCode.SnapshotInScrittura);
             if (this.__lettura_contenuto == null)
             {
                 try
@@ -153,7 +153,7 @@ namespace ProgettoMalnati
                     throw;
                 }
             }
-            int q=0;
+            int q = 0;
             try
             {
                 if (posizione_lettura + size > this.__dim)
@@ -193,14 +193,14 @@ namespace ProgettoMalnati
                     timestamp = DateTime.Now;
                 }
                 cambioContenutoIniziato = true;
-                if(this.__lettura_contenuto != null)
+                if (this.__lettura_contenuto != null)
                     this.__lettura_contenuto.Close();
                 this.__lettura_contenuto = null;
                 this.__t_modifica = timestamp;
                 this.__dim = newDim;
                 string tmp_nome = base_path + Path.DirectorySeparatorChar + this.__nome_locale + ".tmp";
                 string tmp_nome_da_sostituire = base_path + Path.DirectorySeparatorChar + this.__nome_locale;
-                
+
                 File.Move(tmp_nome_da_sostituire, tmp_nome);
                 this.__scrittura_contenuto = new FileStream(tmp_nome_da_sostituire, FileMode.Create, FileAccess.ReadWrite);
                 this.posizione_scrittura = 0;
@@ -208,7 +208,7 @@ namespace ProgettoMalnati
             }
             else
             {
-                throw new DatabaseException("Cambio contenuto già inizializzato. Non richiamare questa funzione finché tutto il contenuto precedente sia stato scritto.",DatabaseErrorCode.SnapshotInScrittura);
+                throw new DatabaseException("Cambio contenuto già inizializzato. Non richiamare questa funzione finché tutto il contenuto precedente sia stato scritto.", DatabaseErrorCode.SnapshotInScrittura);
             }
         }
 
@@ -221,7 +221,7 @@ namespace ProgettoMalnati
             }
 
             if (posizione_scrittura + size > this.__dim)
-                throw new DatabaseException("Dimensione fornita non corretta.",DatabaseErrorCode.DimensioneFileEccessiva);
+                throw new DatabaseException("Dimensione fornita non corretta.", DatabaseErrorCode.DimensioneFileEccessiva);
             if (size == 0)
             {
                 return;
@@ -234,12 +234,12 @@ namespace ProgettoMalnati
         /// Salva il nuovo contenuto, calcola l'hash del file memorizzato e lo confronta con quello fornito
         /// dall'utente (se fornito).
         /// </summary>
-        public void completaScrittura() 
+        public void completaScrittura()
         {
             //Controllo se è la prima scrittura: allora lancio eccezione
             if (!cambioContenutoIniziato)
             {
-                throw new DatabaseException("Non è stata chiamata la funzione cambiaContenuto();",DatabaseErrorCode.SnapshotInLettura);
+                throw new DatabaseException("Non è stata chiamata la funzione cambiaContenuto();", DatabaseErrorCode.SnapshotInLettura);
             }
             SHA256 sha_obj = SHA256Managed.Create();
             byte[] hash_val;
@@ -254,12 +254,12 @@ namespace ProgettoMalnati
             foreach (byte b in hash_val)
                 hex.AppendFormat("{0:x2}", b);
             string sha_reale = hex.ToString();
-            
+
             if (this.__sha_contenuto != "")
             {
-                if(this.__sha_contenuto != sha_reale)
+                if (this.__sha_contenuto != sha_reale)
                 {
-                    throw new DatabaseException("L'hash fornito è diverso dall'hash calcolato.",DatabaseErrorCode.HashInconsistente);
+                    throw new DatabaseException("L'hash fornito è diverso dall'hash calcolato.", DatabaseErrorCode.HashInconsistente);
                 }
             }
             this.__sha_contenuto = sha_reale;
@@ -270,7 +270,7 @@ namespace ProgettoMalnati
         public void CaricaDatiNelDB()
         {
             string[][] parameters = new string[5][];
-            parameters[0] = new string[2] { "@dim", __dim.ToString()};
+            parameters[0] = new string[2] { "@dim", __dim.ToString() };
             parameters[1] = new string[2] { "@t_modifica", __t_modifica.ToString("u") };
             parameters[2] = new string[2] { "@sha_contenuto", __sha_contenuto };
             parameters[3] = new string[2] { "@nome_locale_s", __nome_locale };
@@ -282,7 +282,7 @@ namespace ProgettoMalnati
 
         public void RimuoviContenuto()
         {
-            if(this.__lettura_contenuto != null)
+            if (this.__lettura_contenuto != null)
             {
                 this.__lettura_contenuto.Close();
                 this.__lettura_contenuto = null;
@@ -296,7 +296,7 @@ namespace ProgettoMalnati
             {
                 File.Delete(base_path + Path.DirectorySeparatorChar + this.__nome_locale);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 l.log("Errore nell'eliminazione del file locale." + e.Message, Level.ERR);
                 throw;
@@ -305,7 +305,7 @@ namespace ProgettoMalnati
 
         //Funzioni Statiche
 
-        public static Snapshot creaNuovo(   int id_file,
+        public static Snapshot creaNuovo(int id_file,
                                             DateTime timestamp = new DateTime(),
                                             int dim = 0,
                                             string sha_contenuto = "")
@@ -334,9 +334,9 @@ namespace ProgettoMalnati
             Log l = Log.getLog();
             db.ExecuteQuery(sql_insert_data, parameters);
             long id = db.getLastInsertedId();
-            l.log("Id inserito: "+ id);
-/*          Per qualche motivo questa cosa lancia una nullReferenceException, come se s non venisse creato*/
-            s = new Snapshot(id_file,(int)id);
+            l.log("Id inserito: " + id);
+            /*          Per qualche motivo questa cosa lancia una nullReferenceException, come se s non venisse creato*/
+            s = new Snapshot(id_file, (int)id);
             s.cambioContenutoIniziato = true;
             s.__scrittura_contenuto = f;
             s.posizione_scrittura = 0;

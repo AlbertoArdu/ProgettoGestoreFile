@@ -554,6 +554,9 @@ namespace clientWPF
                     throw new ServerException(Properties.Messaggi.erroreServer, ServerErrorCode.Default);
             }
 
+            FileUtenteList list = new FileUtenteList();
+            list[this.nome_file, this.path].aggiornaDatiPrec(this.dim, this.t_creazione, this.SHAContenuto);
+
             return true;
         }
     }
