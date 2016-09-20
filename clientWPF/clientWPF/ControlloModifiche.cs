@@ -19,6 +19,11 @@ namespace clientWPF
         /// <summary>
         /// Inizializza il controllo periodico del contenuto della cartella.
         /// Controlla anche le credenziali con il server testando il login.
+        /// TODO:
+        /// mettere un controllo sul db e riscaricare il tutto se ci sono errori
+        /// 
+        /// 
+        /// 
         /// </summary>
         /// <exception cref="ServerException"></exception>
         /// <exception cref="ClientException"></exception>
