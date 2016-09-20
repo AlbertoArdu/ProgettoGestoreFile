@@ -86,16 +86,10 @@ namespace clientWPF
 
 
                 FileUtenteList list = new FileUtenteList();
-                foreach (FileUtente fu in list)
+                for (int i=0; i<list.Length; i++)
                 {
-                    lDetails.Items.Add(new VersionListViewItem(fu.Nome, fu.Path, fu.TempoModifica));
+                    lDetails.Items.Add(new VersionListViewItem(list[i].Nome, list[i].Path, list[i].TempoModifica));
                 }
-                /*List<string[]> files = FileUtenteList.exploreFileSystem(connectionSettings.readSetting("account", "directory"));
-                foreach (string[] n_file in files)
-                {
-                    string file_path_completo = connectionSettings.readSetting("account", "directory") + n_file[1];
-                    lDetails.Items.Add(new VersionListViewItem(n_file[0], file_path_completo));
-                }*/
 
                 lDetails.SelectedIndex = 0;
 

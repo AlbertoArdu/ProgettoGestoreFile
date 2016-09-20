@@ -395,7 +395,7 @@ namespace clientWPF
             }
             this.path = path;
             this.nome_file = nome_file;
-            this.path_completo = new StringBuilder(path).Append(path).Append(Path.DirectorySeparatorChar).Append(nome_file).ToString();
+            this.path_completo = new StringBuilder(base_path).Append(Path.DirectorySeparatorChar).Append(path).Append(Path.DirectorySeparatorChar).Append(nome_file).ToString();
             tmp_path = Path.GetTempFileName();
             tmp_file = File.Open(this.tmp_path, FileMode.Open);
             this.t_creazione = timestamp;
@@ -442,7 +442,7 @@ namespace clientWPF
                         string token = control_stream_reader.ReadLine();
                         this.dim = Int32.Parse(control_stream_reader.ReadLine());
                         this.sha_contenuto = control_stream_reader.ReadLine();
-                        control_stream_reader.ReadLine();
+                        //control_stream_reader.ReadLine();
                         data_stream = CollegamentoDati.getCollegamentoDati(token);
                     }
                     catch
@@ -502,11 +502,23 @@ namespace clientWPF
             }
             try
             {
-                File.Delete(path_completo);
+                if (!File.Exists(tmp_path))
+                {
+                    // This statement ensures that the file is created,
+                    // but the handle is not kept.
+                    using (FileStream fs = File.Create(tmp_path)) { }
+                }
+
+                // Ensure that the target does not exist.
+                if (File.Exists(path_completo))
+                    File.Delete(path_completo);
+
+                // Move the file.
                 File.Move(tmp_path, path_completo);
-            }catch(Exception e)
+            }
+            catch (Exception e)
             {
-                throw new DatabaseException("Il file scaricato non può essere memorizzato nella cartella di destinazione. Controllare i permessi e riprovare. "+e.Message, DatabaseErrorCode.Unknown);
+                throw new DatabaseException("Errore nel sostituire la versione precedente. " + e.Message);
             }
             try
             {

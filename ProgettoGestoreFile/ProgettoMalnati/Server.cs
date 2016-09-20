@@ -600,9 +600,12 @@ namespace ProgettoMalnati
                 try
                 {
                     user.FileList[nome_file: dati[0], path_relativo: dati[1]].Valido = false;
-                }catch(Exception e)
+                    for (int i = 0; i < user.FileList[nome_file: dati[0], path_relativo: dati[1]].Snapshots.Length; i++)
+                        user.FileList[nome_file: dati[0], path_relativo: dati[1]].Snapshots[i].Valido = false; 
+                }
+                catch(Exception e)
                 {
-                    l.log("Errore nel settare il file come non valido; " + e.Message,Level.ERR);
+                    l.log("Errore nel settare il file e i sui snapshot come non validi; " + e.Message,Level.ERR);
                 }
                 yield return sb.Append(CommandErrorCode.OK.ToString("D")).Append(" File eliminato con successo").ToString();
             }

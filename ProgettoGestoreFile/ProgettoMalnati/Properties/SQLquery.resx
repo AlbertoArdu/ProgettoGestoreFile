@@ -130,7 +130,8 @@
     <value>UPDATE fileutente SET path_relativo_c = @path_relativo_c WHERE id=@id;</value>
   </data>
   <data name="sqlCercaFileDaDistruggere" xml:space="preserve">
-    <value>SELECT id FROM fileutente WHERE valido = 'TRUE' AND nome_utente = @nome_utente AND t_creazione = ( SELECT MIN(t_creazione) FROM fileutente WHERE valido = 'TRUE' AND nome_utente = @nome_utente);</value>
+    <value>SELECT id FROM fileutente WHERE 
+    = 'TRUE' AND nome_utente = @nome_utente AND t_creazione = ( SELECT MIN(t_creazione) FROM fileutente WHERE valido = 'TRUE' AND nome_utente = @nome_utente);</value>
   </data>
   <data name="sqlCheckUtente" xml:space="preserve">
     <value>SELECT * FROM utenti WHERE nome = @nome AND password = @password;</value>

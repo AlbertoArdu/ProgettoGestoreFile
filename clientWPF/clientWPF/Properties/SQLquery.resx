@@ -129,7 +129,7 @@ id INTEGER PRIMARY KEY ASC,
 nome_file_c varchar(50), 
 path_relativo_c varchar(100),
 dim int, 
-t_modifica datetime NOT NULL DEFAULT CURRENT_TIMESTAMP, t_creazione datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+t_modifica DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, t_creazione DATETIME  NOT NULL DEFAULT CURRENT_TIMESTAMP,
 sha_contenuto char(128), valido BOOLEAN DEFAULT TRUE);</value>
   </data>
   <data name="sqlSetFileData" xml:space="preserve">
