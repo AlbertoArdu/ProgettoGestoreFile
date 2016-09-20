@@ -383,6 +383,8 @@ namespace clientWPF
         FileStream file,tmp_file;
         const string nome_comando = "RETRIEVE";
 
+        public int Dim => dim;
+        public string SHAContenuto => sha_contenuto;
         public ComandoScaricaFile(string nome_file, string path, DateTime timestamp)
             : base()
         {
@@ -753,7 +755,7 @@ namespace clientWPF
         System.Collections.Generic.List<string> __paths = null;
         const string nome_comando = "LISTPATHS";
 
-        string[] Paths
+        public string[] Paths
         {
             get { return __paths.ToArray(); }
         }
@@ -803,7 +805,7 @@ namespace clientWPF
         string path;
         const string nome_comando = "LISTDIR";
         
-        string[] FileNames
+        public string[] FileNames
         {
             get { return this.__files.ToArray(); }
         }
@@ -860,7 +862,7 @@ namespace clientWPF
         string nome_file;
         const string nome_comando = "LISTVERSIONS";
 
-        DateTime[] Versions
+        public DateTime[] Versions
         {
             get { return __versions.ToArray(); }
         }
@@ -928,4 +930,29 @@ namespace clientWPF
         }
     }
 
+    class ComandoCaricaHashDB : Command
+    {
+        private string hash;
+        const string nome_comando = "UPLOAD_HASH";
+        public ComandoCaricaHashDB(string aHash)
+        {
+            hash = aHash;
+        }
+
+        public override bool esegui()
+        {
+            
+            return false;
+        }
+    }
+
+    class ComandoScaricaHashDB : Command
+    {
+        public string hash = null;
+        const string nome_comando = "DOWNLOAD_HASH";
+        public override bool esegui()
+        {
+            return false;
+        }
+    }
 }

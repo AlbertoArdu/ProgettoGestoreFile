@@ -38,14 +38,15 @@ namespace clientWPF
             Properties.Settings.Default.user = user;
             Properties.Settings.Default.pwd = pwd;
             Properties.Settings.Default.base_path = base_path;
+            Properties.Settings.Default.intervallo = interval;
             Properties.Settings.Default.Save();
 
             if (!init)
             {
                 if (user == null || pwd == null)
                     throw new ClientException("Mancano le credenziali dell'utente. Fare il login.", ClientErrorCode.CredenzialiUtenteMancanti);
-                if (base_path == null)
-                    throw new ClientException("Il percorso di controllo non è specificato", ClientErrorCode.PercorsoNonSpecificato);
+                if (base_path == null || !Directory.Exists(base_path))
+                    throw new ClientException("Il percorso di controllo non è valido", ClientErrorCode.PercorsoNonSpecificato);
                 //Controllo se nome utente e password sono giusti
                 if (!Command.Logged)
                 {
@@ -67,6 +68,16 @@ namespace clientWPF
                         }
                     }
                 }
+                //Controlla se il DB è ok
+                if (!DB_Table.DBEsiste)
+                    throw new ClientException("Il database non esiste", ClientErrorCode.DatabaseNonPresente);
+                string sha_db = DB_Table.HashDB;
+                ComandoScaricaHashDB c = new ComandoScaricaHashDB();
+                c.esegui();
+                if(sha_db != c.hash)
+                {
+                    throw new ClientException("Il database è corrotto o non esiste");
+                }
                 //Imposta il timer per il controllo periodico
                 checker = new Timer(interval * 1000);
                 checker.AutoReset = true;
@@ -74,6 +85,49 @@ namespace clientWPF
                 init = true;
             }
             checker.Enabled = true;
+        }
+
+        public static void RestoreAsLastStatusOnServer()
+        {
+            bool tmp = checker.Enabled;
+            checker.Enabled = false;
+            Log l = Log.getLog();
+
+            try
+            {
+                ComandoListFolders c = new ComandoListFolders();
+                c.esegui();
+                foreach (string path_rel in c.Paths)
+                {
+                    ComandoListDir c2 = new ComandoListDir(path_rel);
+                    c2.esegui();
+                    foreach (string nome_file in c2.FileNames)
+                    {
+                        ComandoListVersions c_vers = new ComandoListVersions(nome_file, path_rel);
+                        c_vers.esegui();
+                        DateTime[] versions = c_vers.Versions;
+                        DateTime last_vers = versions.Max();
+                        ComandoScaricaFile c_scarica = new ComandoScaricaFile(nome_file, path_rel, last_vers);
+                        //TODO: modificare ComandoScaricaFile per gestire il caso in cui il file vecchio non esista
+                        c.esegui();
+                        FileUtente fu = FileUtente.CreaNuovo(nome_file,path_rel, last_vers,c_scarica.Dim,c_scarica.SHAContenuto);
+                        foreach (DateTime dt in versions)
+                        {
+                            if(dt != last_vers)
+                                fu.AggiungiVersione(dt);
+                        }
+                    }
+
+                }
+            }
+            catch (ServerException e)
+            {
+                l.log(e.Message);
+                throw;
+            }
+
+
+            checker.Enabled = tmp;
         }
 
         private static void Checker_Elapsed(object sender, ElapsedEventArgs e)

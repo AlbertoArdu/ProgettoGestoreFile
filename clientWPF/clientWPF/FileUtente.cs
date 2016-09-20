@@ -216,5 +216,10 @@ namespace clientWPF
             id = (int)db.getLastInsertedId();
             return new FileUtente(id);
         }
+
+        public void AggiungiVersione(DateTime newVers)
+        {
+
+        }
     }
 }

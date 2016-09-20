@@ -12,6 +12,8 @@ namespace clientWPF
         Unknown = -1,
         Default,
         //Applicazione
+        DatabaseCorrotto,
+        DatabaseNonPresente,
         ServerNonDisponibile,
         PercorsoNonSpecificato,
         CredenzialiUtenteMancanti,
