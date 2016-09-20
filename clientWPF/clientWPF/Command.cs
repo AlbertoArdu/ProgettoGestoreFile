@@ -489,7 +489,9 @@ namespace clientWPF
             }
             SHA256 sha_obj = SHA256Managed.Create();
             byte[] hash_val;
-            hash_val = sha_obj.ComputeHash(File.Open(tmp_path,FileMode.Open));
+            tmp_file = File.Open(tmp_path, FileMode.Open);
+            hash_val = sha_obj.ComputeHash(tmp_file);
+            tmp_file.Close();
             StringBuilder hex = new StringBuilder(hash_val.Length * 2);
             foreach (byte b in hash_val)
                 hex.AppendFormat("{0:x2}", b);

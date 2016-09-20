@@ -425,11 +425,11 @@ namespace clientWPF
                     string deletedFilePath = ((VersionListViewItem)lDeletedFiles.SelectedItem).sPath;
 
                     FileUtenteList fileUtenteList = new FileUtenteList();
-                    deletedFileUtente = fileUtenteList[deletedFileName, deletedFilePath];
+                    FileUtente[] deletedFileList = fileUtenteList.Deleted;
 
-                    foreach (FileUtente fu in fileUtenteList.Deleted)
+                    foreach (FileUtente fu in deletedFileList)
                     {
-                        if (deletedFileName == fu.Nome && deletedFilePath == fu.Path)
+                        if (fu.Nome == deletedFileName && fu.Path == deletedFilePath)
                         {
                             deletedFileUtente = fu;
                             break;

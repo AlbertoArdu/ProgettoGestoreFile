@@ -1,5 +1,5 @@
-20-09 20:44:41.608	Command.cs	Line: 58	Function: .ctor	Connected!
-20-09 20:44:41.619	Command.cs	Line: 117	Function: esegui	Data has been sent
-20-09 20:44:45.173	db_interface.cs	Line: 46	Function: .ctor	DB non esistente. Devo crearlo
-20-09 20:44:45.521	db_interface.cs	Line: 51	Function: .ctor	DB creato
-20-09 20:46:00.698	Command.cs	Line: 754	Function: esegui	File eliminato con successo: %s
+20-09 22:44:09.989	Command.cs	Line: 58	Function: .ctor	Connected!
+20-09 22:44:10.002	Command.cs	Line: 117	Function: esegui	Data has been sent
+20-09 22:44:15.211	db_interface.cs	Line: 46	Function: .ctor	DB non esistente. Devo crearlo
+20-09 22:44:15.765	db_interface.cs	Line: 51	Function: .ctor	DB creato
+20-09 22:46:39.293	Command.cs	Line: 756	Function: esegui	File eliminato con successo: %s
