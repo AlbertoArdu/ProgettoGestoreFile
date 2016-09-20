@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace clientWPF
@@ -94,19 +96,30 @@ namespace clientWPF
             this.ExecuteQuery(sql_get_file_data, parameters);
             //Get the data
             object o;
+
+            CultureInfo en = new CultureInfo("en-US");
+            Thread.CurrentThread.CurrentCulture = en;
+
             foreach (Int32 i in GetResults())
             {
                 o = this.ResultGetValue("nome_file_c");
                 this.__nome_file_c = (string)(o);
+
                 o = this.ResultGetValue("path_relativo_c");
                 this.__path_relativo_c = (string)(o);
+
                 this.__dim = (Int32)(this.ResultGetValue("dim"));
                 o = this.ResultGetValue("sha_contenuto");
                 this.sha_contenuto = (string)(o);
+
                 o = this.ResultGetValue("t_modifica");
-                this.__t_modifica = (DateTime)(o);
+                DateTime utctMod = (DateTime)(o);
+                this.__t_modifica = utctMod.ToUniversalTime();
+
                 o = this.ResultGetValue("t_creazione");
-                this.__t_creazione = (DateTime)(o);
+                DateTime utctCreaz = (DateTime)(o);
+                this.__t_creazione = utctCreaz.ToUniversalTime();
+
                 o = this.ResultGetValue("valido");
                 this.__valido = (bool)(o);
             }
@@ -121,7 +134,8 @@ namespace clientWPF
             //Get the data
             foreach (Int32 i in GetResults())
             {
-                fileVersions.Add((DateTime)this.ResultGetValue("timestamp_vers"));
+                DateTime utctdt = (DateTime)(this.ResultGetValue("timestamp_vers"));
+                fileVersions.Add(utctdt.ToUniversalTime());
             }
         }
         

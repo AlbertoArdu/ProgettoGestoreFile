@@ -39,7 +39,8 @@ namespace ProgettoMalnati
                 foreach (Int32 i in GetResults())
                 {
                     this.__nome_file_c = (string)(this.ResultGetValue("nome_file_c"));
-                    this.__t_creazione = (DateTime)(this.ResultGetValue("t_creazione"));
+                    DateTime utctCreaz = (DateTime)(this.ResultGetValue("t_creazione"));
+                    this.__t_creazione = utctCreaz.ToUniversalTime();                   
                     this.__path_relativo_c = (string)(this.ResultGetValue("path_relativo_c"));
                     this.__valido = (bool)(this.ResultGetValue("valido"));
                     this.__nome_utente = nome_utente;

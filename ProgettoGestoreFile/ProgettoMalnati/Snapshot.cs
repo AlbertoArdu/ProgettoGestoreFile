@@ -5,6 +5,8 @@ using System.Text;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
+using System.Globalization;
+using System.Threading;
 
 namespace ProgettoMalnati
 {
@@ -79,6 +81,9 @@ namespace ProgettoMalnati
         public Snapshot(int id_file,int id)
             : base()
         {
+            CultureInfo en = new CultureInfo("en-US");
+            Thread.CurrentThread.CurrentCulture = en;
+
             l = Log.getLog();
             if(base_path == null)
                 base_path = Properties.ApplicationSettings.Default.base_path + Path.DirectorySeparatorChar + "users_files";
@@ -91,7 +96,8 @@ namespace ProgettoMalnati
                 foreach (Int32 i in GetResults())
                 {
                     this.__dim = (int)(this.ResultGetValue("dim"));
-                    this.__t_modifica = (DateTime)(this.ResultGetValue("t_modifica"));
+                    DateTime utctMod = (DateTime)(this.ResultGetValue("t_modifica"));
+                    this.__t_modifica = utctMod.ToUniversalTime();
                     this.__sha_contenuto = (string)(this.ResultGetValue("sha_contenuto"));
                     this.__nome_locale = (string)(this.ResultGetValue("nome_locale_s"));
                     this.__valido = (bool)(this.ResultGetValue("valido"));
@@ -139,7 +145,7 @@ namespace ProgettoMalnati
                 try
                 {
                     l.log("Path locale - " + base_path);
-                    this.__lettura_contenuto = new FileStream(base_path + this.__nome_locale, FileMode.Open, FileAccess.Read);
+                    this.__lettura_contenuto = new FileStream(base_path + Path.DirectorySeparatorChar + this.__nome_locale, FileMode.Open, FileAccess.Read);
                 }
                 catch (Exception e)
                 {

@@ -47,8 +47,8 @@
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn Header="Name" Width="65" DisplayMemberBinding="{Binding sFilename}"/>
-                                <GridViewColumn Header="Path" Width="80" DisplayMemberBinding="{Binding sPath}"/>
-                                <GridViewColumn Header="Timestamp" Width="80" DisplayMemberBinding="{Binding sTime}"/>
+                                <GridViewColumn Header="Path" Width="65" DisplayMemberBinding="{Binding sPath}"/>
+                                <GridViewColumn Header="Date Modified" Width="95" DisplayMemberBinding="{Binding sTime}"/>
                             </GridView>
                         </ListView.View>
                     </ListView>
@@ -56,7 +56,7 @@
                     <ListView Name="lFileVersions" Margin="0,36,10,10" MouseDoubleClick="lFileVersions_MouseDoubleClick" HorizontalAlignment="Right" Width="175" Grid.Column="4" FontWeight="Normal">
                         <ListView.View>
                             <GridView>
-                                <GridViewColumn Header="Timestamp" Width="170" DisplayMemberBinding="{Binding sTimestamp}"/>
+                                <GridViewColumn Header="Date Modified" Width="170" DisplayMemberBinding="{Binding sTimestamp}"/>
                             </GridView>
                         </ListView.View>
                     </ListView>
@@ -76,7 +76,7 @@
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn Header="Name" Width="105" DisplayMemberBinding="{Binding sFilename}"/>
-                                <GridViewColumn Header="Path" Width="120" DisplayMemberBinding="{Binding sPath}"/>
+                                <GridViewColumn Header="Date Modified" Width="120" DisplayMemberBinding="{Binding sTime}"/>
                             </GridView>
                         </ListView.View>
                     </ListView>
@@ -84,7 +84,7 @@
                     <ListView Name="lDeletedFileVersions" Margin="0,36,10,10" MouseDoubleClick="lDeletedFileVersions_MouseDoubleClick" HorizontalAlignment="Right" Width="175" Grid.Column="4" FontWeight="Normal">
                         <ListView.View>
                             <GridView>
-                                <GridViewColumn Header="Timestamp" Width="170" DisplayMemberBinding="{Binding sTimestamp}"/>
+                                <GridViewColumn Header="Date Modified" Width="170" DisplayMemberBinding="{Binding sTimestamp}"/>
                             </GridView>
                         </ListView.View>
                     </ListView>

@@ -58,7 +58,10 @@ namespace ProgettoMalnati
             {
                 if (index >= __list_ids_files.Count)
                     throw new IndexOutOfRangeException();
-                if(__snapshots[index] == null)
+
+                if (__snapshots == null)
+                    this.__snapshots = new Snapshot[snapshotPerFile];
+                if (__snapshots[index] == null)
                     __snapshots[index] = new Snapshot(__id_file, __list_ids_files[index]);
                 return __snapshots[index];
             }
@@ -72,7 +75,7 @@ namespace ProgettoMalnati
                 Snapshot s = null;
                 for(int i = 0; i < this.Length; i++)
                 {
-                    if (s.InsertTime == timestamp)
+                    if (this[i].InsertTime == timestamp)
                     {
                         s = this[i];
                         break;
