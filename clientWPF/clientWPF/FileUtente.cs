@@ -267,7 +267,10 @@ namespace clientWPF
 
         public void AggiungiVersione(DateTime newVers)
         {
-
+            string[][] parameters = new string[2][];
+            parameters[0] = new string[2] { "@id_file", this.id.ToString() };
+            parameters[1] = new string[2] { "@timestamp_vers", newVers.ToString("u") };
+            this.ExecuteQuery(sql_add_version, parameters);
         }
     }
 }

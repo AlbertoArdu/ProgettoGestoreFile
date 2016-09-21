@@ -26,7 +26,8 @@ namespace clientWPF
         static private SQLiteConnection sql_con = null;
 
         private Log l;
-
+        static private object lockVar = new object();
+        static private bool locked = false;
         static private string[] db_structure = {
                         //Tabella fileutente
                         Properties.SQLquery.tabellaFile,
@@ -61,6 +62,28 @@ namespace clientWPF
 
         }
 
+		
+        static public bool DBEsiste => File.Exists(nome_file_db);
+        static public string HashDB => FileUtente.CalcolaSHA256(File.OpenRead(nome_file_db));
+
+        static public bool LockDB()
+        {
+            lock (lockVar)
+            {
+                if(locked == true)
+                {
+                    return false;
+                }
+                else
+                {
+                    locked = true;
+                    return true;
+                }
+            }
+            
+        }
+
+		
         ~DB_Table()
         {
             count_ref--;
@@ -78,7 +101,21 @@ namespace clientWPF
             }
         }
 
-        private void Crea_DB()
+        static public void RebuildDB()
+        {
+            String s = "Data Source=";
+            s += nome_file_db + ";Versione=3;";
+            if (File.Exists(nome_file_db))
+            {
+                File.Delete(nome_file_db);
+            }
+            SQLiteConnection.CreateFile(nome_file_db);
+            DB_Table.sql_con = new SQLiteConnection(s);
+            DB_Table.sql_con.Open();
+            Crea_DB();
+        }
+        
+        static private void Crea_DB()
         {
             command = sql_con.CreateCommand();
             foreach (string sql in db_structure)

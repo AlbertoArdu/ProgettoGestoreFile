@@ -30,9 +30,15 @@ namespace clientWPF
             base_path = connectionSetting.readSetting("account", "directory");
             interval = Int32.Parse(connectionSetting.readSetting("connection", "syncTime"));
 
+            if (!base_path.EndsWith("\\"))
+            {
+                base_path += "\\";
+            }
+
             Properties.Settings.Default.user = user;
             Properties.Settings.Default.pwd = pwd;
             Properties.Settings.Default.base_path = base_path;
+            Properties.Settings.Default.intervallo = interval;
             Properties.Settings.Default.Save();
 
             if (!init)
@@ -62,6 +68,18 @@ namespace clientWPF
                         }
                     }
                 }
+				//Controlla se il DB è ok
+                if (!DB_Table.DBEsiste)
+                    throw new ClientException("Il database non esiste", ClientErrorCode.DatabaseNonPresente);
+                /*
+                string sha_db = DB_Table.HashDB;
+                ComandoScaricaHashDB c = new ComandoScaricaHashDB();
+                c.esegui();
+                if(sha_db != c.hash)
+                {
+                    throw new ClientException("Il database è corrotto o non esiste");
+                }
+                */
                 //Imposta il timer per il controllo periodico
                 checker = new Timer(interval * 1000);
                 checker.AutoReset = true;
@@ -71,6 +89,69 @@ namespace clientWPF
             checker.Enabled = true;
         }
 
+        /// <summary>
+        /// In ordine questa funzione:
+        ///  - Cancella il contenuto della cartella base_path
+        ///  - Cancella il database e lo ricrea con le tabelle vuote
+        ///  - Scarica la lista dei path relativi
+        ///  - Per ogni path, ricrea le cartelle e scarica i file con le loro versioni
+        /// </summary>
+        public static void RestoreAsLastStatusOnServer()
+        {
+            bool tmp = checker.Enabled;
+            checker.Enabled = false;
+            Log l = Log.getLog();
+
+			lock (syncLock)
+            {
+                //Puliamo la cartella...
+                Directory.Delete(base_path, recursive: true);
+                DB_Table.RebuildDB();
+				try
+				{
+					ComandoListFolders c = new ComandoListFolders();
+					c.esegui();
+					foreach (string path_rel in c.Paths)
+					{
+                        string[] directories = path_rel.Split('\\');
+                        string tmp_path = base_path;
+                        foreach(string dir in directories)
+                        {
+                            tmp_path += dir + "\\";
+                            if(!Directory.Exists(tmp_path))
+                            {
+                                Directory.CreateDirectory(tmp_path);
+                            }
+                        }
+						ComandoListDir c2 = new ComandoListDir(path_rel);
+						c2.esegui();
+						foreach (string nome_file in c2.FileNames)
+						{
+							ComandoListVersions c_vers = new ComandoListVersions(nome_file, path_rel);
+							c_vers.esegui();
+							DateTime[] versions = c_vers.Versions;
+							DateTime last_vers = versions.Max();
+							ComandoScaricaFile c_scarica = new ComandoScaricaFile(nome_file, path_rel, last_vers);
+							c.esegui();
+							FileUtente fu = FileUtente.CreaNuovo(nome_file,path_rel, last_vers,c_scarica.Dim,c_scarica.SHAContenuto);
+							foreach (DateTime dt in versions)
+							{
+								if(dt != last_vers)
+									fu.AggiungiVersione(dt);
+							}
+						}
+
+					}
+				}
+				catch (ServerException e)
+				{
+					l.log(e.Message);
+					throw;
+				}
+				checker.Enabled = tmp;
+			}
+        }
+		
         private static void Checker_Elapsed(object sender, ElapsedEventArgs e)
         {
             Check();
