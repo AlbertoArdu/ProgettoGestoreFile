@@ -203,11 +203,6 @@ namespace clientWPF
                                     finfo.LastWriteTime, fu.SHA256Contenuto);
                                 c.esegui();
                             }
-                            else
-                            {
-                                //Aggiornare il timestamp di modifica
-                                fu.TempoModifica = finfo.LastWriteTime;
-                            }
                         }
                     }
                     else
