@@ -1,5 +1,0 @@
-- spark-submit --master local[*] --class clique.driver C:/Users/c.citera/workspace/clique/target/scala-2.10/clique-assembly-1.0.0.jar --ds-input C:/Users/c.citera/Desktop/clique/* --ds-output C:/Users/c.citera/Desktop/cliqueRes --step 2 --soglia 5
-
-spark-submit --master local[*] --class clique.driver C:\Users\c.citera\Desktop\IA\spark-ia\spark-ia\target\scala-2.10\spark_ia-assembly-0.0.2.jar --tweets-basedir C:/Users/c.citera/Desktop/IA/spark-ia/twittersMap/in_x_giorno --day 2016-06-01 --garbage-table test_tweet_garbage --num-concepts 50 --num-top-words 5 --max-features 10000
-
-- sbt assembly
