@@ -393,8 +393,10 @@ namespace clientWPF
                         {
                             if (Command.Logged == true)
                             {
+                                ControlloModifiche.StopTimer();
                                 Command getVersComm = new ComandoScaricaFile(selectedFileUtente.Nome, selectedFileUtente.Path, selectedFileVersion);
                                 getVersComm.esegui();
+                                ControlloModifiche.Inizializza();
                             }
                             else
                             {
@@ -470,6 +472,7 @@ namespace clientWPF
                         {
                             if (Command.Logged == true)
                             {
+
                                 Command getVersComm = new ComandoScaricaFile(deletedFileUtente.Nome, deletedFileUtente.Path, deletedFileVersion);
                                 getVersComm.esegui();
                             }

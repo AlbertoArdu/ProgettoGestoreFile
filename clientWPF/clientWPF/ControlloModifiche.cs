@@ -110,8 +110,8 @@ namespace clientWPF
                         files.RemoveAt(index);
                         //Il file selezionato esiste ancora...
                         path_completo = base_path + entry[1] + Path.DirectorySeparatorChar + entry[0];
-                        finfo = new FileInfo(path_completo);
-                        if (finfo.LastWriteTime != fu.TempoModifica)
+                        finfo = new FileInfo(path_completo);                
+                        if (DateTime.Compare(finfo.LastWriteTimeUtc, fu.TempoModifica) != 0)
                         {
                             FileStream fs = File.Open(path_completo, FileMode.Open);
                             string new_sha = FileUtente.CalcolaSHA256(fs);
