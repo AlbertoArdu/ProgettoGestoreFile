@@ -12,7 +12,7 @@
                     <ListBox Name="lbStatus" Margin="10,185,10,10"/>
                 </Grid>
             </TabItem>
-            <TabItem Header="Connection" Height="26" VerticalAlignment="Top" FontWeight="Bold" HorizontalAlignment="Left" Margin="-1,0,0,0" Width="83">
+            <TabItem Header="Connection" Height="26" VerticalAlignment="Top" FontWeight="Bold" Margin="-1,0,1,0">
                 <Grid Background="#FFE5E5E5" Margin="0,0,0,3">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="5*"/>
@@ -27,23 +27,23 @@
                     <TextBox Name="tAddress" Height="23" Margin="10,90,104,0" TextWrapping="Wrap" Text="192.168.1.130" VerticalAlignment="Top" Grid.ColumnSpan="4" FontWeight="Normal"/>
                     <Label Content="Port" HorizontalAlignment="Right" Margin="0,64,60,0" VerticalAlignment="Top" RenderTransformOrigin="0.496,0.501" Grid.Column="3" FontWeight="Bold"/>
                     <TextBox Name="tPort" HorizontalAlignment="Right" Height="23" Margin="0,90,10,0" TextWrapping="Wrap" Text="55555" VerticalAlignment="Top" Width="85" Grid.Column="3" FontWeight="Normal"/>
-                    <Button Name="bStart" Content="Start sync" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="100" Margin="10,0,0,20" Click="StartSync_Click" IsEnabled="False" FontWeight="Bold" Height="40" Grid.ColumnSpan="4"/>
-                    <Button Name="bStop" Content="Stop sync" HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="100" Margin="76,0,166,20" IsEnabled="False" Click="StopSync_Click" Height="40" FontWeight="Bold" Grid.Column="3"/>
+                    <Button Name="bStart" Content="Start sync" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="120" Margin="10,0,0,20" Click="StartSync_Click" IsEnabled="False" FontWeight="Bold" Height="40" Grid.ColumnSpan="4"/>
+                    <Button Name="bStop" Content="Stop sync" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="120" Margin="0,0,10,20" IsEnabled="False" Click="StopSync_Click" Height="40" FontWeight="Bold" Grid.Column="3"/>
                     <Label Content="Timeout (s)" HorizontalAlignment="Left" VerticalAlignment="Top" RenderTransformOrigin="1.605,6.115" Margin="10,118,0,0" Grid.ColumnSpan="3" FontWeight="Bold"/>
                     <TextBox Name="tTimeout" TextWrapping="Wrap" Text="10" Margin="10,144,0,0" ToolTip="Time between two sync" Height="23" VerticalAlignment="Top" HorizontalAlignment="Left" Width="100" Grid.ColumnSpan="4" FontWeight="Normal"/>
-                    <Button Name="bSyncNow" Content="Sync now" Margin="0,0,10,20" HorizontalAlignment="Right" Width="100" Height="40" VerticalAlignment="Bottom" IsEnabled="False" Click="bSyncNow_Click" FontWeight="Bold" Grid.Column="3"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Versions" FontWeight="Bold" Height="26" VerticalAlignment="Top" Margin="-2,0">
                 <Grid Background="#FFE5E5E5" Margin="0,0,2,0">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="23*"/>
-                        <ColumnDefinition Width="101*"/>
-                        <ColumnDefinition Width="23*"/>
+                        <ColumnDefinition Width="24*"/>
+                        <ColumnDefinition Width="105*"/>
+                        <ColumnDefinition Width="24*"/>
                         <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="266*"/>
+                        <ColumnDefinition Width="79*"/>
+                        <ColumnDefinition Width="198*"/>
                     </Grid.ColumnDefinitions>
-                    <ListView Name="lDetails" Margin="10,36,190,10" MouseDoubleClick="lDetails_MouseDoubleClick" Grid.ColumnSpan="5" FontWeight="Normal">
+                    <ListView Name="lDetails" Margin="10,36,190,60" MouseDoubleClick="lDetails_MouseDoubleClick" Grid.ColumnSpan="6" FontWeight="Normal">
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn Header="Name" Width="65" DisplayMemberBinding="{Binding sFilename}"/>
@@ -53,14 +53,16 @@
                         </ListView.View>
                     </ListView>
                     <Label Content="Files in this version" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontWeight="Bold" Grid.ColumnSpan="5" Width="175"/>
-                    <ListView Name="lFileVersions" Margin="0,36,10,10" MouseDoubleClick="lFileVersions_MouseDoubleClick" HorizontalAlignment="Right" Width="175" Grid.Column="4" FontWeight="Normal">
+                    <ListView Name="lFileVersions" Margin="0,36,10,60" MouseDoubleClick="lFileVersions_MouseDoubleClick" HorizontalAlignment="Right" Width="175" Grid.Column="5" FontWeight="Normal">
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn Header="Date Modified" Width="170" DisplayMemberBinding="{Binding sTimestamp}"/>
                             </GridView>
                         </ListView.View>
                     </ListView>
-                    <Label Content="Previous versions" Margin="0,10,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="175" FontWeight="Bold" Grid.Column="4"/>
+                    <Label Content="Previous versions" Margin="0,10,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="175" FontWeight="Bold" Grid.Column="5"/>
+                    <Button Name="bSyncNow" Content="Sync now" Margin="0,0,0,10" HorizontalAlignment="Right" Width="120" Height="40" VerticalAlignment="Bottom" IsEnabled="False" Click="bSyncNow_Click" FontWeight="Bold" Grid.ColumnSpan="2"/>
+                    <Button Name="bBackup" Content="Backup" Margin="0,0,10,10" HorizontalAlignment="Right" Width="120" Height="40" VerticalAlignment="Bottom" IsEnabled="False" Click="bBackup_Click" FontWeight="Bold" Grid.Column="5"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Recycle Bin" FontWeight="Bold" Height="26">

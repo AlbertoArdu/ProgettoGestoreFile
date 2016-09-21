@@ -385,8 +385,7 @@ namespace clientWPF
 
         public int Dim => dim;
         public string SHAContenuto => sha_contenuto;
-        public ComandoScaricaFile(string nome_file, string path, DateTime timestamp)
-            : base()
+        public ComandoScaricaFile(string nome_file, string path, DateTime timestamp): base()
         {
             Log l = Log.getLog();
             if (!Logged)
@@ -555,7 +554,24 @@ namespace clientWPF
             }
 
             FileUtenteList list = new FileUtenteList();
-            list[this.nome_file, this.path].aggiornaDatiPrec(this.dim, this.t_creazione, this.SHAContenuto);
+
+            //vado a vedere il flag di validità sul db
+            //se è TRUE -> è una retrive di un file esistente
+            //se è FALSE -> è una retrive di un file cancellato
+
+            if (list.getValidity(this.nome_file, this.path) == true)
+                list[this.nome_file, this.path].aggiornaDatiPrec(this.dim, this.t_creazione, this.SHAContenuto);
+            else {
+                FileUtente[] deleted = list.Deleted;
+                foreach(FileUtente fu in deleted)
+                {
+                    if(fu.Nome == this.nome_file && fu.Path ==this.path)
+                    {
+                        fu.aggiornaDatiPrec(this.dim, this.t_creazione, this.SHAContenuto);
+                        break;
+                    }
+                }
+            }
 
             return true;
         }

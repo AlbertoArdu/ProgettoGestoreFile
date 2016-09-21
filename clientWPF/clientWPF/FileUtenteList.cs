@@ -35,6 +35,21 @@ namespace clientWPF
            // set { }
         }
 
+        public bool getValidity(string nome_file, string path_file)
+        {
+            for (int i = 0; i < this.__list_ids_files.Count; i++)
+            {
+                if (this[i].Nome == nome_file && this[i].Path == path_file)
+                    return true;
+            }
+            for (int i = 0; i < this.__list_deleted_ids.Count; i++)
+            {
+                if (this[i].Nome == nome_file && this[i].Path == path_file)
+                    return false;
+            }
+            throw new DatabaseException(" Non esiste nessun file con questo nome.", DatabaseErrorCode.FileNonEsistente);
+        }
+
         public FileUtente this[string nome_file, string path_file]
         {
             get
@@ -123,7 +138,6 @@ namespace clientWPF
             }
             return files;
         }
-
 
         /// <summary>
         ///     Usata per ciclare sui file di un utente.

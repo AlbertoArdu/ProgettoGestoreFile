@@ -69,8 +69,9 @@ namespace clientWPF
                     }
                 }
 				//Controlla se il DB è ok
-                if (!DB_Table.DBEsiste)
-                    throw new ClientException("Il database non esiste", ClientErrorCode.DatabaseNonPresente);
+                
+                //if (!DB_Table.DBEsiste)
+                    //throw new ClientException("Il database non esiste", ClientErrorCode.DatabaseNonPresente);
                 /*
                 string sha_db = DB_Table.HashDB;
                 ComandoScaricaHashDB c = new ComandoScaricaHashDB();

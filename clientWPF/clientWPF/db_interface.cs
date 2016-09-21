@@ -14,7 +14,7 @@ namespace clientWPF
 {
     class DB_Table
     {
-        private SQLiteCommand command;
+        private static SQLiteCommand command;
         private SQLiteDataReader reader;
         //private SQLiteDataAdapter DB;
         private DataSet DS = new DataSet();
@@ -62,7 +62,7 @@ namespace clientWPF
 
         }
 
-		
+
         static public bool DBEsiste => File.Exists(nome_file_db);
         static public string HashDB => FileUtente.CalcolaSHA256(File.OpenRead(nome_file_db));
 
@@ -70,7 +70,7 @@ namespace clientWPF
         {
             lock (lockVar)
             {
-                if(locked == true)
+                if (locked == true)
                 {
                     return false;
                 }
@@ -80,10 +80,10 @@ namespace clientWPF
                     return true;
                 }
             }
-            
+
         }
 
-		
+
         ~DB_Table()
         {
             count_ref--;
@@ -114,7 +114,7 @@ namespace clientWPF
             DB_Table.sql_con.Open();
             Crea_DB();
         }
-        
+
         static private void Crea_DB()
         {
             command = sql_con.CreateCommand();

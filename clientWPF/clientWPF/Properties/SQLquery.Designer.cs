@@ -61,6 +61,15 @@ namespace clientWPF.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to select valido from file where nome_file_c = @nome_file and path_relativo_c = @path;.
+        /// </summary>
+        internal static string getFileValidity {
+            get {
+                return ResourceManager.GetString("getFileValidity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to insert into versioni(id_file,timestamp_vers) VALUES (@id_file, @timestamp_vers);.
         /// </summary>
         internal static string sqlAddVersion {

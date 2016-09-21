@@ -346,6 +346,11 @@ namespace clientWPF
             notifyIcon.Visible = false;
         }
 
+        private void bBackup_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
         private void lDetails_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             DependencyObject obj = (DependencyObject)e.OriginalSource;
@@ -472,9 +477,10 @@ namespace clientWPF
                         {
                             if (Command.Logged == true)
                             {
-
+                                ControlloModifiche.StopTimer();
                                 Command getVersComm = new ComandoScaricaFile(deletedFileUtente.Nome, deletedFileUtente.Path, deletedFileVersion);
                                 getVersComm.esegui();
+                                ControlloModifiche.Inizializza();
                             }
                             else
                             {

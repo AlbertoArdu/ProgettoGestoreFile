@@ -153,4 +153,7 @@ sha_contenuto char(128), valido BOOLEAN DEFAULT TRUE);</value>
   <data name="sqlGetDeletedIds" xml:space="preserve">
     <value>SELECT id FROM file WHERE valido = 'FALSE';</value>
   </data>
+  <data name="getFileValidity" xml:space="preserve">
+    <value>select valido from file where nome_file_c = @nome_file and path_relativo_c = @path;</value>
+  </data>
 </root>
