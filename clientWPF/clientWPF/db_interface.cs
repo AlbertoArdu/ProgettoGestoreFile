@@ -14,7 +14,7 @@ namespace clientWPF
 {
     class DB_Table
     {
-        private static SQLiteCommand command;
+        private SQLiteCommand command;
         private SQLiteDataReader reader;
         //private SQLiteDataAdapter DB;
         private DataSet DS = new DataSet();
@@ -29,7 +29,10 @@ namespace clientWPF
         static private object lockVar = new object();
         static private bool locked = false;
         static private string[] db_structure = {
+                        "drop table if exists versioni",
+                        "drop table if exists file;",
                         //Tabella fileutente
+
                         Properties.SQLquery.tabellaFile,
                         Properties.SQLquery.TabellaVersioni,
                                                      };
@@ -105,11 +108,18 @@ namespace clientWPF
         {
             String s = "Data Source=";
             s += nome_file_db + ";Versione=3;";
+            if (DB_Table.sql_con != null)
+            {
+                DB_Table.sql_con.Close();
+                DB_Table.sql_con.Dispose();
+            }
+            /*
             if (File.Exists(nome_file_db))
             {
                 File.Delete(nome_file_db);
             }
             SQLiteConnection.CreateFile(nome_file_db);
+            */
             DB_Table.sql_con = new SQLiteConnection(s);
             DB_Table.sql_con.Open();
             Crea_DB();
@@ -117,6 +127,7 @@ namespace clientWPF
 
         static private void Crea_DB()
         {
+            SQLiteCommand command;
             command = sql_con.CreateCommand();
             foreach (string sql in db_structure)
             {

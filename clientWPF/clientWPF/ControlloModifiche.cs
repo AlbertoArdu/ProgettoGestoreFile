@@ -106,11 +106,14 @@ namespace clientWPF
 			lock (syncLock)
             {
                 //Puliamo la cartella...
-                Directory.Delete(base_path, recursive: true);
-                DB_Table.RebuildDB();
-				try
+                if(Directory.Exists(base_path))
+                    Directory.Delete(base_path, recursive: true);
+                try
 				{
-					ComandoListFolders c = new ComandoListFolders();
+                    DB_Table.RebuildDB();
+                    Directory.CreateDirectory(base_path);
+
+                    ComandoListFolders c = new ComandoListFolders();
 					c.esegui();
 					foreach (string path_rel in c.Paths)
 					{

@@ -646,7 +646,6 @@ namespace ProgettoMalnati
                 {
                     yield return p;
                 }
-                yield return "";
             }
         }
 
@@ -693,7 +692,6 @@ namespace ProgettoMalnati
                 {
                     yield return f;
                 }
-                yield return "";
             }
         }
 
@@ -740,7 +738,6 @@ namespace ProgettoMalnati
                 {
                     yield return t.Ticks.ToString();
                 }
-                yield return "";
             }
         }
 

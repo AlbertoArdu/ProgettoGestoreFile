@@ -140,6 +140,7 @@ namespace clientWPF
                 this.GetDelFiles();
                 bStop.IsEnabled = true;
                 bSyncNow.IsEnabled = true;
+                bBackup.IsEnabled = true;
                 tDirectory.IsEnabled = false;
                 tTimeout.IsEnabled = false;
                 bBrowse.IsEnabled = false;
@@ -348,7 +349,9 @@ namespace clientWPF
 
         private void bBackup_Click(object sender, RoutedEventArgs e)
         {
-
+            //Thread t = new Thread(ControlloModifiche.RestoreAsLastStatusOnServer);
+            //t.Start();
+            ControlloModifiche.RestoreAsLastStatusOnServer();
         }
 
         private void lDetails_MouseDoubleClick(object sender, MouseButtonEventArgs e)

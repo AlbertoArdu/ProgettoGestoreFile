@@ -915,6 +915,7 @@ namespace clientWPF
         public override bool esegui()
         {
             StringBuilder sb = new StringBuilder().Append(nome_comando).Append(Environment.NewLine)
+                .Append(nome_file).Append(Environment.NewLine)
                 .Append(path).Append(Environment.NewLine)
                 .Append(Environment.NewLine);
 
