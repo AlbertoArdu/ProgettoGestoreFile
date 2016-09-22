@@ -44,7 +44,7 @@ namespace clientWPF
             }
             for (int i = 0; i < this.__list_deleted_ids.Count; i++)
             {
-                if (this[i].Nome == nome_file && this[i].Path == path_file)
+                if (this.Deleted[i].Nome == nome_file && this.Deleted[i].Path == path_file)
                     return false;
             }
             throw new DatabaseException(" Non esiste nessun file con questo nome.", DatabaseErrorCode.FileNonEsistente);

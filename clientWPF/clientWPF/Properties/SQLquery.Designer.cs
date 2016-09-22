@@ -133,10 +133,17 @@ namespace clientWPF.Properties {
         }
         
         /// <summary>
+<<<<<<< HEAD
         ///   Cerca una stringa localizzata simile a create table file (
         ///id INTEGER PRIMARY KEY ASC, 
         ///nome_file_c varchar(50), 
         ///path_relativo_c varchar(100),
+=======
+        ///   Looks up a localized string similar to create table file (
+        ///id INTEGER, 
+        ///nome_file_c varchar(50) PRIMARY KEY, 
+        ///path_relativo_c varchar(100) PRIMARY KEY,
+>>>>>>> 7033f02fcff33670c72c9dbd5e14087c02372729
         ///dim int, 
         ///t_modifica DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, t_creazione DATETIME  NOT NULL DEFAULT CURRENT_TIMESTAMP,
         ///sha_contenuto char(128), valido BOOLEAN DEFAULT TRUE);.
