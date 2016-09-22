@@ -97,8 +97,8 @@ namespace clientWPF
             //Get the data
             object o;
 
-            CultureInfo en = new CultureInfo("en-US");
-            Thread.CurrentThread.CurrentCulture = en;
+            CultureInfo it = new CultureInfo("it-IT");
+            Thread.CurrentThread.CurrentCulture = it;
 
             foreach (Int32 i in GetResults())
             {

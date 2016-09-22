@@ -81,8 +81,8 @@ namespace ProgettoMalnati
         public Snapshot(int id_file, int id)
             : base()
         {
-            CultureInfo en = new CultureInfo("en-US");
-            Thread.CurrentThread.CurrentCulture = en;
+            CultureInfo it = new CultureInfo("it-IT");
+            Thread.CurrentThread.CurrentCulture = it;
 
             l = Log.getLog();
             if (base_path == null)

@@ -72,7 +72,6 @@ namespace clientWPF
 
         private void syncMenuItem(object sender, System.EventArgs e)
         {
-            ControlloModifiche.Check();
             GetFiles();
             GetDelFiles();
         }
@@ -83,7 +82,6 @@ namespace clientWPF
             {
                 lDetails.Items.Clear();
                 lFileVersions.Items.Clear();
-
 
                 FileUtenteList list = new FileUtenteList();
                 for (int i=0; i<list.Length; i++)
@@ -105,6 +103,7 @@ namespace clientWPF
             try
             {
                 lDeletedFiles.Items.Clear();
+                lDeletedFileVersions.Items.Clear();
 
                 FileUtenteList fileUtenteList = new FileUtenteList();
 
@@ -135,6 +134,8 @@ namespace clientWPF
                 bStart.IsEnabled = false;
                 lDetails.Items.Clear();
                 lFileVersions.Items.Clear();
+                lDeletedFiles.Items.Clear();
+                lDeletedFileVersions.Items.Clear();
                 ControlloModifiche.Inizializza();
                 this.GetFiles();
                 this.GetDelFiles();
@@ -162,6 +163,8 @@ namespace clientWPF
             {
                 lDetails.Items.Clear();
                 lFileVersions.Items.Clear();
+                lDeletedFiles.Items.Clear();
+                lDeletedFileVersions.Items.Clear();
                 updateStatus("Stop");
                 forceStop();
             }
@@ -296,6 +299,8 @@ namespace clientWPF
             }
             lDetails.Items.Clear();
             lFileVersions.Items.Clear();
+            lDeletedFiles.Items.Clear();
+            lDeletedFileVersions.Items.Clear();
             this.openLogin();
         }
 
@@ -502,7 +507,6 @@ namespace clientWPF
             }
 
         }
-
     }
 
     class VersionListViewItem

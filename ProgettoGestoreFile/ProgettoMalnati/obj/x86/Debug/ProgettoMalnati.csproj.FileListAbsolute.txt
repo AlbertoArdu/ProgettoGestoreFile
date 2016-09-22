@@ -26,8 +26,6 @@ F:\Lavoro\Progetto_malnati\ProgettoGestoreFile\ProgettoMalnati\bin\Debug\EntityF
 F:\Lavoro\Progetto_malnati\ProgettoGestoreFile\ProgettoMalnati\bin\Debug\EntityFramework.SqlServer.xml
 F:\Lavoro\Progetto_malnati\ProgettoGestoreFile\ProgettoMalnati\obj\x86\Debug\ProgettoMalnati.csprojResolveAssemblyReference.cache
 C:\Users\c.citera\Documents\GitHub\ProgettoGestoreFile\ProgettoGestoreFile\ProgettoMalnati\bin\Debug\ProgettoMalnati.exe.config
-C:\Users\c.citera\Documents\GitHub\ProgettoGestoreFile\ProgettoGestoreFile\ProgettoMalnati\obj\x86\Debug\ProgettoMalnati.exe
-C:\Users\c.citera\Documents\GitHub\ProgettoGestoreFile\ProgettoGestoreFile\ProgettoMalnati\obj\x86\Debug\ProgettoMalnati.pdb
 C:\Users\c.citera\Documents\GitHub\ProgettoGestoreFile\ProgettoGestoreFile\ProgettoMalnati\bin\Debug\ProgettoMalnati.exe
 C:\Users\c.citera\Documents\GitHub\ProgettoGestoreFile\ProgettoGestoreFile\ProgettoMalnati\bin\Debug\ProgettoMalnati.pdb
 C:\Users\c.citera\Documents\GitHub\ProgettoGestoreFile\ProgettoGestoreFile\ProgettoMalnati\bin\Debug\EntityFramework.dll
@@ -40,3 +38,5 @@ C:\Users\c.citera\Documents\GitHub\ProgettoGestoreFile\ProgettoGestoreFile\Proge
 C:\Users\c.citera\Documents\GitHub\ProgettoGestoreFile\ProgettoGestoreFile\ProgettoMalnati\obj\x86\Debug\ProgettoMalnati.Properties.DatiTest.resources
 C:\Users\c.citera\Documents\GitHub\ProgettoGestoreFile\ProgettoGestoreFile\ProgettoMalnati\obj\x86\Debug\ProgettoMalnati.Properties.SQLquery.resources
 C:\Users\c.citera\Documents\GitHub\ProgettoGestoreFile\ProgettoGestoreFile\ProgettoMalnati\obj\x86\Debug\ProgettoMalnati.csproj.GenerateResource.Cache
+C:\Users\c.citera\Documents\GitHub\ProgettoGestoreFile\ProgettoGestoreFile\ProgettoMalnati\obj\x86\Debug\ProgettoMalnati.exe
+C:\Users\c.citera\Documents\GitHub\ProgettoGestoreFile\ProgettoGestoreFile\ProgettoMalnati\obj\x86\Debug\ProgettoMalnati.pdb

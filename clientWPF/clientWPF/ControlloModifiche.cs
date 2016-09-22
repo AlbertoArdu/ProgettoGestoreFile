@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Timers;
 
 namespace clientWPF
 {
     static class ControlloModifiche
     {
-        static public Timer checker;
+        static public System.Timers.Timer checker;
         static string user, pwd;
         static string base_path;
         static private bool init = false;
@@ -82,7 +84,7 @@ namespace clientWPF
                 }
                 */
                 //Imposta il timer per il controllo periodico
-                checker = new Timer(interval * 1000);
+                checker = new System.Timers.Timer(interval * 1000);
                 checker.AutoReset = true;
                 checker.Elapsed += Checker_Elapsed;
                 init = true;
@@ -173,6 +175,9 @@ namespace clientWPF
                 string[] entry = new string[2];
                 string path_completo;
                 Command c;
+
+                CultureInfo it = new CultureInfo("it-IT");
+                Thread.CurrentThread.CurrentCulture = it;
 
                 if (!init)
                 {
