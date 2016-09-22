@@ -136,7 +136,7 @@ namespace clientWPF
 							DateTime[] versions = c_vers.Versions;
 							DateTime last_vers = versions.Max();
 							ComandoScaricaFile c_scarica = new ComandoScaricaFile(nome_file, path_rel, last_vers);
-							c.esegui();
+							c_scarica.esegui();
 							FileUtente fu = FileUtente.CreaNuovo(nome_file,path_rel, last_vers,c_scarica.Dim,c_scarica.SHAContenuto);
 							foreach (DateTime dt in versions)
 							{

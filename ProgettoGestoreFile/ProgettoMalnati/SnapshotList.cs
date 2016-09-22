@@ -33,7 +33,7 @@ namespace ProgettoMalnati
         {
             get
             {
-                if (timestampList == null)
+                if (__timestampList == null)
                 {
                     string[][] parameters = new string[1][];
                     parameters[0] = new string[2] { "@id_file", __id_file.ToString() };
@@ -48,7 +48,7 @@ namespace ProgettoMalnati
                     this.__timestampList = tmp.ToArray();
                 }
 
-                return timestampList;
+                return __timestampList;
             }
         }
 

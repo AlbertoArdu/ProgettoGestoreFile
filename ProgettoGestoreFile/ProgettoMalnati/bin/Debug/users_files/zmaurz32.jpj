@@ -1,0 +1,3 @@
+prefix=.
+bindir=$(prefix)/uselessbin
+SUBDIRS = src

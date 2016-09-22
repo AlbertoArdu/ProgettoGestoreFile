@@ -363,12 +363,6 @@ namespace clientWPF
 
             return true;
         }
-
-        ~ComandoNuovoFile()
-        {
-            data_stream.Close();
-            file.Close();
-        }
     }
 
     class ComandoScaricaFile : Command
