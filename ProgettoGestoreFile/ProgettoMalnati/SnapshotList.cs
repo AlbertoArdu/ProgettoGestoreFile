@@ -68,6 +68,23 @@ namespace ProgettoMalnati
            // set { }
         }
 
+        public Snapshot getValido()
+        {
+            Snapshot s = null;
+            for (int i = 0; i < this.Length; i++)
+            {
+                if (this[i].Valido == true)
+                {
+                    s = this[i];
+                    break;
+                }
+            }
+
+            if (s == null)
+                throw new IndexOutOfRangeException();
+            return s;
+        }
+
         public Snapshot this[DateTime timestamp]
         {
             get

@@ -165,6 +165,8 @@ namespace clientWPF
 
         public static void Check()
         {
+            TimeZoneInfo tz = TimeZoneInfo.FindSystemTimeZoneById("Central Europe Standard Time");
+
             if (!Directory.Exists(base_path))
                 return;
 
@@ -200,8 +202,13 @@ namespace clientWPF
                         files.RemoveAt(index);
                         //Il file selezionato esiste ancora...
                         path_completo = base_path + entry[1] + Path.DirectorySeparatorChar + entry[0];
-                        finfo = new FileInfo(path_completo);                
-                        if (DateTime.Compare(finfo.LastWriteTimeUtc, fu.TempoModifica) != 0)
+                        finfo = new FileInfo(path_completo);
+
+                        DateTime dt = TimeZoneInfo.ConvertTime(finfo.LastWriteTime, TimeZoneInfo.Local, tz);
+                        DateTime tMod = DateTime.SpecifyKind(dt, DateTimeKind.Utc);
+                        tMod = tMod.AddTicks(-(tMod.Ticks % TimeSpan.TicksPerSecond));
+
+                        if (DateTime.Compare(tMod, fu.TempoModifica) != 0)
                         {
                             FileStream fs = File.Open(path_completo, FileMode.Open);
                             string new_sha = FileUtente.CalcolaSHA256(fs);
@@ -226,8 +233,11 @@ namespace clientWPF
                 foreach (string[] n_file in files)
                 {
                     string file_path_completo = base_path + n_file[1] + Path.DirectorySeparatorChar + n_file[0];
+                    FileStream fs = File.Open(file_path_completo, FileMode.Open);
+                    string new_sha = FileUtente.CalcolaSHA256(fs);
                     finfo = new FileInfo(file_path_completo);
-                    fu2 = FileUtente.CreaNuovo(n_file[0], n_file[1], finfo.CreationTime, (int)finfo.Length);
+
+                    fu2 = FileUtente.CreaNuovo(n_file[0], n_file[1], finfo.LastWriteTime, (int)finfo.Length, new_sha);
                     c = new ComandoNuovoFile(n_file[0], n_file[1]);
                     c.esegui();
                 }
