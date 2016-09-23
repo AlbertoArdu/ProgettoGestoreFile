@@ -463,6 +463,22 @@ namespace ProgettoMalnati
                 try
                 {
                     snap = user.FileList[nome_file, path_relativo].Snapshots[timestamp];
+
+                    //il file era delete e lo sto ripristinando
+                    if (!user.FileList[nome_file, path_relativo].Valido)
+                    {
+                        user.FileList[nome_file, path_relativo].Valido = true;
+                        user.FileList[nome_file, path_relativo].Snapshots[timestamp].Valido = true;
+                    }
+                    //sto scaricando una versione precedente
+                    else
+                    {
+                        //setto a false lo snapshot vecchio
+                        user.FileList[nome_file, path_relativo].Snapshots.getValido().Valido = false;
+                        //setto a true lo snapshot nuovo
+                        user.FileList[nome_file, path_relativo].Snapshots[timestamp].Valido = true;
+                    }
+
                 }
                 catch (Exception e)
                 {

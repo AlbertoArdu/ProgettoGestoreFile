@@ -140,8 +140,7 @@ namespace clientWPF
                 this.GetFiles();
                 this.GetDelFiles();
                 bStop.IsEnabled = true;
-                bSyncNow.IsEnabled = true;
-                bBackup.IsEnabled = true;
+                bSyncNow.IsEnabled = true;               
                 tDirectory.IsEnabled = false;
                 tTimeout.IsEnabled = false;
                 bBrowse.IsEnabled = false;
@@ -507,6 +506,20 @@ namespace clientWPF
             }
 
         }
+
+
+        private void tabVersions_Clicked(object sender, MouseButtonEventArgs e)
+        {
+            ControlloModifiche.Check();
+            this.GetFiles();
+        }
+        
+        private void tabRecycleBin_Clicked(object sender, MouseButtonEventArgs e)
+        {
+            ControlloModifiche.Check();
+            this.GetDelFiles();
+        }
+                   
     }
 
     class VersionListViewItem
