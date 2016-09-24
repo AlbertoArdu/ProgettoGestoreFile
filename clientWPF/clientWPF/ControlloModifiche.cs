@@ -89,6 +89,8 @@ namespace clientWPF
                 checker.AutoReset = true;
                 checker.Elapsed += Checker_Elapsed;
                 init = true;
+                if (!Directory.Exists(base_path))
+                    throw new ClientException(Properties.Messaggi.CartellaNonEsistente, ClientErrorCode.CartellaNonEsistente);
             }
             checker.Enabled = true;
         }
@@ -170,11 +172,10 @@ namespace clientWPF
 
             if (!Directory.Exists(base_path))
                 return;
-
-            lock (syncLock)
+            if(Monitor.TryEnter(syncLock))
             {
                 List<string[]> files = FileUtenteList.exploreFileSystem(base_path);
-                List<int> toBeDeleted = new List<int>();
+                List<FileUtente> toBeDeleted = new List<FileUtente>();
                 FileUtenteList list = new FileUtenteList();
                 string[] entry = new string[2];
                 string path_completo;
@@ -225,14 +226,14 @@ namespace clientWPF
                     }
                     else
                     {
-                        toBeDeleted.Add(fu.Id);
+                        toBeDeleted.Add(fu);
                     }
                 }
                 //Cancelliamo
-                foreach(int id in toBeDeleted)
+                foreach(FileUtente _fu in toBeDeleted)
                 {
-                    list.Delete(id);
-                    c = new ComandoEliminaFile(entry[0], entry[1]);
+                    list.Delete(_fu.Id);
+                    c = new ComandoEliminaFile(_fu.Nome, _fu.Path);
                     c.esegui();
                 }
 

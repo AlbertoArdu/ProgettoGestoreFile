@@ -20,7 +20,6 @@ F:\Lavoro\Progetto_malnati\ProgettoGestoreFile\ProgettoMalnati\bin\Debug\Progett
 F:\Lavoro\Progetto_malnati\ProgettoGestoreFile\ProgettoMalnati\bin\Debug\EntityFramework.dll
 F:\Lavoro\Progetto_malnati\ProgettoGestoreFile\ProgettoMalnati\bin\Debug\EntityFramework.SqlServer.dll
 F:\Lavoro\Progetto_malnati\ProgettoGestoreFile\ProgettoMalnati\bin\Debug\SQLite.NET.dll
-F:\Lavoro\Progetto_malnati\ProgettoGestoreFile\ProgettoMalnati\bin\Debug\System.Data.SQLite.dll
 F:\Lavoro\Progetto_malnati\ProgettoGestoreFile\ProgettoMalnati\bin\Debug\System.Runtime.CompilerServices.VisualC.dll
 F:\Lavoro\Progetto_malnati\ProgettoGestoreFile\ProgettoMalnati\bin\Debug\EntityFramework.xml
 F:\Lavoro\Progetto_malnati\ProgettoGestoreFile\ProgettoMalnati\bin\Debug\EntityFramework.SqlServer.xml

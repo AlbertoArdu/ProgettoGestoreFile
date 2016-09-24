@@ -549,7 +549,9 @@ namespace clientWPF
             
             if (tot_read != this.dim)
             {
-                throw new ServerException(Properties.Messaggi.datiInconsistenti, ServerErrorCode.DatiInconsistenti);
+                error_message = Properties.Messaggi.datiInconsistenti;
+                error_code = ServerErrorCode.DatiInconsistenti;
+                return false;
             }
             SHA256 sha_obj = SHA256Managed.Create();
             byte[] hash_val;

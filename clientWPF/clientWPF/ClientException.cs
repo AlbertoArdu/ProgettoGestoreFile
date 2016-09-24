@@ -19,6 +19,7 @@ namespace clientWPF
         CredenzialiUtenteMancanti,
         CredenzialiUtenteErrate,
         ControlloNonInizializzato,
+        CartellaNonEsistente
     }
     class ClientException : Exception
     {

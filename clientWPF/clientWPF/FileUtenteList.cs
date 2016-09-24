@@ -162,7 +162,7 @@ namespace clientWPF
                 return;
             if ((index = __list_ids_files.IndexOf(id)) == -1)
                 throw new ArgumentException("L'id fornito non appartiene ad alcun file");
-            __file_list[index].Valido = false;
+            this[index].Valido = false;
             __list_deleted_ids.Add(id);
             __list_ids_files.RemoveAt(index);
             __file_list = new FileUtente[__list_ids_files.Count];

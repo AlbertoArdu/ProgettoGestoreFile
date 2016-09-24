@@ -1,5 +1,0 @@
-noinst_LIBRARIES = lib_foo.a
-lib_foo_a_SOURCES = lib_foo/foo.c lib_foo/foo.h
-bin_PROGRAMS = mystery_foo
-mystery_foo_SOURCES = main/main.c main/main.h
-mystery_foo_LDADD = lib_foo.a

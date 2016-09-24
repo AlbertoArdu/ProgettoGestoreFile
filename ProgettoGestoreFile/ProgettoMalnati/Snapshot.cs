@@ -62,7 +62,7 @@ namespace ProgettoMalnati
             {
                 string sql = "UPDATE snapshots SET valido = @valido WHERE id = @id AND id_file = @id_file;";
                 string[][] parameters = new string[3][];
-                parameters[0] = new string[2] { "@valido", value.ToString() };
+                parameters[0] = new string[2] { "@valido", value ? "TRUE" : "FALSE"};
                 parameters[1] = new string[2] { "@id", this.__id.ToString() };
                 parameters[2] = new string[2] { "@id_file", this.__id_file.ToString() };
                 try
@@ -275,8 +275,7 @@ namespace ProgettoMalnati
             parameters[2] = new string[2] { "@sha_contenuto", __sha_contenuto };
             parameters[3] = new string[2] { "@nome_locale_s", __nome_locale };
             parameters[4] = new string[2] { "@id", __id.ToString() };
-
-
+            
             this.ExecuteQuery(sql_store_data, parameters);
         }
 

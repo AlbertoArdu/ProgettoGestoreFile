@@ -2,7 +2,6 @@ F:\Lavoro\Progetto_malnati\clientWPF\clientWPF\bin\Debug\clientWPF.exe.config
 F:\Lavoro\Progetto_malnati\clientWPF\clientWPF\bin\Debug\clientWPF.exe
 F:\Lavoro\Progetto_malnati\clientWPF\clientWPF\bin\Debug\clientWPF.pdb
 F:\Lavoro\Progetto_malnati\clientWPF\clientWPF\bin\Debug\SQLite.Designer.dll
-F:\Lavoro\Progetto_malnati\clientWPF\clientWPF\bin\Debug\System.Data.SQLite.dll
 F:\Lavoro\Progetto_malnati\clientWPF\clientWPF\bin\Debug\EnvDTE.dll
 F:\Lavoro\Progetto_malnati\clientWPF\clientWPF\bin\Debug\Microsoft.VisualStudio.VSHelp.dll
 F:\Lavoro\Progetto_malnati\clientWPF\clientWPF\bin\Debug\Microsoft.VisualStudio.ComponentModelHost.dll

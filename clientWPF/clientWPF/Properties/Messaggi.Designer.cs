@@ -61,6 +61,15 @@ namespace clientWPF.Properties {
         }
         
         /// <summary>
+        ///   Cerca una stringa localizzata simile a &quot;Il direttorio indicato non esiste. Sceglerne uno diverso.&quot;.
+        /// </summary>
+        public static string CartellaNonEsistente {
+            get {
+                return ResourceManager.GetString("CartellaNonEsistente", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Cerca una stringa localizzata simile a &quot;Il collegamento dati non può essere istanziato. Riprovare più tardi&quot;.
         /// </summary>
         public static string collegamentoDati {
