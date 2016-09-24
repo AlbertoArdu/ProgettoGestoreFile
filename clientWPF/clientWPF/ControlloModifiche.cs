@@ -9,6 +9,7 @@ using System.Timers;
 
 namespace clientWPF
 {
+
     static class ControlloModifiche
     {
         static public System.Timers.Timer checker;
@@ -16,8 +17,8 @@ namespace clientWPF
         static string base_path;
         static private bool init = false;
         static private ConnectionSettings connectionSetting;
-        static private readonly object syncLock = new object();
         static private int interval;
+        static private readonly object syncLock = new object();
         /// <summary>
         /// Inizializza il controllo periodico del contenuto della cartella.
         /// Controlla anche le credenziali con il server testando il login.
@@ -240,11 +241,9 @@ namespace clientWPF
                 foreach (string[] n_file in files)
                 {
                     string file_path_completo = base_path + n_file[1] + Path.DirectorySeparatorChar + n_file[0];
-                    FileStream fs = File.Open(file_path_completo, FileMode.Open);
-                    string new_sha = FileUtente.CalcolaSHA256(fs);
                     finfo = new FileInfo(file_path_completo);
 
-                    fu2 = FileUtente.CreaNuovo(n_file[0], n_file[1], finfo.LastWriteTime, (int)finfo.Length, new_sha);
+                    fu2 = FileUtente.CreaNuovo(n_file[0], n_file[1], finfo.CreationTime, (int)finfo.Length);
                     c = new ComandoNuovoFile(n_file[0], n_file[1]);
                     c.esegui();
                 }
