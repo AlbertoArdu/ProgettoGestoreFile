@@ -173,6 +173,7 @@ namespace clientWPF
             lock (syncLock)
             {
                 List<string[]> files = FileUtenteList.exploreFileSystem(base_path);
+                List<int> toBeDeleted = new List<int>();
                 FileUtenteList list = new FileUtenteList();
                 string[] entry = new string[2];
                 string path_completo;
@@ -223,11 +224,17 @@ namespace clientWPF
                     }
                     else
                     {
-                        list.Delete(fu.Id);
-                        c = new ComandoEliminaFile(entry[0], entry[1]);
-                        c.esegui();
+                        toBeDeleted.Add(fu.Id);
                     }
                 }
+                //Cancelliamo
+                foreach(int id in toBeDeleted)
+                {
+                    list.Delete(id);
+                    c = new ComandoEliminaFile(entry[0], entry[1]);
+                    c.esegui();
+                }
+
                 //file nuovi
                 FileUtente fu2;
                 foreach (string[] n_file in files)

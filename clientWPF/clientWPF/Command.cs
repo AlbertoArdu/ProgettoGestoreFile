@@ -615,17 +615,7 @@ namespace clientWPF
             switch (errorCode)
             {
                 case CommandErrorCode.OK:
-
                     break;
-                case CommandErrorCode.FormatoDatiErrato:
-                    throw new ServerException(Properties.Messaggi.formatoDatiErrato, ServerErrorCode.FormatoDatiErrato);
-                case CommandErrorCode.UtenteNonLoggato:
-                    throw new ServerException(Properties.Messaggi.nonLoggato, ServerErrorCode.UtenteNonLoggato);
-                case CommandErrorCode.FileEsistente:
-                    throw new ServerException(Properties.Messaggi.fileEsistente, ServerErrorCode.FileEsistente);
-                case CommandErrorCode.LimiteFileSuperato:
-                    throw new ServerException(Properties.Messaggi.limiteFileSuperato, ServerErrorCode.LimiteFileSuperato);
-                case CommandErrorCode.DatiIncompleti:
                 default:
                     throw new ServerException(Properties.Messaggi.erroreServer, ServerErrorCode.Default);
             }
@@ -649,7 +639,6 @@ namespace clientWPF
                     }
                 }
             }
-
             return true;
         }
     }
@@ -685,12 +674,12 @@ namespace clientWPF
                 finfo = new FileInfo(path_completo);
                 if (!finfo.Exists)
                 {
-                    throw new Exception("Il file da inviare non esiste.");
+                    throw new ClientException("Il file da inviare non esiste.");
                 }
             }
             catch (Exception e)
             {
-                throw new Exception("Errore nel leggere i parametri del file. Forse i parametri sono sbagliati. " + e.Message);
+                throw new ClientException("Errore nel leggere i parametri del file. Forse i parametri sono sbagliati. " + e.Message);
             }
             if (dim < 0)
                 this.dim = (int)(finfo.Length);
@@ -734,7 +723,8 @@ namespace clientWPF
             if (response == null)
             {
                 error_message = Properties.Messaggi.erroreConnessioneServer;
-                throw new ServerException(Properties.Messaggi.erroreServer, ServerErrorCode.ConnessioneInterrotta);
+                error_code = ServerErrorCode.ConnessioneInterrotta;
+                return false;
             }
             response = response.Trim();
             CommandErrorCode errorCode = (CommandErrorCode)Int32.Parse(response.Split(' ')[0]); //Extract code from response
@@ -747,16 +737,19 @@ namespace clientWPF
                     }
                     catch
                     {
-                        throw new ServerException(Properties.Messaggi.collegamentoDati,
-                            ServerErrorCode.CollegamentoDatiNonDisponibile);
+                        error_message = Properties.Messaggi.collegamentoDati;
+                        error_code = ServerErrorCode.CollegamentoDatiNonDisponibile;
+                        return false;
                     }
                     break;
                 case CommandErrorCode.FormatoDatiErrato:
-                    throw new ServerException(Properties.Messaggi.formatoDatiErrato, ServerErrorCode.FormatoDatiErrato);
+                    error_message = Properties.Messaggi.formatoDatiErrato;
+                    error_code = ServerErrorCode.FormatoDatiErrato;
+                    return false;
                 case CommandErrorCode.UtenteNonLoggato:
-                    throw new ServerException(Properties.Messaggi.nonLoggato, ServerErrorCode.UtenteNonLoggato);
-                case CommandErrorCode.FileEsistente:
-                    throw new ServerException(Properties.Messaggi.fileEsistente, ServerErrorCode.FileEsistente);
+                    error_message = Properties.Messaggi.nonLoggato;
+                    error_code = ServerErrorCode.UtenteNonLoggato;
+                    return false;
                 case CommandErrorCode.LimiteFileSuperato:
                     throw new ServerException(Properties.Messaggi.limiteFileSuperato, ServerErrorCode.LimiteFileSuperato);
                 case CommandErrorCode.DatiIncompleti:
@@ -777,13 +770,17 @@ namespace clientWPF
             }
             catch
             {
-                throw new ServerException(Properties.Messaggi.erroreServer, ServerErrorCode.Default);
+                error_message = Properties.Messaggi.erroreConnessioneServer;
+                error_code = ServerErrorCode.ConnessioneInterrotta;
+                return false;
             }
             //Leggo la risposta (se tutto è andato bene o c'è stato un errore)
             response = control_stream_reader.ReadLine();
             if (response == null)
             {
-                throw new ServerException("La connessione con il server è caduta improvvisamente", ServerErrorCode.ConnessioneInterrotta);
+                error_message = Properties.Messaggi.erroreConnessioneServer;
+                error_code = ServerErrorCode.ConnessioneInterrotta;
+                return false;
             }
             response = response.Trim();
             errorCode = (CommandErrorCode)Int32.Parse(response.Split(' ')[0]); //Extract code from response
@@ -791,7 +788,6 @@ namespace clientWPF
             switch (errorCode)
             {
                 case CommandErrorCode.OK:
-                    
                     break;
                 default:
                     throw new ServerException(Properties.Messaggi.erroreServer, ServerErrorCode.Default);
@@ -843,7 +839,8 @@ namespace clientWPF
             if (response == null)
             {
                 error_message = Properties.Messaggi.erroreConnessioneServer;
-                throw new ServerException(Properties.Messaggi.erroreServer, ServerErrorCode.ConnessioneInterrotta);
+                error_code = ServerErrorCode.ConnessioneInterrotta;
+                return false;
             }
             response = response.Trim();
             CommandErrorCode errorCode = (CommandErrorCode)Int32.Parse(response.Split(' ')[0]); //Extract code from response
@@ -876,7 +873,6 @@ namespace clientWPF
                 throw new ServerException(Properties.Messaggi.nonLoggato, ServerErrorCode.UtenteNonLoggato);
             }
             __paths = new System.Collections.Generic.List<string>();
-
         }
 
         public override bool esegui()
@@ -942,7 +938,8 @@ namespace clientWPF
             if (response == null)
             {
                 error_message = Properties.Messaggi.erroreConnessioneServer;
-                throw new ServerException(Properties.Messaggi.erroreServer, ServerErrorCode.ConnessioneInterrotta);
+                error_code = ServerErrorCode.ConnessioneInterrotta;
+                return false;
             }
             response = response.Trim();
             CommandErrorCode errorCode = (CommandErrorCode)Int32.Parse(response.Split(' ')[0]); //Extract code from response
@@ -952,7 +949,9 @@ namespace clientWPF
                     break;
                 case CommandErrorCode.DatiIncompleti:
                 case CommandErrorCode.DatiErrati:
-                    throw new ServerException("I dati forniti dall'utente non sono corretti.", ServerErrorCode.DatiIncompleti);
+                    error_message = Properties.Messaggi.erroreConnessioneServer;
+                    error_code = ServerErrorCode.ConnessioneInterrotta;
+                    return false;
                 default:
                     throw new ServerException();
             }
@@ -1002,7 +1001,8 @@ namespace clientWPF
             if (response == null)
             {
                 error_message = Properties.Messaggi.erroreConnessioneServer;
-                throw new ServerException(Properties.Messaggi.erroreServer, ServerErrorCode.ConnessioneInterrotta);
+                error_code = ServerErrorCode.ConnessioneInterrotta;
+                return false;
             }
             response = response.Trim();
             CommandErrorCode errorCode = (CommandErrorCode)Int32.Parse(response.Split(' ')[0]); //Extract code from response
@@ -1012,7 +1012,9 @@ namespace clientWPF
                     break;
                 case CommandErrorCode.DatiIncompleti:
                 case CommandErrorCode.DatiErrati:
-                    throw new ServerException("I dati forniti dall'utente non sono corretti.", ServerErrorCode.DatiIncompleti);
+                    error_message = Properties.Messaggi.formatoDatiErrato;
+                    error_code = ServerErrorCode.DatiErrati;
+                    return false;
                 default:
                     throw new ServerException();
             }
