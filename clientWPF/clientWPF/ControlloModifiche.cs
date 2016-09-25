@@ -120,6 +120,7 @@ namespace clientWPF
 
                     ComandoListFolders c = new ComandoListFolders();
 					c.esegui();
+                    FileUtenteList flist = FileUtenteList.getInstance();
 					foreach (string path_rel in c.Paths)
 					{
                         string[] directories = path_rel.Split('\\');
@@ -142,14 +143,13 @@ namespace clientWPF
 							DateTime last_vers = versions.Max();
 							ComandoScaricaFile c_scarica = new ComandoScaricaFile(nome_file, path_rel, last_vers);
 							c_scarica.esegui();
-							FileUtente fu = FileUtente.CreaNuovo(nome_file,path_rel, last_vers,c_scarica.Dim,c_scarica.SHAContenuto);
+							FileUtente fu = flist.CreaNuovo(nome_file,path_rel, last_vers,c_scarica.Dim,c_scarica.SHAContenuto);
 							foreach (DateTime dt in versions)
 							{
 								if(dt != last_vers)
 									fu.AggiungiVersione(dt);
 							}
 						}
-
 					}
 				}
 				catch (ServerException e)
@@ -176,7 +176,7 @@ namespace clientWPF
             {
                 List<string[]> files = FileUtenteList.exploreFileSystem(base_path);
                 List<FileUtente> toBeDeleted = new List<FileUtente>();
-                FileUtenteList list = new FileUtenteList();
+                FileUtenteList list = FileUtenteList.getInstance();
                 string[] entry = new string[2];
                 string path_completo;
                 Command c;
@@ -244,7 +244,7 @@ namespace clientWPF
                     string file_path_completo = base_path + n_file[1] + Path.DirectorySeparatorChar + n_file[0];
                     finfo = new FileInfo(file_path_completo);
 
-                    fu2 = FileUtente.CreaNuovo(n_file[0], n_file[1], finfo.CreationTime, (int)finfo.Length);
+                    fu2 = list.CreaNuovo(n_file[0], n_file[1], finfo.CreationTime, (int)finfo.Length);
                     c = new ComandoNuovoFile(n_file[0], n_file[1]);
                     c.esegui();
                 }

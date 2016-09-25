@@ -83,7 +83,7 @@ namespace clientWPF
                 lDetails.Items.Clear();
                 lFileVersions.Items.Clear();
 
-                FileUtenteList list = new FileUtenteList();
+                FileUtenteList list = FileUtenteList.getInstance();
                 for (int i=0; i<list.Length; i++)
                 {
                     lDetails.Items.Add(new VersionListViewItem(list[i].Nome, list[i].Path, list[i].TempoModifica));
@@ -105,7 +105,7 @@ namespace clientWPF
                 lDeletedFiles.Items.Clear();
                 lDeletedFileVersions.Items.Clear();
 
-                FileUtenteList fileUtenteList = new FileUtenteList();
+                FileUtenteList fileUtenteList = FileUtenteList.getInstance();
 
                 foreach (FileUtente fu in fileUtenteList.Deleted)
                 {
@@ -368,7 +368,7 @@ namespace clientWPF
                     string selectedFileName = ((VersionListViewItem)lDetails.SelectedItem).sFilename;
                     string selectedFilePath = ((VersionListViewItem)lDetails.SelectedItem).sPath;
 
-                    FileUtenteList fileUtenteList = new FileUtenteList();
+                    FileUtenteList fileUtenteList = FileUtenteList.getInstance();
                     selectedFileUtente = fileUtenteList[selectedFileName, selectedFilePath];
 
                     lFileVersions.Items.Clear();
@@ -438,7 +438,7 @@ namespace clientWPF
                     string deletedFileName = ((VersionListViewItem)lDeletedFiles.SelectedItem).sFilename;
                     string deletedFilePath = ((VersionListViewItem)lDeletedFiles.SelectedItem).sPath;
 
-                    FileUtenteList fileUtenteList = new FileUtenteList();
+                    FileUtenteList fileUtenteList = FileUtenteList.getInstance();
                     FileUtente[] deletedFileList = fileUtenteList.Deleted;
 
                     foreach (FileUtente fu in deletedFileList)

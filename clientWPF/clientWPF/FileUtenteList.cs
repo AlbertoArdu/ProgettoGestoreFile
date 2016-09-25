@@ -19,6 +19,9 @@ namespace clientWPF
         private FileUtente[] __deleted_list;
         static private string sql_get_file_ids = Properties.SQLquery.sqlGetId;
         string sql_get_deleted_ids = Properties.SQLquery.sqlGetDeletedIds;
+        static private string sql_nuovo_file = Properties.SQLquery.sqlNuovoFile;
+
+        static private FileUtenteList _instance = null;
         //Proprieta
         public int Length => __list_ids_files.Count;
 
@@ -76,8 +79,9 @@ namespace clientWPF
                 return __deleted_list;
             }
         }
+        
         //Costruttori
-        public FileUtenteList(): base()
+        private FileUtenteList(): base()
         {
             //this.__max_file = Properties.Settings.Default.numero_file;
             this.__list_ids_files = new System.Collections.Generic.List<int>();
@@ -97,6 +101,40 @@ namespace clientWPF
             this.__file_list = new FileUtente[this.__list_ids_files.Count];
             this.__deleted_list = new FileUtente[this.__list_deleted_ids.Count];
         }
+ 
+        /// <summary>
+        ///     Usata per ciclare sui file di un utente.
+        ///     Non carica tutti i file in una volta
+        /// </summary>
+        /// <returns>
+        ///     Un iteratore per il costrutto "foreach".
+        /// </returns>
+        public IEnumerator GetEnumerator()
+        {
+            int index;
+            for (index = 0; index < this.__list_ids_files.Count; index++)
+            {
+                yield return this[index];
+            }
+        }
+
+        public void Delete(int id)
+        {
+            int index;
+            lock (this)
+            {
+                if (__list_deleted_ids.Contains(id))
+                    return;
+                if ((index = __list_ids_files.IndexOf(id)) == -1)
+                    throw new ArgumentException("L'id fornito non appartiene ad alcun file");
+                this[index].Valido = false;
+                __list_deleted_ids.Add(id);
+                __list_ids_files.RemoveAt(index);
+                __file_list = new FileUtente[__list_ids_files.Count];
+                __deleted_list = new FileUtente[__list_deleted_ids.Count];
+            }
+        }
+        //Static methods
         /// <summary>
         /// Restituisce tutti i file in una cartella, scendendo ricorsivamente nelle sottocartelle
         /// </summary>
@@ -139,34 +177,37 @@ namespace clientWPF
             return files;
         }
 
-        /// <summary>
-        ///     Usata per ciclare sui file di un utente.
-        ///     Non carica tutti i file in una volta
-        /// </summary>
-        /// <returns>
-        ///     Un iteratore per il costrutto "foreach".
-        /// </returns>
-        public IEnumerator GetEnumerator()
+        public FileUtente CreaNuovo(string nome_file, string path, DateTime t_creazione, int dim, string sha_contenuto = null)
         {
-            int index;
-            for (index = 0; index < this.__list_ids_files.Count; index++)
-            {
-                yield return this[index];
-            }
-        }
+            int id = 0;
+            DB_Table db = new DB_Table();
+            sha_contenuto = sha_contenuto != null ? sha_contenuto : "";
+            string[][] parameters = new string[6][];
 
-        public void Delete(int id)
-        {
-            int index;
-            if (__list_deleted_ids.Contains(id))
-                return;
-            if ((index = __list_ids_files.IndexOf(id)) == -1)
-                throw new ArgumentException("L'id fornito non appartiene ad alcun file");
-            this[index].Valido = false;
-            __list_deleted_ids.Add(id);
-            __list_ids_files.RemoveAt(index);
+            parameters[0] = new string[2] { "@dim", dim.ToString() };
+            parameters[1] = new string[2] { "@t_modifica", t_creazione.ToString("u") };
+            parameters[2] = new string[2] { "@t_creazione", t_creazione.ToString("u") };
+            parameters[3] = new string[2] { "@sha_contenuto", sha_contenuto };
+            parameters[4] = new string[2] { "@nome_file", nome_file };
+            parameters[5] = new string[2] { "@path", path };
+
+            db.ExecuteQuery(sql_nuovo_file, parameters);
+            id = (int)db.getLastInsertedId();
+            FileUtente fu = new FileUtente(id);
+            this.__list_ids_files.Add(id);
             __file_list = new FileUtente[__list_ids_files.Count];
             __deleted_list = new FileUtente[__list_deleted_ids.Count];
+            return fu;
+        }
+
+
+        static public FileUtenteList getInstance()
+        {
+            if(_instance == null)
+            {
+                _instance = new FileUtenteList();
+            }
+            return _instance;
         }
     }
 }

@@ -79,6 +79,15 @@ namespace clientWPF.Properties {
         }
         
         /// <summary>
+        ///   Cerca una stringa localizzata simile a &quot;I dati inseriti non sono corretti. Riprovare&quot;.
+        /// </summary>
+        public static string datiErrati {
+            get {
+                return ResourceManager.GetString("datiErrati", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Cerca una stringa localizzata simile a &quot;La dimensione o l&apos;hash del file proveniente dal server non corrispondono al file scaricato&quot;.
         /// </summary>
         public static string datiInconsistenti {

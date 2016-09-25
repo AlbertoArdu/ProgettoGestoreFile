@@ -123,6 +123,9 @@
   <data name="collegamentoDati" xml:space="preserve">
     <value>"Il collegamento dati non può essere istanziato. Riprovare più tardi"</value>
   </data>
+  <data name="datiErrati" xml:space="preserve">
+    <value>"I dati inseriti non sono corretti. Riprovare"</value>
+  </data>
   <data name="datiInconsistenti" xml:space="preserve">
     <value>"La dimensione o l'hash del file proveniente dal server non corrispondono al file scaricato"</value>
   </data>

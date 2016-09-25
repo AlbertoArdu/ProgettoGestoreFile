@@ -50,18 +50,24 @@ namespace ProgettoMalnati
         {
             TcpClient c;
             string token;
+            Log l = Log.getLog();
             while (true)
             {
-
                 c = acceptor.AcceptTcpClient();
-                NetworkStream stream = c.GetStream();
-                byte[] tmp = new byte[token_length];
-                stream.Read(tmp, 0,token_length);
-                token = System.Convert.ToBase64String(tmp);
-                lock (lockDictionary)
+                try
                 {
-                    socket_dati_in_sospeso[token] = c;
-                    waitHandles[token].Set();
+                    NetworkStream stream = c.GetStream();
+                    byte[] tmp = new byte[token_length];
+                    stream.Read(tmp, 0, token_length);
+                    token = System.Convert.ToBase64String(tmp);
+                    lock (lockDictionary)
+                    {
+                        socket_dati_in_sospeso[token] = c;
+                        waitHandles[token].Set();
+                    }
+                }
+                catch (IOException e){
+                    l.log("Errore nella connessione con un client: "+e.Message,Level.INFO);
                 }
             }
         }

@@ -325,7 +325,7 @@ namespace ProgettoMalnati
                     yield return sb.Append(CommandErrorCode.UtenteNonLoggato.ToString("D")).Append(" Utente non loggato.").ToString();
                     yield break;
                 }
-                if (dati.Count < 5)
+                if (dati.Count < 6)
                 {
                     yield return sb.Append(CommandErrorCode.DatiIncompleti.ToString("D"))
                                     .Append(" I dati inviati non sono sufficienti").ToString();
@@ -403,6 +403,7 @@ namespace ProgettoMalnati
                 string token = CollegamentoDati.getNewToken();
                 yield return sb.Append(CommandErrorCode.OKIntermedio.ToString("D")).Append(" Stream dati pronto").ToString();
                 yield return token;
+                yield return "";
                 NetworkStream stream_dati = CollegamentoDati.getCollegamentoDati(token);
                 byte[] buffer = new byte[1024];
                 int letti = 0;
@@ -494,6 +495,7 @@ namespace ProgettoMalnati
                 yield return token;
                 yield return snap.Dim.ToString();
                 yield return snap.shaContenuto;
+                yield return "";
                 //Prepararsi all'invio del file...
                 NetworkStream ns = CollegamentoDati.getCollegamentoDati(token);
                 int buff_size = 1024;
@@ -565,6 +567,7 @@ namespace ProgettoMalnati
                 string token = CollegamentoDati.getNewToken();
                 yield return sb.Append(CommandErrorCode.OKIntermedio.ToString("D")).Append(" Stream dati pronto").ToString();
                 yield return token;
+                yield return "";
                 NetworkStream stream_dati = CollegamentoDati.getCollegamentoDati(token);
                 byte[] buffer = new byte[1024];
                 int letti = 0;

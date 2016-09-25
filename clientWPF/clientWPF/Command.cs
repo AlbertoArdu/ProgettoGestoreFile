@@ -4,6 +4,7 @@ using System.Net.Sockets;
 using System.IO;
 using System.Net;
 using System.Security.Cryptography;
+using System.Collections.Generic;
 
 namespace clientWPF
 {
@@ -24,6 +25,8 @@ namespace clientWPF
     /// </example>
     abstract class Command
     {
+        private IPAddress server_addr;
+        private int server_port;
         protected Log l;
         static protected TcpClient s;
         static protected bool __logged = false;
@@ -32,25 +35,18 @@ namespace clientWPF
         protected StreamReader control_stream_reader = null;
         protected StreamWriter control_stream_writer = null;
         protected NetworkStream data_stream = null;
-        private IPAddress server_addr;
-        private int server_port;
         protected string error_message;
         protected ServerErrorCode error_code;
-
         public Command()
         {
             l = Log.getLog();
 
-            if (s != null && s.Connected)
-            {
-                __connected = true;
-            }
+            if (s != null && s.Connected){ __connected = true; }
             else
             {
                 __logged = false;
                 server_addr = IPAddress.Parse(Properties.Settings.Default.ip_address);
                 server_port = Properties.Settings.Default.port;
-
                 s = new TcpClient();
                 try
                 {
@@ -72,9 +68,8 @@ namespace clientWPF
             catch(Exception e)
             {
                 l.log("Error in taking the streams: "+e.Message);
-                throw;
+                throw new ClientException("Errore di connessione: " + e.Message, ClientErrorCode.ServerNonDisponibile);
             }
-            
         }
         //Proprietà
         /// <summary>
@@ -88,6 +83,7 @@ namespace clientWPF
                 if(value == false)
                 {
                     __connected = false;
+                    __logged = false;
                     s.Close();
                 }
             }
@@ -96,6 +92,103 @@ namespace clientWPF
         public ServerErrorCode ErrorCode => error_code;
         static public bool Logged { get { return __logged; } }
         abstract public bool esegui();
+        protected IEnumerable<string> getResponses()
+        {
+            bool completata = false;
+            if(!Connected)
+            {
+                error_message = Properties.Messaggi.erroreConnessioneServer;
+                error_code = ServerErrorCode.ConnessioneInterrotta;
+                yield return null;
+                yield break;
+            }
+            while (!completata) {
+                //Prima linea con codice di errore
+                string response = control_stream_reader.ReadLine();
+                if (response == null)
+                {
+                    error_message = Properties.Messaggi.erroreConnessioneServer;
+                    error_code = ServerErrorCode.ConnessioneInterrotta;
+                    control_stream_reader.Close();
+                    Connected = false;
+                    yield return null;
+                    yield break;
+                }
+                response = response.Trim();
+                CommandErrorCode errorCode = (CommandErrorCode)Int32.Parse(response.Split(' ')[0]); //Extract code from response
+                switch (errorCode)
+                {
+                    case CommandErrorCode.OK:
+                        completata = true;
+                        do
+                        {
+                            response = control_stream_reader.ReadLine();
+                            yield return response;
+                        } while (response != null && response.Length > 0);
+                        if (response == null)
+                        {
+                            error_message = Properties.Messaggi.erroreConnessioneServer;
+                            error_code = ServerErrorCode.ConnessioneInterrotta;
+                            control_stream_reader.Close();
+                            Connected = false;
+                            yield break;
+                        }
+                        break;
+                    case CommandErrorCode.OKIntermedio:
+                        do
+                        {
+                            response = control_stream_reader.ReadLine();
+                            yield return response;
+                        } while (response != null && response.Length > 0);
+                        if (response == null)
+                        {
+                            error_message = Properties.Messaggi.erroreConnessioneServer;
+                            error_code = ServerErrorCode.ConnessioneInterrotta;
+                            control_stream_reader.Close();
+                            Connected = false;
+                            yield break;
+                        }
+                        break;
+                    case CommandErrorCode.FormatoDatiErrato:
+                        error_message = Properties.Messaggi.formatoDatiErrato;
+                        error_code = ServerErrorCode.FormatoDatiErrato;
+                        yield return null;
+                        yield break;
+                    case CommandErrorCode.UtenteNonLoggato:
+                        error_message = Properties.Messaggi.nonLoggato;
+                        error_code = ServerErrorCode.UtenteNonLoggato;
+                        yield return null;
+                        yield break;
+                    case CommandErrorCode.FileEsistente:
+                        error_message = Properties.Messaggi.fileEsistente;
+                        error_code = ServerErrorCode.FileEsistente;
+                        yield return null;
+                        yield break;
+                    case CommandErrorCode.LimiteFileSuperato:
+                        error_message = Properties.Messaggi.limiteFileSuperato;
+                        error_code = ServerErrorCode.LimiteFileSuperato;
+                        yield return null;
+                        yield break;
+                    case CommandErrorCode.DatiIncompleti:
+                        error_message = Properties.Messaggi.datiInconsistenti;
+                        error_code = ServerErrorCode.DatiIncompleti;
+                        yield return null;
+                        yield break;
+                    case CommandErrorCode.DatiErrati:
+                        error_message = Properties.Messaggi.datiErrati;
+                        error_code = ServerErrorCode.DatiErrati;
+                        yield return null;
+                        yield break;
+                    case CommandErrorCode.MomentoSbagliato:
+                        error_message = Properties.Messaggi.momentoSbagliato;
+                        error_code = ServerErrorCode.MomentoSbagliato;
+                        yield return null;
+                        yield break;
+                    default:
+                        throw new ServerException(Properties.Messaggi.erroreServer, ServerErrorCode.Default);
+                }
+            }
+        }
     }
 
     class ComandoRegistra : Command
@@ -123,48 +216,14 @@ namespace clientWPF
             control_stream_writer.Write(sb.ToString());
             control_stream_writer.Flush();
             l.log("Data has been sent");
-            string response = control_stream_reader.ReadLine();
-            if (response == null)
-            {
-                error_message = Properties.Messaggi.erroreConnessioneServer;
-                error_code = ServerErrorCode.ConnessioneInterrotta;
-                control_stream_reader.Close();
-                Connected = false;
+            string response = null;
+            var respEnumerator = this.getResponses().GetEnumerator();
+            if (!respEnumerator.MoveNext())
                 return false;
-            }
-            response = response.Trim();
-            CommandErrorCode errorCode = (CommandErrorCode)Int32.Parse(response.Split(' ')[0]); //Extract code from response
-            try
-            {
-                control_stream_reader.ReadLine();
-            }
-            catch
-            {
-                error_message = Properties.Messaggi.erroreConnessioneServer;
-                error_code = ServerErrorCode.ConnessioneInterrotta;
-                control_stream_reader.Close();
-                Connected = false;
-            }
-            switch (errorCode)
-            {
-                case CommandErrorCode.OK:
-                    __logged = true;
-                    break;
-                case CommandErrorCode.NomeUtenteInUso:
-                    error_message = Properties.Messaggi.nomeUtenteInUso;
-                    return false;
-//                    throw new ServerException(Properties.Messaggi.nomeUtenteInUso,ServerErrorCode.NomeUtenteInUso);
-                case CommandErrorCode.FormatoDatiErrato:
-                    error_message = Properties.Messaggi.formatoDatiErrato;
-                    throw new ServerException(Properties.Messaggi.formatoDatiErrato,ServerErrorCode.FormatoDatiErrato);
-                case CommandErrorCode.MomentoSbagliato:
-                    error_message = Properties.Messaggi.momentoSbagliato;
-                    throw new ServerException(Properties.Messaggi.momentoSbagliato, ServerErrorCode.MomentoSbagliato);
-                case CommandErrorCode.DatiIncompleti:
-                default:
-                    error_message = Properties.Messaggi.erroreServer;
-                    throw new ServerException(Properties.Messaggi.erroreServer,ServerErrorCode.Default);
-            }
+            response = respEnumerator.Current;
+            if (response == null)
+                return false;
+            __logged = true;
             return true;
         }
     }
@@ -188,7 +247,6 @@ namespace clientWPF
         {
             if (Logged)
                 return true;
-
             StringBuilder sb = new StringBuilder();
             sb.Append(nome_comando).Append(Environment.NewLine).
                 Append(nome_utente).Append(Environment.NewLine).
@@ -196,45 +254,20 @@ namespace clientWPF
                 Append(Environment.NewLine);
             control_stream_writer.Write(sb.ToString());
             control_stream_writer.Flush();
-
-            string response = control_stream_reader.ReadLine();
+            string response = null;
+            var respEnumerator = this.getResponses().GetEnumerator();
+            if (!respEnumerator.MoveNext())
+                return false;
+            response = respEnumerator.Current;
+            respEnumerator.MoveNext();
             if (response == null)
             {
-                error_message = Properties.Messaggi.erroreConnessioneServer;
-                error_code = ServerErrorCode.ConnessioneInterrotta;
-                control_stream_reader.Close();
-                Connected = false;
+                if (this.error_code == ServerErrorCode.MomentoSbagliato)
+                    return true;
                 return false;
             }
-            response = response.Trim();
-            CommandErrorCode errorCode = (CommandErrorCode)Int32.Parse(response.Split(' ')[0]); //Extract code from response
-            try
-            {
-                control_stream_reader.ReadLine();
-            }
-            catch
-            {
-                error_message = Properties.Messaggi.erroreConnessioneServer;
-                error_code = ServerErrorCode.ConnessioneInterrotta;
-                control_stream_reader.Close();
-                Connected = false;
-            }
-            switch (errorCode)
-            {
-                case CommandErrorCode.OK:
-                    __logged = true;
-                    return true;
-                case CommandErrorCode.DatiErrati:
-                    this.error_message = "Dati del login errati";
-                    return false;
-                case CommandErrorCode.FormatoDatiErrato:
-                    return false;
-                case CommandErrorCode.MomentoSbagliato:
-                    return true;
-                case CommandErrorCode.DatiIncompleti:
-                default:
-                    throw new ServerException(Properties.Messaggi.erroreServer, ServerErrorCode.Default);
-            }
+            __logged = true;
+            return true;
         }
     }
 
@@ -257,9 +290,7 @@ namespace clientWPF
             FileInfo finfo = null;
             Log l = Log.getLog();
             if (!Logged)
-            {
                 throw new ServerException(Properties.Messaggi.nonLoggato, ServerErrorCode.UtenteNonLoggato);
-            }
             this.path = path;
             this.nome_file = nome_file;
             this.path_completo = new StringBuilder(base_path).Append(Path.DirectorySeparatorChar).Append(path).Append(Path.DirectorySeparatorChar).Append(nome_file).ToString();
@@ -268,9 +299,7 @@ namespace clientWPF
             {
                 finfo = new FileInfo(path_completo);
                 if (!finfo.Exists)
-                {
                     throw new Exception("Il file da inviare non esiste.");
-                }
             }
             catch(Exception e)
             {
@@ -319,48 +348,22 @@ namespace clientWPF
                 Append(Environment.NewLine);
             control_stream_writer.Write(sb.ToString());
             control_stream_writer.Flush();
-            string response = control_stream_reader.ReadLine();
+            //Get answer
+            var respEnumerator = getResponses().GetEnumerator();
+            respEnumerator.MoveNext();
+            string response = respEnumerator.Current;
+            respEnumerator.MoveNext();
             if (response == null)
-            {
-                error_message = Properties.Messaggi.erroreConnessioneServer;
-                error_code = ServerErrorCode.ConnessioneInterrotta;
-                control_stream_reader.Close();
-                Connected = false;
                 return false;
+            try
+            { 
+                data_stream = CollegamentoDati.getCollegamentoDati(response);
             }
-            response = response.Trim();
-            CommandErrorCode errorCode = (CommandErrorCode)Int32.Parse(response.Split(' ')[0]); //Extract code from response
-            switch (errorCode)
-            {
-                case CommandErrorCode.OKIntermedio:
-                    try
-                    {
-                        data_stream = CollegamentoDati.getCollegamentoDati(control_stream_reader.ReadLine());
-                    }
-                    catch
-                    {
-                        error_message = Properties.Messaggi.collegamentoDati;
-                        error_code = ServerErrorCode.CollegamentoDatiNonDisponibile;
-                        return false;
-                    }
-                    break;
-                case CommandErrorCode.FormatoDatiErrato:
-                    throw new ServerException(Properties.Messaggi.formatoDatiErrato, ServerErrorCode.FormatoDatiErrato);
-                case CommandErrorCode.UtenteNonLoggato:
-                    error_message = Properties.Messaggi.nonLoggato;
-                    error_code = ServerErrorCode.UtenteNonLoggato;
-                    return false;
-                case CommandErrorCode.FileEsistente:
-                    error_message = Properties.Messaggi.fileEsistente;
-                    error_code = ServerErrorCode.FileEsistente;
-                    return false;
-                case CommandErrorCode.LimiteFileSuperato:
-                    error_message = Properties.Messaggi.limiteFileSuperato;
-                    error_code = ServerErrorCode.LimiteFileSuperato;
-                    return false;
-                case CommandErrorCode.DatiIncompleti:
-                default:
-                    throw new ServerException(Properties.Messaggi.erroreServer, ServerErrorCode.Default);
+            catch
+           {
+                error_message = Properties.Messaggi.collegamentoDati;
+                error_code = ServerErrorCode.CollegamentoDatiNonDisponibile;
+                return false;
             }
             byte[] buffer = new byte[1024];
             int size = 1024;
@@ -376,47 +379,18 @@ namespace clientWPF
             }
             catch
             {
-                if (!Connected)
-                {
-                    error_message = Properties.Messaggi.erroreConnessioneServer;
-                    error_code = ServerErrorCode.ConnessioneInterrotta;
-                    return false;
-                }
-                else {
-                    error_message = Properties.Messaggi.erroreServer;
-                    error_code = ServerErrorCode.Default;
-                    return false;
-                }
+                Connected = false;
+                error_message = Properties.Messaggi.erroreConnessioneServer;
+                error_code = ServerErrorCode.ConnessioneInterrotta;
+                return false;
             }
-            response = control_stream_reader.ReadLine();
-            if (response == null)
+            respEnumerator.MoveNext();
+            if (respEnumerator.Current == null)
             {
                 error_message = Properties.Messaggi.erroreConnessioneServer;
                 error_code = ServerErrorCode.ConnessioneInterrotta;
                 return false;
             }
-            response = response.Trim();
-            errorCode = (CommandErrorCode)Int32.Parse(response.Split(' ')[0]); //Extract code from response
-            try
-            {
-                control_stream_reader.ReadLine();
-            }
-            catch
-            {
-                error_message = Properties.Messaggi.erroreConnessioneServer;
-                error_code = ServerErrorCode.ConnessioneInterrotta;
-                control_stream_reader.Close();
-                __connected = false;
-            }
-            switch (errorCode)
-            {
-                case CommandErrorCode.OK:
-                    break;
-                case CommandErrorCode.DatiIncompleti:
-                default:
-                    throw new ServerException(Properties.Messaggi.erroreServer, ServerErrorCode.Default);
-            }
-
             return true;
         }
     }
@@ -430,7 +404,7 @@ namespace clientWPF
         int dim;
         string sha_contenuto;
         DateTime t_creazione;
-        FileStream file,tmp_file;
+        FileStream file, tmp_file;
         const string nome_comando = "RETRIEVE";
 
         public int Dim => dim;
@@ -439,9 +413,7 @@ namespace clientWPF
         {
             Log l = Log.getLog();
             if (!Logged)
-            {
                 throw new ServerException(Properties.Messaggi.nonLoggato, ServerErrorCode.UtenteNonLoggato);
-            }
             this.path = path;
             this.nome_file = nome_file;
             this.path_completo = new StringBuilder(base_path).Append(Path.DirectorySeparatorChar).Append(path).Append(Path.DirectorySeparatorChar).Append(nome_file).ToString();
@@ -475,50 +447,34 @@ namespace clientWPF
                 Append(Environment.NewLine);
             control_stream_writer.Write(sb.ToString());
             control_stream_writer.Flush();
-            string response = control_stream_reader.ReadLine();
+            string response = null;
+            var respEnumerator = getResponses().GetEnumerator();
+            respEnumerator.MoveNext();
+            response = respEnumerator.Current;
             if (response == null)
-            {
-                error_message = Properties.Messaggi.erroreConnessioneServer;
-                error_code = ServerErrorCode.ConnessioneInterrotta;
                 return false;
-            }
-            response = response.Trim();
-            CommandErrorCode errorCode = (CommandErrorCode)Int32.Parse(response.Split(' ')[0]); //Extract code from response
-            switch (errorCode)
-            {
-                case CommandErrorCode.OKIntermedio:
-                    try
-                    {
-                        string token = control_stream_reader.ReadLine();
-                        this.dim = Int32.Parse(control_stream_reader.ReadLine());
-                        this.sha_contenuto = control_stream_reader.ReadLine();
-                        if(token == null || sha_contenuto == null)
-                        {
-                            error_message = Properties.Messaggi.erroreConnessioneServer;
-                            error_code = ServerErrorCode.ConnessioneInterrotta;
-                            Connected = false;
-                            return false;
-                        }
-                        data_stream = CollegamentoDati.getCollegamentoDati(token);
-                    }
-                    catch
-                    {
-                        throw new ServerException(Properties.Messaggi.collegamentoDati,
-                            ServerErrorCode.CollegamentoDatiNonDisponibile);
-                    }
-                    break;
-                case CommandErrorCode.FormatoDatiErrato:
-                    throw new ServerException(Properties.Messaggi.formatoDatiErrato, ServerErrorCode.FormatoDatiErrato);
-                case CommandErrorCode.UtenteNonLoggato:
-                    error_message = Properties.Messaggi.nonLoggato;
-                    error_code = ServerErrorCode.UtenteNonLoggato;
-                    Connected = false;
+            try
+            { 
+                string token = response;
+                if(!respEnumerator.MoveNext())
                     return false;
-                case CommandErrorCode.AperturaFile:
-                    throw new ServerException(Properties.Messaggi.fileEsistente, ServerErrorCode.FileEsistente);
-                case CommandErrorCode.DatiIncompleti:
-                default:
-                    throw new ServerException(Properties.Messaggi.erroreServer, ServerErrorCode.Default);
+                if(respEnumerator.Current == null)
+                    return false;
+                this.dim = Int32.Parse(respEnumerator.Current);
+                if (!respEnumerator.MoveNext())
+                    return false;
+                if (respEnumerator.Current == null)
+                    return false;
+                this.sha_contenuto = respEnumerator.Current;
+                data_stream = CollegamentoDati.getCollegamentoDati(token);
+                respEnumerator.MoveNext();
+            }
+            catch
+            {
+                error_message = Properties.Messaggi.collegamentoDati;
+                error_code = ServerErrorCode.CollegamentoDatiNonDisponibile;
+                Connected = false;
+                return false;
             }
             byte[] buffer = new byte[1024];
             int size = 1024;
@@ -568,62 +524,13 @@ namespace clientWPF
                 error_code = ServerErrorCode.DatiInconsistenti;
                 return false;
             }
-            try
-            {
-                if (!File.Exists(tmp_path))
-                {
-                    // This statement ensures that the file is created,
-                    // but the handle is not kept.
-                    using (FileStream fs = File.Create(tmp_path)) { }
-                }
 
-                // Ensure that the target does not exist.
-                if (File.Exists(path_completo))
-                    File.Delete(path_completo);
-
-                // Move the file.
-                File.Move(tmp_path, path_completo);
-            }
-            catch (Exception e)
-            {
-                error_message = "Errore nel sostituire la versione precedente. " + e.Message;
-                error_code = ServerErrorCode.Unknown;
-                return false;
-            }
-            try
-            {
-                File.Delete(tmp_path);
-            }
-            catch {; }
-            response = control_stream_reader.ReadLine();
+            respEnumerator.MoveNext();
+            response = respEnumerator.Current;
             if (response == null)
-            {
-                error_message = Properties.Messaggi.erroreConnessioneServer;
-                error_code = ServerErrorCode.ConnessioneInterrotta;
                 return false;
-            }
-            response = response.Trim();
-            errorCode = (CommandErrorCode)Int32.Parse(response.Split(' ')[0]); //Extract code from response
-            try
-            {
-                control_stream_reader.ReadLine();
-            }
-            catch
-            {
-                error_message = Properties.Messaggi.erroreConnessioneServer;
-                error_code = ServerErrorCode.ConnessioneInterrotta;
-                return false;
-            }
-            switch (errorCode)
-            {
-                case CommandErrorCode.OK:
-                    break;
-                default:
-                    throw new ServerException(Properties.Messaggi.erroreServer, ServerErrorCode.Default);
-            }
-
-            FileUtenteList list = new FileUtenteList();
-
+            while(respEnumerator.MoveNext());
+            FileUtenteList list = FileUtenteList.getInstance();
             //vado a vedere il flag di validità sul db
             //se è TRUE -> è una retrive di un file esistente
             //se è FALSE -> è una retrive di un file cancellato
@@ -640,6 +547,20 @@ namespace clientWPF
                         break;
                     }
                 }
+            }
+            try
+            {
+                // Ensure that the target does not exist.
+                if (File.Exists(path_completo))
+                    File.Delete(path_completo);
+                // Move the file.
+                File.Move(tmp_path, path_completo);
+            }
+            catch (Exception e)
+            {
+                error_message = "Errore nel sostituire la versione precedente. " + e.Message;
+                error_code = ServerErrorCode.Unknown;
+                return false;
             }
             return true;
         }
@@ -664,9 +585,7 @@ namespace clientWPF
             FileInfo finfo = null;
             Log l = Log.getLog();
             if (!Logged)
-            {
                 throw new ServerException(Properties.Messaggi.nonLoggato, ServerErrorCode.UtenteNonLoggato);
-            }
             this.path = path;
             this.nome_file = nome_file;
             this.path_completo = new StringBuilder(base_path).Append(Path.DirectorySeparatorChar).Append(path).Append(Path.DirectorySeparatorChar).Append(nome_file).ToString();
@@ -675,9 +594,7 @@ namespace clientWPF
             {
                 finfo = new FileInfo(path_completo);
                 if (!finfo.Exists)
-                {
                     throw new ClientException("Il file da inviare non esiste.");
-                }
             }
             catch (Exception e)
             {
@@ -721,43 +638,25 @@ namespace clientWPF
                 Append(Environment.NewLine);
             control_stream_writer.Write(sb.ToString());
             control_stream_writer.Flush();
-            string response = control_stream_reader.ReadLine();
+            string response = null;
+            var respEnumerator = getResponses().GetEnumerator();
+            if (!respEnumerator.MoveNext())
+                return false;
+            response = respEnumerator.Current;
+            respEnumerator.MoveNext();
             if (response == null)
+                return false;
+            try { 
+                data_stream = CollegamentoDati.getCollegamentoDati(response);
+            }
+            catch
             {
-                error_message = Properties.Messaggi.erroreConnessioneServer;
-                error_code = ServerErrorCode.ConnessioneInterrotta;
+                error_message = Properties.Messaggi.collegamentoDati;
+                error_code = ServerErrorCode.CollegamentoDatiNonDisponibile;
+                Connected = false;
                 return false;
             }
-            response = response.Trim();
-            CommandErrorCode errorCode = (CommandErrorCode)Int32.Parse(response.Split(' ')[0]); //Extract code from response
-            switch (errorCode)
-            {
-                case CommandErrorCode.OKIntermedio:
-                    try
-                    {
-                        data_stream = CollegamentoDati.getCollegamentoDati(control_stream_reader.ReadLine());
-                    }
-                    catch
-                    {
-                        error_message = Properties.Messaggi.collegamentoDati;
-                        error_code = ServerErrorCode.CollegamentoDatiNonDisponibile;
-                        return false;
-                    }
-                    break;
-                case CommandErrorCode.FormatoDatiErrato:
-                    error_message = Properties.Messaggi.formatoDatiErrato;
-                    error_code = ServerErrorCode.FormatoDatiErrato;
-                    return false;
-                case CommandErrorCode.UtenteNonLoggato:
-                    error_message = Properties.Messaggi.nonLoggato;
-                    error_code = ServerErrorCode.UtenteNonLoggato;
-                    return false;
-                case CommandErrorCode.LimiteFileSuperato:
-                    throw new ServerException(Properties.Messaggi.limiteFileSuperato, ServerErrorCode.LimiteFileSuperato);
-                case CommandErrorCode.DatiIncompleti:
-                default:
-                    throw new ServerException(Properties.Messaggi.erroreServer, ServerErrorCode.Default);
-            }
+
             byte[] buffer = new byte[1024];
             int size = 1024;
             try
@@ -777,26 +676,13 @@ namespace clientWPF
                 return false;
             }
             //Leggo la risposta (se tutto è andato bene o c'è stato un errore)
-            response = control_stream_reader.ReadLine();
-            if (response == null)
-            {
-                error_message = Properties.Messaggi.erroreConnessioneServer;
-                error_code = ServerErrorCode.ConnessioneInterrotta;
+            if (!respEnumerator.MoveNext())
                 return false;
-            }
-            response = response.Trim();
-            errorCode = (CommandErrorCode)Int32.Parse(response.Split(' ')[0]); //Extract code from response
-            control_stream_reader.ReadLine();
-            switch (errorCode)
-            {
-                case CommandErrorCode.OK:
-                    break;
-                default:
-                    throw new ServerException(Properties.Messaggi.erroreServer, ServerErrorCode.Default);
-            }
+            response = respEnumerator.Current;
+            if (response == null)
+                return false;
             return true;
         }
-
         ~ComandoAggiornaContenutoFile()
         {
             data_stream.Close();
@@ -816,9 +702,7 @@ namespace clientWPF
         {
             Log l = Log.getLog();
             if (!Logged)
-            {
                 throw new ServerException(Properties.Messaggi.nonLoggato, ServerErrorCode.UtenteNonLoggato);
-            }
             this.path = path;
             this.nome_file = nome_file;
             this.path_completo = new StringBuilder(base_path).Append(Path.DirectorySeparatorChar).Append(path).Append(Path.DirectorySeparatorChar).Append(nome_file).ToString();
@@ -837,24 +721,14 @@ namespace clientWPF
                 Append(Environment.NewLine);
             control_stream_writer.Write(sb.ToString());
             control_stream_writer.Flush();
-            string response = control_stream_reader.ReadLine();
-            if (response == null)
-            {
-                error_message = Properties.Messaggi.erroreConnessioneServer;
-                error_code = ServerErrorCode.ConnessioneInterrotta;
+            string response = null;
+            var respEnumerator = this.getResponses().GetEnumerator();
+            if(!respEnumerator.MoveNext())
                 return false;
-            }
-            response = response.Trim();
-            CommandErrorCode errorCode = (CommandErrorCode)Int32.Parse(response.Split(' ')[0]); //Extract code from response
-            control_stream_reader.ReadLine();
-            switch (errorCode)
-            {
-                case CommandErrorCode.OK:
-                    l.log(String.Format("File eliminato con successo: %s", path + Path.DirectorySeparatorChar + nome_file), Level.INFO);
-                    break;
-                default:
-                    throw new ServerException();
-            }
+            response = respEnumerator.Current;
+            if (response == null)
+                return false;
+            respEnumerator.MoveNext();
             return true;
         }
     }
@@ -864,17 +738,12 @@ namespace clientWPF
         System.Collections.Generic.List<string> __paths = null;
         const string nome_comando = "LISTPATHS";
 
-        public string[] Paths
-        {
-            get { return __paths.ToArray(); }
-        }
+        public string[] Paths => __paths.ToArray();
         public ComandoListFolders() : base()
         {
             if (!Logged)
-            {
                 throw new ServerException(Properties.Messaggi.nonLoggato, ServerErrorCode.UtenteNonLoggato);
-            }
-            __paths = new System.Collections.Generic.List<string>();
+            __paths = new List<string>();
         }
 
         public override bool esegui()
@@ -883,24 +752,13 @@ namespace clientWPF
                 .Append(Environment.NewLine);
             control_stream_writer.Write(sb.ToString());
             control_stream_writer.Flush();
-            string response = control_stream_reader.ReadLine();
-            if (response == null)
+            string response = null;
+            var respEnumerator = this.getResponses().GetEnumerator();
+            while (respEnumerator.MoveNext())
             {
-                error_message = Properties.Messaggi.erroreConnessioneServer;
-                throw new ServerException(Properties.Messaggi.erroreServer, ServerErrorCode.ConnessioneInterrotta);
-            }
-            response = response.Trim();
-            CommandErrorCode errorCode = (CommandErrorCode)Int32.Parse(response.Split(' ')[0]); //Extract code from response
-            switch (errorCode)
-            {
-                case CommandErrorCode.OK:
-                    break;
-                default:
-                    throw new ServerException();
-            }
-            //Finché non c'è una riga vuota
-            while((response = control_stream_reader.ReadLine().Trim()).Length > 0)
-            {
+                response = respEnumerator.Current;
+                if (response == null)
+                    return false;
                 __paths.Add(response);
             }
             return true;
@@ -913,18 +771,12 @@ namespace clientWPF
         string path;
         const string nome_comando = "LISTDIR";
         
-        public string[] FileNames
-        {
-            get { return this.__files.ToArray(); }
-        }
+        public string[] FileNames => this.__files.ToArray();
 
         public ComandoListDir(string path) : base()
         {
             if (!Logged)
-            {
                 throw new ServerException(Properties.Messaggi.nonLoggato, ServerErrorCode.UtenteNonLoggato);
-            }
-
             this.path = path;
             __files = new System.Collections.Generic.List<string>();
         }
@@ -936,30 +788,13 @@ namespace clientWPF
 
             control_stream_writer.Write(sb.ToString());
             control_stream_writer.Flush();
-            string response = control_stream_reader.ReadLine();
-            if (response == null)
+            string response = null;
+            var respEnumerator = this.getResponses().GetEnumerator();
+            while (respEnumerator.MoveNext())
             {
-                error_message = Properties.Messaggi.erroreConnessioneServer;
-                error_code = ServerErrorCode.ConnessioneInterrotta;
-                return false;
-            }
-            response = response.Trim();
-            CommandErrorCode errorCode = (CommandErrorCode)Int32.Parse(response.Split(' ')[0]); //Extract code from response
-            switch (errorCode)
-            {
-                case CommandErrorCode.OK:
-                    break;
-                case CommandErrorCode.DatiIncompleti:
-                case CommandErrorCode.DatiErrati:
-                    error_message = Properties.Messaggi.erroreConnessioneServer;
-                    error_code = ServerErrorCode.ConnessioneInterrotta;
+                response = respEnumerator.Current;
+                if (response == null)
                     return false;
-                default:
-                    throw new ServerException();
-            }
-            //Finché non c'è una riga vuota
-            while ((response = control_stream_reader.ReadLine().Trim()).Length > 0)
-            {
                 __files.Add(response);
             }
             return true;
@@ -973,18 +808,12 @@ namespace clientWPF
         string nome_file;
         const string nome_comando = "LISTVERSIONS";
 
-        public DateTime[] Versions
-        {
-            get { return __versions.ToArray(); }
-        }
+        public DateTime[] Versions => __versions.ToArray();
 
         public ComandoListVersions(string nome_file, string path) : base()
         {
             if (!Logged)
-            {
                 throw new ServerException(Properties.Messaggi.nonLoggato, ServerErrorCode.UtenteNonLoggato);
-            }
-
             this.path = path;
             this.nome_file = nome_file;
             __versions = new System.Collections.Generic.List<DateTime>();
@@ -999,31 +828,14 @@ namespace clientWPF
 
             control_stream_writer.Write(sb.ToString());
             control_stream_writer.Flush();
-            string response = control_stream_reader.ReadLine();
-            if (response == null)
+            string response = null;
+            var respEnumerator = this.getResponses().GetEnumerator();
+            while (respEnumerator.MoveNext())
             {
-                error_message = Properties.Messaggi.erroreConnessioneServer;
-                error_code = ServerErrorCode.ConnessioneInterrotta;
-                return false;
-            }
-            response = response.Trim();
-            CommandErrorCode errorCode = (CommandErrorCode)Int32.Parse(response.Split(' ')[0]); //Extract code from response
-            switch (errorCode)
-            {
-                case CommandErrorCode.OK:
-                    break;
-                case CommandErrorCode.DatiIncompleti:
-                case CommandErrorCode.DatiErrati:
-                    error_message = Properties.Messaggi.formatoDatiErrato;
-                    error_code = ServerErrorCode.DatiErrati;
+                response = respEnumerator.Current;
+                if (response == null)
                     return false;
-                default:
-                    throw new ServerException();
-            }
-            //Finché non c'è una riga vuota
-            while ((response = control_stream_reader.ReadLine().Trim()).Length > 0)
-            {
-                __versions.Add(new DateTime(Int64.Parse(response)));
+                __versions.Add(new DateTime(Int64.Parse(response.Trim())));
             }
             return true;
         }

@@ -26,7 +26,6 @@ namespace clientWPF
         static private string sql_get_file_data = Properties.SQLquery.sqlGetFileData;
         static private string sql_get_version_data = Properties.SQLquery.sqlGetVersionData;
         static private string sql_set_file_data = Properties.SQLquery.sqlSetFileData;
-        static private string sql_nuovo_file = Properties.SQLquery.sqlNuovoFile;
         static private string sql_add_version = Properties.SQLquery.sqlAddVersion;
 
         public List<DateTime> Items => fileVersions;
@@ -244,25 +243,6 @@ namespace clientWPF
 
                 __valido = value;
             }
-        }
-
-        static public FileUtente CreaNuovo(string nome_file, string path, DateTime t_creazione, int dim, string sha_contenuto = null)
-        {
-            int id = 0;
-            DB_Table db = new DB_Table();
-            sha_contenuto = sha_contenuto != null ? sha_contenuto : "";
-            string[][] parameters = new string[6][];
-
-            parameters[0] = new string[2] { "@dim", dim.ToString() };
-            parameters[1] = new string[2] { "@t_modifica", t_creazione.ToString("u") };
-            parameters[2] = new string[2] { "@t_creazione", t_creazione.ToString("u") };
-            parameters[3] = new string[2] { "@sha_contenuto", sha_contenuto };
-            parameters[4] = new string[2] { "@nome_file", nome_file };
-            parameters[5] = new string[2] { "@path", path };
-
-            db.ExecuteQuery(sql_nuovo_file, parameters);
-            id = (int)db.getLastInsertedId();
-            return new FileUtente(id);
         }
 
         public void AggiungiVersione(DateTime newVers)
