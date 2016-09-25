@@ -177,7 +177,7 @@ namespace clientWPF
             return files;
         }
 
-        public FileUtente CreaNuovo(string nome_file, string path, DateTime t_creazione, int dim, string sha_contenuto = null)
+        public FileUtente CreaNuovo(string nome_file, string path, DateTime t_creazione, DateTime t_modifica, int dim, string sha_contenuto = null)
         {
             int id = 0;
             DB_Table db = new DB_Table();
@@ -185,7 +185,7 @@ namespace clientWPF
             string[][] parameters = new string[6][];
 
             parameters[0] = new string[2] { "@dim", dim.ToString() };
-            parameters[1] = new string[2] { "@t_modifica", t_creazione.ToString("u") };
+            parameters[1] = new string[2] { "@t_modifica", t_modifica.ToString("u") };
             parameters[2] = new string[2] { "@t_creazione", t_creazione.ToString("u") };
             parameters[3] = new string[2] { "@sha_contenuto", sha_contenuto };
             parameters[4] = new string[2] { "@nome_file", nome_file };
@@ -194,6 +194,7 @@ namespace clientWPF
             db.ExecuteQuery(sql_nuovo_file, parameters);
             id = (int)db.getLastInsertedId();
             FileUtente fu = new FileUtente(id);
+            fu.AggiungiVersione(t_modifica);
             this.__list_ids_files.Add(id);
             __file_list = new FileUtente[__list_ids_files.Count];
             __deleted_list = new FileUtente[__list_deleted_ids.Count];

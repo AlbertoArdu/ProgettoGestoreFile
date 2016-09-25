@@ -5,9 +5,9 @@ SQLite_x64/
 SQLiteDatabaseBrowserPortable/
 clientWPF/.vs
 ProgettoGestoreFile/.vs
-clientWPF/clientWPF/bin
-clientWPF/clientWPF/obj
+clientWPF/clientWPF/bin/*
+clientWPF/clientWPF/obj/*
 ProgettoGestoreFile/.vs
-ProgettoGestoreFile/ProgettoMalnati/bin
-ProgettoGestoreFile/ProgettoMalnati/obj
+ProgettoGestoreFile/ProgettoMalnati/bin/*
+ProgettoGestoreFile/ProgettoMalnati/obj/*
 *.suo

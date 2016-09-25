@@ -404,7 +404,7 @@ namespace clientWPF
         int dim;
         string sha_contenuto;
         DateTime t_creazione;
-        FileStream file, tmp_file;
+        FileStream tmp_file;
         const string nome_comando = "RETRIEVE";
 
         public int Dim => dim;

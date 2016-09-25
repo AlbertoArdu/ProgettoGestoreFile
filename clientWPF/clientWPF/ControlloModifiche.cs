@@ -143,7 +143,7 @@ namespace clientWPF
 							DateTime last_vers = versions.Max();
 							ComandoScaricaFile c_scarica = new ComandoScaricaFile(nome_file, path_rel, last_vers);
 							c_scarica.esegui();
-							FileUtente fu = flist.CreaNuovo(nome_file,path_rel, last_vers,c_scarica.Dim,c_scarica.SHAContenuto);
+							FileUtente fu = flist.CreaNuovo(nome_file,path_rel, last_vers, last_vers, c_scarica.Dim, c_scarica.SHAContenuto);
 							foreach (DateTime dt in versions)
 							{
 								if(dt != last_vers)
@@ -243,8 +243,16 @@ namespace clientWPF
                 {
                     string file_path_completo = base_path + n_file[1] + Path.DirectorySeparatorChar + n_file[0];
                     finfo = new FileInfo(file_path_completo);
+                    DateTime dt = TimeZoneInfo.ConvertTime(finfo.LastWriteTime, TimeZoneInfo.Local, tz);
+                    DateTime tMod = DateTime.SpecifyKind(dt, DateTimeKind.Utc);
+                    tMod = tMod.AddTicks(-(tMod.Ticks % TimeSpan.TicksPerSecond));
+                    dt = TimeZoneInfo.ConvertTime(finfo.CreationTime, TimeZoneInfo.Local, tz);
+                    DateTime tCre = DateTime.SpecifyKind(dt, DateTimeKind.Utc);
+                    tCre = tCre.AddTicks(-(tCre.Ticks % TimeSpan.TicksPerSecond));
 
-                    fu2 = list.CreaNuovo(n_file[0], n_file[1], finfo.CreationTime, (int)finfo.Length);
+                    FileStream fs = File.Open(file_path_completo, FileMode.Open);
+                    string new_sha = FileUtente.CalcolaSHA256(fs);
+                    fu2 = list.CreaNuovo(n_file[0], n_file[1], tCre, tMod, (int)finfo.Length, new_sha);
                     c = new ComandoNuovoFile(n_file[0], n_file[1]);
                     c.esegui();
                 }
