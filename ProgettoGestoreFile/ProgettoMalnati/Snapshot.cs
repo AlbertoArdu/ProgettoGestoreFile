@@ -265,6 +265,7 @@ namespace ProgettoMalnati
             this.__sha_contenuto = sha_reale;
             CaricaDatiNelDB();
             this.__lettura_contenuto = new FileStream(base_path + Path.DirectorySeparatorChar + this.__nome_locale, FileMode.Open, FileAccess.Read);
+            this.cambioContenutoIniziato = false;
         }
 
         public void CaricaDatiNelDB()
