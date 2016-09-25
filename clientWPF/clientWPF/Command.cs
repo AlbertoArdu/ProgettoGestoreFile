@@ -152,39 +152,55 @@ namespace clientWPF
                     case CommandErrorCode.FormatoDatiErrato:
                         error_message = Properties.Messaggi.formatoDatiErrato;
                         error_code = ServerErrorCode.FormatoDatiErrato;
+                        do { response = control_stream_reader.ReadLine(); }
+                        while (response != null && response.Length > 0);
                         yield return null;
                         yield break;
                     case CommandErrorCode.UtenteNonLoggato:
                         error_message = Properties.Messaggi.nonLoggato;
                         error_code = ServerErrorCode.UtenteNonLoggato;
+                        do { response = control_stream_reader.ReadLine(); }
+                        while (response != null && response.Length > 0);
                         yield return null;
                         yield break;
                     case CommandErrorCode.FileEsistente:
                         error_message = Properties.Messaggi.fileEsistente;
                         error_code = ServerErrorCode.FileEsistente;
+                        do { response = control_stream_reader.ReadLine(); }
+                        while (response != null && response.Length > 0);
                         yield return null;
                         yield break;
                     case CommandErrorCode.LimiteFileSuperato:
                         error_message = Properties.Messaggi.limiteFileSuperato;
                         error_code = ServerErrorCode.LimiteFileSuperato;
+                        do { response = control_stream_reader.ReadLine(); }
+                        while (response != null && response.Length > 0);
                         yield return null;
                         yield break;
                     case CommandErrorCode.DatiIncompleti:
                         error_message = Properties.Messaggi.datiInconsistenti;
                         error_code = ServerErrorCode.DatiIncompleti;
+                        do { response = control_stream_reader.ReadLine(); }
+                        while (response != null && response.Length > 0);
                         yield return null;
                         yield break;
                     case CommandErrorCode.DatiErrati:
                         error_message = Properties.Messaggi.datiErrati;
                         error_code = ServerErrorCode.DatiErrati;
+                        do { response = control_stream_reader.ReadLine(); }
+                        while (response != null && response.Length > 0);
                         yield return null;
                         yield break;
                     case CommandErrorCode.MomentoSbagliato:
                         error_message = Properties.Messaggi.momentoSbagliato;
                         error_code = ServerErrorCode.MomentoSbagliato;
+                        do { response = control_stream_reader.ReadLine(); }
+                        while (response != null && response.Length > 0);
                         yield return null;
                         yield break;
                     default:
+                        do { response = control_stream_reader.ReadLine(); }
+                        while (response != null && response.Length > 0);
                         throw new ServerException(Properties.Messaggi.erroreServer, ServerErrorCode.Default);
                 }
             }
@@ -279,11 +295,14 @@ namespace clientWPF
         int dim=0;
         string sha_contenuto = "";
         DateTime t_creazione = DateTime.MinValue;
+        DateTime t_modifica = DateTime.MinValue;
         FileStream file = null;
         const string nome_comando = "NEWFILE";
 
         public ComandoNuovoFile(string nome_file, string path, int dim = -1, 
-                                DateTime t_creazione = new DateTime(), string sha_contenuto = null
+                                DateTime t_creazione = new DateTime(), 
+                                DateTime t_modifica = new DateTime(),
+                                string sha_contenuto = null
                                 )
             : base()
         {
@@ -313,6 +332,10 @@ namespace clientWPF
                 this.t_creazione = finfo.CreationTime;
             else
                 this.t_creazione = t_creazione;
+            if (t_modifica == DateTime.MinValue)
+                this.t_modifica = finfo.LastWriteTime;
+            else
+                this.t_modifica = t_modifica;
 
             file = File.Open(this.path_completo,FileMode.Open);
             if (sha_contenuto == null)
@@ -343,6 +366,7 @@ namespace clientWPF
                 Append(nome_file).Append(Environment.NewLine).
                 Append(path).Append(Environment.NewLine).
                 Append(t_creazione.Ticks).Append(Environment.NewLine).
+                Append(t_modifica.Ticks).Append(Environment.NewLine).
                 Append(sha_contenuto).Append(Environment.NewLine).
                 Append(dim).Append(Environment.NewLine).
                 Append(Environment.NewLine);

@@ -325,7 +325,7 @@ namespace ProgettoMalnati
                     yield return sb.Append(CommandErrorCode.UtenteNonLoggato.ToString("D")).Append(" Utente non loggato.").ToString();
                     yield break;
                 }
-                if (dati.Count < 6)
+                if (dati.Count < 7)
                 {
                     yield return sb.Append(CommandErrorCode.DatiIncompleti.ToString("D"))
                                     .Append(" I dati inviati non sono sufficienti").ToString();
@@ -335,25 +335,27 @@ namespace ProgettoMalnati
                 string nome_file = dati[0];
                 string path_relativo = dati[1];
                 DateTime timestamp = new DateTime();
+                DateTime t_modifica = new DateTime();
                 int dim = -1;
                 sb.Clear();
                 try
                 {
                     timestamp = new DateTime(Int64.Parse(dati[2]));
-                    dim = Int32.Parse(dati[4]);
+                    t_modifica = new DateTime(Int64.Parse(dati[3]));
+                    dim = Int32.Parse(dati[5]);
                 }catch(Exception e)
                 {
                     sb.Append(CommandErrorCode.FormatoDatiErrato.ToString("D")).Append(" Dimensione o timestamp non corretti");
                     l.log("Utente: " + user.Nome + " " + e.Message,Level.INFO);
                 }
                 // if exception occurred...
-                if (dim == -1 || timestamp == DateTime.MinValue)
+                if (dim == -1 || timestamp == DateTime.MinValue || t_modifica == DateTime.MinValue)
                 {
                     yield return sb.ToString();
                     yield break;
                 }
                 sb.Clear();
-                string sha256 = dati[3];
+                string sha256 = dati[4];
                 FileUtente nuovo = null;
 
                 try
@@ -387,7 +389,7 @@ namespace ProgettoMalnati
                 sb.Clear();
                 try
                 {
-                    snap = nuovo.Snapshots.Nuovo(timestamp, dim, sha256);
+                    snap = nuovo.Snapshots.Nuovo(t_modifica, dim, sha256);
                 }
                 catch (Exception e)
                 {
@@ -610,7 +612,7 @@ namespace ProgettoMalnati
                     yield return sb.Append(CommandErrorCode.UtenteNonLoggato.ToString("D")).Append(" Utente non loggato.").ToString();
                     yield break;
                 }
-                if (dati.Count < 2)
+                if (dati.Count < 3)
                 {
                     yield return sb.Append(CommandErrorCode.DatiIncompleti.ToString("D"))
                                     .Append(" I dati inviati non sono sufficienti").ToString();

@@ -208,6 +208,8 @@ namespace clientWPF
             {
                 _instance = new FileUtenteList();
             }
+            _instance.__file_list = new FileUtente[_instance.__list_ids_files.Count];
+           _instance.__deleted_list = new FileUtente[_instance.__list_deleted_ids.Count];
             return _instance;
         }
     }

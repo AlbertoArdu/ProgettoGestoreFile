@@ -253,7 +253,7 @@ namespace clientWPF
                     FileStream fs = File.Open(file_path_completo, FileMode.Open);
                     string new_sha = FileUtente.CalcolaSHA256(fs);
                     fu2 = list.CreaNuovo(n_file[0], n_file[1], tCre, tMod, (int)finfo.Length, new_sha);
-                    c = new ComandoNuovoFile(n_file[0], n_file[1]);
+                    c = new ComandoNuovoFile(n_file[0], n_file[1], (int)finfo.Length, tCre, tMod, new_sha);
                     c.esegui();
                 }
             }
