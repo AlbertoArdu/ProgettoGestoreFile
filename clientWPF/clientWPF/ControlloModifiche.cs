@@ -174,87 +174,94 @@ namespace clientWPF
                 return;
             if(Monitor.TryEnter(syncLock))
             {
-                List<string[]> files = FileUtenteList.exploreFileSystem(base_path);
-                List<FileUtente> toBeDeleted = new List<FileUtente>();
-                FileUtenteList list = FileUtenteList.getInstance();
-                string[] entry = new string[2];
-                string path_completo;
-                Command c;
+                try {
+                    List<string[]> files = FileUtenteList.exploreFileSystem(base_path);
+                    List<FileUtente> toBeDeleted = new List<FileUtente>();
+                    FileUtenteList list = FileUtenteList.getInstance();
+                    string[] entry = new string[2];
+                    string path_completo;
+                    Command c;
 
-                CultureInfo it = new CultureInfo("it-IT");
-                Thread.CurrentThread.CurrentCulture = it;
+                    CultureInfo it = new CultureInfo("it-IT");
+                    Thread.CurrentThread.CurrentCulture = it;
 
-                if (!init)
-                {
-                    throw new ClientException("La classe per il controllo delle modifiche non è inizializzata correttamente.", ClientErrorCode.ControlloNonInizializzato);
-                }
-                if (!Command.Logged)
-                {
-                    ComandoLogin login = new ComandoLogin(user, pwd);
-                    login.esegui();
-                }
-                FileInfo finfo;
-                foreach (FileUtente fu in list)
-                {
-                    //Check if still exists, and if its modified
-                    entry[0] = fu.Nome;
-                    entry[1] = fu.Path;
-                    int index;
-                    if ((index = files.FindIndex(fTest => (fTest[0] == entry[0] && fTest[1] == entry[1]))) >= 0)
+                    if (!init)
                     {
-                        files.RemoveAt(index);
-                        //Il file selezionato esiste ancora...
-                        path_completo = base_path + entry[1] + Path.DirectorySeparatorChar + entry[0];
-                        finfo = new FileInfo(path_completo);
+                        throw new ClientException("La classe per il controllo delle modifiche non è inizializzata correttamente.", ClientErrorCode.ControlloNonInizializzato);
+                    }
+                    if (!Command.Logged)
+                    {
+                        ComandoLogin login = new ComandoLogin(user, pwd);
+                        login.esegui();
+                    }
+                    FileInfo finfo;
+                    foreach (FileUtente fu in list)
+                    {
+                        //Check if still exists, and if its modified
+                        entry[0] = fu.Nome;
+                        entry[1] = fu.Path;
+                        int index;
+                        if ((index = files.FindIndex(fTest => (fTest[0] == entry[0] && fTest[1] == entry[1]))) >= 0)
+                        {
+                            files.RemoveAt(index);
+                            //Il file selezionato esiste ancora...
+                            path_completo = base_path + entry[1] + Path.DirectorySeparatorChar + entry[0];
+                            finfo = new FileInfo(path_completo);
 
+                            DateTime dt = TimeZoneInfo.ConvertTime(finfo.LastWriteTime, TimeZoneInfo.Local, tz);
+                            DateTime tMod = DateTime.SpecifyKind(dt, DateTimeKind.Utc);
+                            tMod = tMod.AddTicks(-(tMod.Ticks % TimeSpan.TicksPerSecond));
+
+                            if (DateTime.Compare(tMod, fu.TempoModifica) != 0)
+                            {
+                                FileStream fs = File.Open(path_completo, FileMode.Open);
+                                string new_sha = FileUtente.CalcolaSHA256(fs);
+                                if (new_sha != fu.SHA256Contenuto)
+                                {
+                                    fu.aggiornaDati((int)finfo.Length, finfo.LastWriteTime);
+                                    c = new ComandoAggiornaContenutoFile(entry[0], entry[1], (int)finfo.Length,
+                                        finfo.LastWriteTime, fu.SHA256Contenuto);
+                                    c.esegui();
+                                }
+                            }
+                        }
+                        else
+                        {
+                            toBeDeleted.Add(fu);
+                        }
+                    }
+                    //Cancelliamo
+                    foreach (FileUtente _fu in toBeDeleted)
+                    {
+                        list.Delete(_fu.Id);
+                        c = new ComandoEliminaFile(_fu.Nome, _fu.Path);
+                        c.esegui();
+                    }
+
+                    //file nuovi
+                    FileUtente fu2;
+                    foreach (string[] n_file in files)
+                    {
+                        string file_path_completo = base_path + n_file[1] + Path.DirectorySeparatorChar + n_file[0];
+                        finfo = new FileInfo(file_path_completo);
                         DateTime dt = TimeZoneInfo.ConvertTime(finfo.LastWriteTime, TimeZoneInfo.Local, tz);
                         DateTime tMod = DateTime.SpecifyKind(dt, DateTimeKind.Utc);
                         tMod = tMod.AddTicks(-(tMod.Ticks % TimeSpan.TicksPerSecond));
+                        dt = TimeZoneInfo.ConvertTime(finfo.CreationTime, TimeZoneInfo.Local, tz);
+                        DateTime tCre = DateTime.SpecifyKind(dt, DateTimeKind.Utc);
+                        tCre = tCre.AddTicks(-(tCre.Ticks % TimeSpan.TicksPerSecond));
 
-                        if (DateTime.Compare(tMod, fu.TempoModifica) != 0)
-                        {
-                            FileStream fs = File.Open(path_completo, FileMode.Open);
-                            string new_sha = FileUtente.CalcolaSHA256(fs);
-                            if (new_sha != fu.SHA256Contenuto)
-                            {
-                                fu.aggiornaDati((int)finfo.Length, finfo.LastWriteTime);
-                                c = new ComandoAggiornaContenutoFile(entry[0], entry[1], (int)finfo.Length,
-                                    finfo.LastWriteTime, fu.SHA256Contenuto);
-                                c.esegui();
-                            }
-                        }
-                    }
-                    else
-                    {
-                        toBeDeleted.Add(fu);
+                        FileStream fs = File.Open(file_path_completo, FileMode.Open);
+                        string new_sha = FileUtente.CalcolaSHA256(fs);
+                        fu2 = list.CreaNuovo(n_file[0], n_file[1], tCre, tMod, (int)finfo.Length, new_sha);
+                        c = new ComandoNuovoFile(n_file[0], n_file[1], (int)finfo.Length, tCre, tMod, new_sha);
+                        c.esegui();
                     }
                 }
-                //Cancelliamo
-                foreach(FileUtente _fu in toBeDeleted)
+                finally
                 {
-                    list.Delete(_fu.Id);
-                    c = new ComandoEliminaFile(_fu.Nome, _fu.Path);
-                    c.esegui();
-                }
-
-                //file nuovi
-                FileUtente fu2;
-                foreach (string[] n_file in files)
-                {
-                    string file_path_completo = base_path + n_file[1] + Path.DirectorySeparatorChar + n_file[0];
-                    finfo = new FileInfo(file_path_completo);
-                    DateTime dt = TimeZoneInfo.ConvertTime(finfo.LastWriteTime, TimeZoneInfo.Local, tz);
-                    DateTime tMod = DateTime.SpecifyKind(dt, DateTimeKind.Utc);
-                    tMod = tMod.AddTicks(-(tMod.Ticks % TimeSpan.TicksPerSecond));
-                    dt = TimeZoneInfo.ConvertTime(finfo.CreationTime, TimeZoneInfo.Local, tz);
-                    DateTime tCre = DateTime.SpecifyKind(dt, DateTimeKind.Utc);
-                    tCre = tCre.AddTicks(-(tCre.Ticks % TimeSpan.TicksPerSecond));
-
-                    FileStream fs = File.Open(file_path_completo, FileMode.Open);
-                    string new_sha = FileUtente.CalcolaSHA256(fs);
-                    fu2 = list.CreaNuovo(n_file[0], n_file[1], tCre, tMod, (int)finfo.Length, new_sha);
-                    c = new ComandoNuovoFile(n_file[0], n_file[1], (int)finfo.Length, tCre, tMod, new_sha);
-                    c.esegui();
+                    if (Monitor.IsEntered(syncLock))
+                        Monitor.Exit(syncLock);
                 }
             }
         }
