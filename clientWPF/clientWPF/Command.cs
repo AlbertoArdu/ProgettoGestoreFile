@@ -5,6 +5,7 @@ using System.IO;
 using System.Net;
 using System.Security.Cryptography;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace clientWPF
 {
@@ -37,11 +38,12 @@ namespace clientWPF
         protected NetworkStream data_stream = null;
         protected string error_message;
         protected ServerErrorCode error_code;
+        static protected object sharedLock = null;
+
         public Command()
         {
             l = Log.getLog();
-
-            if (s != null && s.Connected){ __connected = true; }
+            if (s != null && s.Connected && sharedLock != null){ __connected = true; }
             else
             {
                 __logged = false;
@@ -59,7 +61,9 @@ namespace clientWPF
                     l.log(e.Message, Level.ERR);
                     throw new ClientException("Errore di connessione: " + e.Message, ClientErrorCode.ServerNonDisponibile);
                 }
+                sharedLock = new object();
             }
+            Monitor.Enter(sharedLock);
             try
             {
                 control_stream_reader = new StreamReader(s.GetStream(), Encoding.ASCII);
@@ -70,6 +74,11 @@ namespace clientWPF
                 l.log("Error in taking the streams: "+e.Message);
                 throw new ClientException("Errore di connessione: " + e.Message, ClientErrorCode.ServerNonDisponibile);
             }
+        }
+        ~Command()
+        {
+            if(Monitor.IsEntered(sharedLock))
+                Monitor.Exit(sharedLock);
         }
         //Proprietà
         /// <summary>
@@ -235,10 +244,17 @@ namespace clientWPF
             string response = null;
             var respEnumerator = this.getResponses().GetEnumerator();
             if (!respEnumerator.MoveNext())
+            {
+                Monitor.Exit(sharedLock);
                 return false;
+            }
+
             response = respEnumerator.Current;
+                Monitor.Exit(sharedLock);
             if (response == null)
+            { 
                 return false;
+            }
             __logged = true;
             return true;
         }
@@ -262,7 +278,10 @@ namespace clientWPF
         public override bool esegui()
         {
             if (Logged)
+            {
+                Monitor.Exit(sharedLock);
                 return true;
+            }
             StringBuilder sb = new StringBuilder();
             sb.Append(nome_comando).Append(Environment.NewLine).
                 Append(nome_utente).Append(Environment.NewLine).
@@ -273,9 +292,14 @@ namespace clientWPF
             string response = null;
             var respEnumerator = this.getResponses().GetEnumerator();
             if (!respEnumerator.MoveNext())
+            {
+                Monitor.Exit(sharedLock);
                 return false;
+            }
+                
             response = respEnumerator.Current;
             respEnumerator.MoveNext();
+            Monitor.Exit(sharedLock);
             if (response == null)
             {
                 if (this.error_code == ServerErrorCode.MomentoSbagliato)
@@ -378,13 +402,17 @@ namespace clientWPF
             string response = respEnumerator.Current;
             respEnumerator.MoveNext();
             if (response == null)
+            {
+                Monitor.Exit(sharedLock);
                 return false;
+            }
             try
             { 
                 data_stream = CollegamentoDati.getCollegamentoDati(response);
             }
             catch
            {
+                Monitor.Exit(sharedLock);
                 error_message = Properties.Messaggi.collegamentoDati;
                 error_code = ServerErrorCode.CollegamentoDatiNonDisponibile;
                 return false;
@@ -403,12 +431,14 @@ namespace clientWPF
             }
             catch
             {
+                Monitor.Exit(sharedLock);
                 Connected = false;
                 error_message = Properties.Messaggi.erroreConnessioneServer;
                 error_code = ServerErrorCode.ConnessioneInterrotta;
                 return false;
             }
             respEnumerator.MoveNext();
+            Monitor.Exit(sharedLock);
             if (respEnumerator.Current == null)
             {
                 error_message = Properties.Messaggi.erroreConnessioneServer;
@@ -476,25 +506,31 @@ namespace clientWPF
             respEnumerator.MoveNext();
             response = respEnumerator.Current;
             if (response == null)
+            {
+                Monitor.Exit(sharedLock);
                 return false;
+            }
             try
             { 
                 string token = response;
-                if(!respEnumerator.MoveNext())
+                if(!respEnumerator.MoveNext() || respEnumerator.Current == null)
+                {
+                    Monitor.Exit(sharedLock);
                     return false;
-                if(respEnumerator.Current == null)
-                    return false;
+                }
                 this.dim = Int32.Parse(respEnumerator.Current);
-                if (!respEnumerator.MoveNext())
+                if (!respEnumerator.MoveNext() || respEnumerator.Current == null)
+                {
+                    Monitor.Exit(sharedLock);
                     return false;
-                if (respEnumerator.Current == null)
-                    return false;
+                }
                 this.sha_contenuto = respEnumerator.Current;
                 data_stream = CollegamentoDati.getCollegamentoDati(token);
                 respEnumerator.MoveNext();
             }
             catch
             {
+                Monitor.Exit(sharedLock);
                 error_message = Properties.Messaggi.collegamentoDati;
                 error_code = ServerErrorCode.CollegamentoDatiNonDisponibile;
                 Connected = false;
@@ -516,6 +552,7 @@ namespace clientWPF
             }
             catch
             {
+                Monitor.Exit(sharedLock);
                 error_message = Properties.Messaggi.erroreConnessioneServer;
                 error_code = ServerErrorCode.ConnessioneInterrotta;
                 Connected = false;
@@ -531,6 +568,7 @@ namespace clientWPF
             {
                 error_message = Properties.Messaggi.datiInconsistenti;
                 error_code = ServerErrorCode.DatiInconsistenti;
+                Monitor.Exit(sharedLock);
                 return false;
             }
             SHA256 sha_obj = SHA256Managed.Create();
@@ -546,14 +584,18 @@ namespace clientWPF
             {
                 error_message = Properties.Messaggi.datiInconsistenti;
                 error_code = ServerErrorCode.DatiInconsistenti;
+                Monitor.Exit(sharedLock);
                 return false;
             }
 
-            respEnumerator.MoveNext();
-            response = respEnumerator.Current;
-            if (response == null)
+            if (!respEnumerator.MoveNext() || respEnumerator.Current == null)
+            {
+                Monitor.Exit(sharedLock);
                 return false;
-            while(respEnumerator.MoveNext());
+            }
+
+            while (respEnumerator.MoveNext());
+            Monitor.Exit(sharedLock);
             FileUtenteList list = FileUtenteList.getInstance();
             //vado a vedere il flag di validità sul db
             //se è TRUE -> è una retrive di un file esistente
@@ -567,6 +609,7 @@ namespace clientWPF
                 {
                     if(fu.Nome == this.nome_file && fu.Path ==this.path)
                     {
+                        list.Ripristina(fu.Id);
                         fu.aggiornaDatiPrec(this.dim, this.t_creazione, this.SHAContenuto);
                         break;
                     }
@@ -664,12 +707,13 @@ namespace clientWPF
             control_stream_writer.Flush();
             string response = null;
             var respEnumerator = getResponses().GetEnumerator();
-            if (!respEnumerator.MoveNext())
+            if (!respEnumerator.MoveNext() || respEnumerator.Current == null)
+            {
+                Monitor.Exit(sharedLock);
                 return false;
+            }
             response = respEnumerator.Current;
             respEnumerator.MoveNext();
-            if (response == null)
-                return false;
             try { 
                 data_stream = CollegamentoDati.getCollegamentoDati(response);
             }
@@ -678,6 +722,7 @@ namespace clientWPF
                 error_message = Properties.Messaggi.collegamentoDati;
                 error_code = ServerErrorCode.CollegamentoDatiNonDisponibile;
                 Connected = false;
+                Monitor.Exit(sharedLock);
                 return false;
             }
 
@@ -697,9 +742,11 @@ namespace clientWPF
             {
                 error_message = Properties.Messaggi.erroreConnessioneServer;
                 error_code = ServerErrorCode.ConnessioneInterrotta;
+                Monitor.Exit(sharedLock);
                 return false;
             }
             //Leggo la risposta (se tutto è andato bene o c'è stato un errore)
+            Monitor.Exit(sharedLock);
             if (!respEnumerator.MoveNext())
                 return false;
             response = respEnumerator.Current;
@@ -747,7 +794,8 @@ namespace clientWPF
             control_stream_writer.Flush();
             string response = null;
             var respEnumerator = this.getResponses().GetEnumerator();
-            if(!respEnumerator.MoveNext())
+            Monitor.Exit(sharedLock);
+            if (!respEnumerator.MoveNext())
                 return false;
             response = respEnumerator.Current;
             if (response == null)
@@ -782,9 +830,13 @@ namespace clientWPF
             {
                 response = respEnumerator.Current;
                 if (response == null)
+                {
+                    Monitor.Exit(sharedLock);
                     return false;
+                }
                 __paths.Add(response);
             }
+            Monitor.Exit(sharedLock);
             return true;
         }
     }
@@ -818,9 +870,13 @@ namespace clientWPF
             {
                 response = respEnumerator.Current;
                 if (response == null)
+                {
+                    Monitor.Exit(sharedLock);
                     return false;
+                }
                 __files.Add(response);
             }
+            Monitor.Exit(sharedLock);
             return true;
         }
     }
@@ -858,9 +914,13 @@ namespace clientWPF
             {
                 response = respEnumerator.Current;
                 if (response == null)
+                {
+                    Monitor.Exit(sharedLock);
                     return false;
+                }
                 __versions.Add(new DateTime(Int64.Parse(response.Trim())));
             }
+            Monitor.Exit(sharedLock);
             return true;
         }
     }
@@ -877,6 +937,7 @@ namespace clientWPF
             control_stream_writer.Flush();
             this.control_stream_reader.Close();
             this.control_stream_writer.Close();
+            Monitor.Exit(sharedLock);
             return true;
         }
     }

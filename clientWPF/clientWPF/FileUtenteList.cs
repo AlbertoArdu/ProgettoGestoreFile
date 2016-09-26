@@ -134,6 +134,45 @@ namespace clientWPF
                 __deleted_list = new FileUtente[__list_deleted_ids.Count];
             }
         }
+        public void Ripristina(int id)
+        {
+            int index;
+            lock (this)
+            {
+                if (__list_ids_files.Contains(id))
+                    return;
+                if ((index = __list_deleted_ids.IndexOf(id)) == -1)
+                    throw new ArgumentException("L'id fornito non appartiene ad alcun file");
+                __list_ids_files.Add(id);
+                __list_deleted_ids.RemoveAt(index);
+                __file_list = new FileUtente[__list_ids_files.Count];
+                __deleted_list = new FileUtente[__list_deleted_ids.Count];
+            }
+        }
+        public FileUtente CreaNuovo(string nome_file, string path, DateTime t_creazione, DateTime t_modifica, int dim, string sha_contenuto = null)
+        {
+            int id = 0;
+            DB_Table db = new DB_Table();
+            sha_contenuto = sha_contenuto != null ? sha_contenuto : "";
+            string[][] parameters = new string[6][];
+
+            parameters[0] = new string[2] { "@dim", dim.ToString() };
+            parameters[1] = new string[2] { "@t_modifica", t_modifica.ToString("u") };
+            parameters[2] = new string[2] { "@t_creazione", t_creazione.ToString("u") };
+            parameters[3] = new string[2] { "@sha_contenuto", sha_contenuto };
+            parameters[4] = new string[2] { "@nome_file", nome_file };
+            parameters[5] = new string[2] { "@path", path };
+
+            db.ExecuteQuery(sql_nuovo_file, parameters);
+            id = (int)db.getLastInsertedId();
+            FileUtente fu = new FileUtente(id);
+            fu.AggiungiVersione(t_modifica);
+            this.__list_ids_files.Add(id);
+            __file_list = new FileUtente[__list_ids_files.Count];
+            __deleted_list = new FileUtente[__list_deleted_ids.Count];
+            return fu;
+        }
+
         //Static methods
         /// <summary>
         /// Restituisce tutti i file in una cartella, scendendo ricorsivamente nelle sottocartelle
@@ -177,31 +216,6 @@ namespace clientWPF
             return files;
         }
 
-        public FileUtente CreaNuovo(string nome_file, string path, DateTime t_creazione, DateTime t_modifica, int dim, string sha_contenuto = null)
-        {
-            int id = 0;
-            DB_Table db = new DB_Table();
-            sha_contenuto = sha_contenuto != null ? sha_contenuto : "";
-            string[][] parameters = new string[6][];
-
-            parameters[0] = new string[2] { "@dim", dim.ToString() };
-            parameters[1] = new string[2] { "@t_modifica", t_modifica.ToString("u") };
-            parameters[2] = new string[2] { "@t_creazione", t_creazione.ToString("u") };
-            parameters[3] = new string[2] { "@sha_contenuto", sha_contenuto };
-            parameters[4] = new string[2] { "@nome_file", nome_file };
-            parameters[5] = new string[2] { "@path", path };
-
-            db.ExecuteQuery(sql_nuovo_file, parameters);
-            id = (int)db.getLastInsertedId();
-            FileUtente fu = new FileUtente(id);
-            fu.AggiungiVersione(t_modifica);
-            this.__list_ids_files.Add(id);
-            __file_list = new FileUtente[__list_ids_files.Count];
-            __deleted_list = new FileUtente[__list_deleted_ids.Count];
-            return fu;
-        }
-
-
         static public FileUtenteList getInstance()
         {
             if(_instance == null)
@@ -209,7 +223,7 @@ namespace clientWPF
                 _instance = new FileUtenteList();
             }
             _instance.__file_list = new FileUtente[_instance.__list_ids_files.Count];
-           _instance.__deleted_list = new FileUtente[_instance.__list_deleted_ids.Count];
+            _instance.__deleted_list = new FileUtente[_instance.__list_deleted_ids.Count];
             return _instance;
         }
     }
