@@ -148,8 +148,22 @@ namespace clientWPF
                 tPort.IsEnabled = false;
                 updateStatus("Started");
             }
+            catch (ServerException ex)
+            {
+                bStart.IsEnabled = true;
+                updateStatus(ex.Message);
+            }
             catch (ClientException ex)
             {
+                if (ex.ErrorCode == ClientErrorCode.CartellaNonEsistente)
+                {
+                    MessageBoxResult res = System.Windows.MessageBox.Show("Do you want to restore the folder as in last version ?", "Restore system", System.Windows.MessageBoxButton.YesNo);
+
+                    if (res == MessageBoxResult.Yes)
+                    {
+                        ControlloModifiche.RestoreAsLastStatusOnServer();
+                    } 
+                }
                 bStart.IsEnabled = true;
                 updateStatus(ex.Message);
             }
@@ -293,8 +307,12 @@ namespace clientWPF
                 bLogInOut.Content = "Login";
                 bStart.IsEnabled = false;
                 loggedin = false;
-                Command logoutComm = new ComandoEsci();
-                logoutComm.esegui();
+                try
+                {
+                    Command logoutComm = new ComandoEsci();
+                    logoutComm.esegui();
+                }
+                catch { }
             }
             lDetails.Items.Clear();
             lFileVersions.Items.Clear();
@@ -321,7 +339,14 @@ namespace clientWPF
 
         private void bSyncNow_Click(object sender, RoutedEventArgs e)
         {
-            ControlloModifiche.Check();
+            try
+            {
+                ControlloModifiche.Check();
+            }
+            catch(ServerException exc)
+            {
+                updateStatus("Attenzione: server sconnesso");
+            }
             this.GetFiles();
             this.GetDelFiles();
         }
@@ -510,13 +535,21 @@ namespace clientWPF
 
         private void tabVersions_Clicked(object sender, MouseButtonEventArgs e)
         {
-            ControlloModifiche.Check();
+            try
+            {
+                ControlloModifiche.Check();
+            }
+            catch { }
             this.GetFiles();
         }
         
         private void tabRecycleBin_Clicked(object sender, MouseButtonEventArgs e)
         {
-            ControlloModifiche.Check();
+            try
+            {
+                ControlloModifiche.Check();
+            }
+            catch { }
             this.GetDelFiles();
         }
                    

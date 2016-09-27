@@ -23,6 +23,7 @@ namespace clientWPF
         FileEsistente,
         CollegamentoDatiNonDisponibile,
         ConnessioneInterrotta,
+        ServerNonDisponibile
     }
     class ServerException: Exception
     {

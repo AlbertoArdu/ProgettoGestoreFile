@@ -1,3 +1,2 @@
-26-09 21:54:42.846	Command.cs	Line: 57	Function: .ctor	Connected!
-26-09 21:55:35.312	db_interface.cs	Line: 50	Function: .ctor	DB non esistente. Devo crearlo
-26-09 21:55:35.944	db_interface.cs	Line: 55	Function: .ctor	DB creato
+27-09 23:31:20.365	Command.cs	Line: 57	Function: .ctor	Connected!
+27-09 23:31:35.612	ControlloModifiche.cs	Line: 157	Function: RestoreAsLastStatusOnServer	"Un errore sconosciuto è accaduto sul server. Riprovare più tardi"

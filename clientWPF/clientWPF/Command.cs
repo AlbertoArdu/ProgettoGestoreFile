@@ -55,11 +55,17 @@ namespace clientWPF
                     s.Connect(server_addr, server_port);
                     __connected = true;
                     l.log("Connected!");
+                    if (!s.Connected)
+                    {
+                        l.log("Errore di connessione", Level.ERR);
+                        throw new ServerException("Errore di connessione", ServerErrorCode.ServerNonDisponibile);
+                    }
+
                 }
                 catch (Exception e)
                 {
                     l.log(e.Message, Level.ERR);
-                    throw new ClientException("Errore di connessione: " + e.Message, ClientErrorCode.ServerNonDisponibile);
+                    throw new ServerException("Errore di connessione: " + e.Message, ServerErrorCode.ServerNonDisponibile);
                 }
                 sharedLock = new object();
             }
@@ -101,7 +107,24 @@ namespace clientWPF
         public ServerErrorCode ErrorCode => error_code;
         static public bool Logged { get { return __logged; } }
         abstract public bool esegui();
-        protected IEnumerable<string> getResponses()
+
+    protected void sendData(string s)
+    {
+            try
+            {
+                control_stream_writer.Write(s);
+                control_stream_writer.Flush();
+            }
+            catch (IOException e)
+            {
+                {
+                    l.log("Errore di connessione", Level.ERR);
+                    throw new ServerException("Errore di connessione", ServerErrorCode.ServerNonDisponibile);
+                }
+            }
+    }
+
+    protected IEnumerable<string> getResponses()
         {
             bool completata = false;
             if(!Connected)
@@ -238,8 +261,9 @@ namespace clientWPF
                 Append(nome_utente).Append(Environment.NewLine).
                 Append(password).Append(Environment.NewLine).
                 Append(Environment.NewLine);
-            control_stream_writer.Write(sb.ToString());
-            control_stream_writer.Flush();
+            sendData(sb.ToString());
+            //control_stream_writer.Write(sb.ToString());
+            //control_stream_writer.Flush();
             l.log("Data has been sent");
             string response = null;
             var respEnumerator = this.getResponses().GetEnumerator();
@@ -287,8 +311,9 @@ namespace clientWPF
                 Append(nome_utente).Append(Environment.NewLine).
                 Append(password).Append(Environment.NewLine).
                 Append(Environment.NewLine);
-            control_stream_writer.Write(sb.ToString());
-            control_stream_writer.Flush();
+            sendData(sb.ToString());
+            //control_stream_writer.Write(sb.ToString());
+            //control_stream_writer.Flush();
             string response = null;
             var respEnumerator = this.getResponses().GetEnumerator();
             if (!respEnumerator.MoveNext())
@@ -394,8 +419,9 @@ namespace clientWPF
                 Append(sha_contenuto).Append(Environment.NewLine).
                 Append(dim).Append(Environment.NewLine).
                 Append(Environment.NewLine);
-            control_stream_writer.Write(sb.ToString());
-            control_stream_writer.Flush();
+            sendData(sb.ToString());
+            //control_stream_writer.Write(sb.ToString());
+            //control_stream_writer.Flush();
             //Get answer
             var respEnumerator = getResponses().GetEnumerator();
             respEnumerator.MoveNext();
@@ -424,7 +450,7 @@ namespace clientWPF
                 while ((size = file.Read(buffer, 0, size)) != 0)
                 {
                     data_stream.Write(buffer, 0, size);
-                    control_stream_writer.Flush();
+                    data_stream.Flush();
                 }
                 data_stream.Close();
                 file.Close();
@@ -499,8 +525,9 @@ namespace clientWPF
                 Append(path).Append(Environment.NewLine).
                 Append(t_creazione.Ticks).Append(Environment.NewLine).
                 Append(Environment.NewLine);
-            control_stream_writer.Write(sb.ToString());
-            control_stream_writer.Flush();
+            sendData(sb.ToString());
+            //control_stream_writer.Write(sb.ToString());
+            //control_stream_writer.Flush();
             string response = null;
             var respEnumerator = getResponses().GetEnumerator();
             respEnumerator.MoveNext();
@@ -547,7 +574,7 @@ namespace clientWPF
                     //nella cartella dell'utente
                     tot_read += size;
                     tmp_file.Write(buffer, 0, size);
-                    control_stream_writer.Flush();
+                    tmp_file.Flush();
                 }
             }
             catch
@@ -703,8 +730,9 @@ namespace clientWPF
                 Append(sha_contenuto).Append(Environment.NewLine).
                 Append(dim).Append(Environment.NewLine).
                 Append(Environment.NewLine);
-            control_stream_writer.Write(sb.ToString());
-            control_stream_writer.Flush();
+            sendData(sb.ToString());
+            //control_stream_writer.Write(sb.ToString());
+            //control_stream_writer.Flush();
             string response = null;
             var respEnumerator = getResponses().GetEnumerator();
             if (!respEnumerator.MoveNext() || respEnumerator.Current == null)
@@ -790,6 +818,7 @@ namespace clientWPF
                 Append(nome_file).Append(Environment.NewLine).
                 Append(path).Append(Environment.NewLine).
                 Append(Environment.NewLine);
+            sendData(sb.ToString());
             control_stream_writer.Write(sb.ToString());
             control_stream_writer.Flush();
             string response = null;
@@ -822,8 +851,9 @@ namespace clientWPF
         {
             StringBuilder sb = new StringBuilder().Append(nome_comando).Append(Environment.NewLine)
                 .Append(Environment.NewLine);
-            control_stream_writer.Write(sb.ToString());
-            control_stream_writer.Flush();
+            sendData(sb.ToString());
+            //control_stream_writer.Write(sb.ToString());
+            //control_stream_writer.Flush();
             string response = null;
             var respEnumerator = this.getResponses().GetEnumerator();
             while (respEnumerator.MoveNext())
@@ -834,7 +864,8 @@ namespace clientWPF
                     Monitor.Exit(sharedLock);
                     return false;
                 }
-                __paths.Add(response);
+                if(response.Length > 0)
+                    __paths.Add(response);
             }
             Monitor.Exit(sharedLock);
             return true;
@@ -862,8 +893,9 @@ namespace clientWPF
                 .Append(path).Append(Environment.NewLine)
                 .Append(Environment.NewLine);
 
-            control_stream_writer.Write(sb.ToString());
-            control_stream_writer.Flush();
+            sendData(sb.ToString());
+            //control_stream_writer.Write(sb.ToString());
+            //control_stream_writer.Flush();
             string response = null;
             var respEnumerator = this.getResponses().GetEnumerator();
             while (respEnumerator.MoveNext())
@@ -874,7 +906,8 @@ namespace clientWPF
                     Monitor.Exit(sharedLock);
                     return false;
                 }
-                __files.Add(response);
+                if(response.Length > 0)
+                    __files.Add(response);
             }
             Monitor.Exit(sharedLock);
             return true;
@@ -906,8 +939,9 @@ namespace clientWPF
                 .Append(path).Append(Environment.NewLine)
                 .Append(Environment.NewLine);
 
-            control_stream_writer.Write(sb.ToString());
-            control_stream_writer.Flush();
+            sendData(sb.ToString());
+            //control_stream_writer.Write(sb.ToString());
+            //control_stream_writer.Flush();
             string response = null;
             var respEnumerator = this.getResponses().GetEnumerator();
             while (respEnumerator.MoveNext())
@@ -918,7 +952,8 @@ namespace clientWPF
                     Monitor.Exit(sharedLock);
                     return false;
                 }
-                __versions.Add(new DateTime(Int64.Parse(response.Trim())));
+                if(response.Length > 0)
+                    __versions.Add(new DateTime(Int64.Parse(response.Trim())));
             }
             Monitor.Exit(sharedLock);
             return true;
@@ -933,8 +968,9 @@ namespace clientWPF
             StringBuilder sb = new StringBuilder();
             sb.Append(nome_comando).Append(Environment.NewLine).
                 Append(Environment.NewLine);
-            control_stream_writer.Write(sb.ToString());
-            control_stream_writer.Flush();
+            sendData(sb.ToString());
+            //control_stream_writer.Write(sb.ToString());
+            //control_stream_writer.Flush();
             this.control_stream_reader.Close();
             this.control_stream_writer.Close();
             Monitor.Exit(sharedLock);

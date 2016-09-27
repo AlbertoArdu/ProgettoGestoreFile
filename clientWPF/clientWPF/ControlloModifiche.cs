@@ -163,7 +163,14 @@ namespace clientWPF
 		
         private static void Checker_Elapsed(object sender, ElapsedEventArgs e)
         {
-            Check();
+            try
+            {
+                Check();
+            }
+            catch(ServerException exc)
+            {
+                Log.getLog().log(exc.Message);
+            }
         }
 
         public static void Check()
