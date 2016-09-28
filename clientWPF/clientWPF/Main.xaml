@@ -86,8 +86,9 @@
                     <ListView Name="lDeletedFiles" Margin="10,36,190,10" MouseDoubleClick="lDeletedFiles_MouseDoubleClick" Grid.ColumnSpan="5" FontWeight="Normal">
                         <ListView.View>
                             <GridView>
-                                <GridViewColumn Header="Name" Width="105" DisplayMemberBinding="{Binding sFilename}"/>
-                                <GridViewColumn Header="Date Modified" Width="120" DisplayMemberBinding="{Binding sTime}"/>
+                                <GridViewColumn Header="Name" Width="65" DisplayMemberBinding="{Binding sFilename}"/>
+                                <GridViewColumn Header="Path" Width="65" DisplayMemberBinding="{Binding sPath}"/>
+                                <GridViewColumn Header="Date Modified" Width="95" DisplayMemberBinding="{Binding sTime}"/>
                             </GridView>
                         </ListView.View>
                     </ListView>

@@ -148,22 +148,8 @@ namespace clientWPF
                 tPort.IsEnabled = false;
                 updateStatus("Started");
             }
-            catch (ServerException ex)
+            catch (Exception ex) when (ex is ServerException || ex is ClientException)
             {
-                bStart.IsEnabled = true;
-                updateStatus(ex.Message);
-            }
-            catch (ClientException ex)
-            {
-                if (ex.ErrorCode == ClientErrorCode.CartellaNonEsistente)
-                {
-                    MessageBoxResult res = System.Windows.MessageBox.Show("Do you want to restore the folder as in last version ?", "Restore system", System.Windows.MessageBoxButton.YesNo);
-
-                    if (res == MessageBoxResult.Yes)
-                    {
-                        ControlloModifiche.RestoreAsLastStatusOnServer();
-                    } 
-                }
                 bStart.IsEnabled = true;
                 updateStatus(ex.Message);
             }
@@ -345,7 +331,7 @@ namespace clientWPF
             }
             catch(ServerException exc)
             {
-                updateStatus("Attenzione: server sconnesso");
+                System.Windows.MessageBox.Show("Syncronization failed\n" + exc.Message, "Syncronization system", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             this.GetFiles();
             this.GetDelFiles();
@@ -433,6 +419,7 @@ namespace clientWPF
                                 ControlloModifiche.StopTimer();
                                 Command getVersComm = new ComandoScaricaFile(selectedFileUtente.Nome, selectedFileUtente.Path, selectedFileVersion);
                                 getVersComm.esegui();
+                                this.GetFiles();
                                 ControlloModifiche.Inizializza();
                             }
                             else
@@ -512,6 +499,7 @@ namespace clientWPF
                                 ControlloModifiche.StopTimer();
                                 Command getVersComm = new ComandoScaricaFile(deletedFileUtente.Nome, deletedFileUtente.Path, deletedFileVersion);
                                 getVersComm.esegui();
+                                this.GetDelFiles();
                                 ControlloModifiche.Inizializza();
                             }
                             else
@@ -535,21 +523,11 @@ namespace clientWPF
 
         private void tabVersions_Clicked(object sender, MouseButtonEventArgs e)
         {
-            try
-            {
-                ControlloModifiche.Check();
-            }
-            catch { }
             this.GetFiles();
         }
         
         private void tabRecycleBin_Clicked(object sender, MouseButtonEventArgs e)
         {
-            try
-            {
-                ControlloModifiche.Check();
-            }
-            catch { }
             this.GetDelFiles();
         }
                    
