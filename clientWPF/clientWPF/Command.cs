@@ -819,8 +819,8 @@ namespace clientWPF
                 Append(path).Append(Environment.NewLine).
                 Append(Environment.NewLine);
             sendData(sb.ToString());
-            control_stream_writer.Write(sb.ToString());
-            control_stream_writer.Flush();
+            //control_stream_writer.Write(sb.ToString());
+            //control_stream_writer.Flush();
             string response = null;
             var respEnumerator = this.getResponses().GetEnumerator();
             Monitor.Exit(sharedLock);
