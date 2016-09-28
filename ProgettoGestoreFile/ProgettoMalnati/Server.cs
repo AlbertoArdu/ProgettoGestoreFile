@@ -31,6 +31,7 @@ namespace ProgettoMalnati
         private TcpClient s;
         private bool __connected = false;
         private volatile bool __stop = false;
+        static protected List<string> users_logged = new List<string>();
 
         public Server(TcpClient s)
         {
@@ -126,10 +127,8 @@ namespace ProgettoMalnati
                         writer.WriteLine(CommandErrorCode.Abort + " Abort");
                         s.Close();
                     }
-                    catch
-                    {
-                        ;
-                    }
+                    catch{;}
+                    try { users_logged.Remove(user.Nome); } catch {; }
                 }
             }
             return; //Il thread muore qui...
@@ -276,9 +275,15 @@ namespace ProgettoMalnati
                 }
                 else
                 {
+                    if(Server.users_logged.Contains(dati[0]))
+                    {
+                        yield return sb.Append(CommandErrorCode.MomentoSbagliato.ToString("D")).Append(" Utente già loggato.").ToString();
+                        yield break;
+                    }
                     try
                     {
                         user = User.Login(dati[0], dati[1]);
+                        Server.users_logged.Add(dati[0]);
                         sb.Append(CommandErrorCode.OK.ToString("D")).Append(" OK");
                     }
                     catch (DatabaseException e)
@@ -466,22 +471,6 @@ namespace ProgettoMalnati
                 try
                 {
                     snap = user.FileList[nome_file, path_relativo].Snapshots[timestamp];
-
-                    //il file era delete e lo sto ripristinando
-                    if (!user.FileList[nome_file, path_relativo].Valido)
-                    {
-                        user.FileList[nome_file, path_relativo].Valido = true;
-                        user.FileList[nome_file, path_relativo].Snapshots[timestamp].Valido = true;
-                    }
-                    //sto scaricando una versione precedente
-                    else
-                    {
-                        //setto a false lo snapshot vecchio
-                        user.FileList[nome_file, path_relativo].Snapshots.getValido().Valido = false;
-                        //setto a true lo snapshot nuovo
-                        user.FileList[nome_file, path_relativo].Snapshots[timestamp].Valido = true;
-                    }
-
                 }
                 catch (Exception e)
                 {
@@ -510,6 +499,28 @@ namespace ProgettoMalnati
                 } while (letti > 0);
                 ns.Close();
                 sb.Clear();
+                try
+                {
+                    //il file era delete e lo sto ripristinando
+                    if (!user.FileList[nome_file, path_relativo].Valido)
+                    {
+                        user.FileList[nome_file, path_relativo].Valido = true;
+                        user.FileList[nome_file, path_relativo].Snapshots[timestamp].Valido = true;
+                    }
+                    //sto scaricando una versione precedente
+                    else
+                    {
+                        //setto a false lo snapshot vecchio
+                        user.FileList[nome_file, path_relativo].Snapshots.getValido().Valido = false;
+                        //setto a true lo snapshot nuovo
+                        user.FileList[nome_file, path_relativo].Snapshots[timestamp].Valido = true;
+                    }
+                }
+                catch (Exception e)
+                {
+                    l.log("Errore nel settare il flag a valido: " + e.Message);
+                    throw;
+                }
                 yield return sb.Append(CommandErrorCode.OK.ToString("D")).Append(" File scritto correttamente").ToString();
             }
         }

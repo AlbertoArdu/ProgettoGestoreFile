@@ -24,7 +24,7 @@ namespace ProgettoMalnati
         static String nome_file_db = Properties.DBSettings.Default.nome_db;
         static private int count_ref = 0;
         static private SQLiteConnection sql_con = null;
-
+        static private object lockVar = new object();
         private Log l;
 
         static private string[] db_structure = {
@@ -39,44 +39,50 @@ namespace ProgettoMalnati
         public DB_Table()
         {
             l = Log.getLog();
-            if (sql_con == null)
+            lock (lockVar)
             {
-                count_ref = 0;
-                String s = "Data Source=";
-                s += nome_file_db + ";Versione=3;";
-                if (!File.Exists(nome_file_db))
+                if (sql_con == null)
                 {
-                    l.log("DB non esistente. Devo crearlo");
-                    SQLiteConnection.CreateFile(nome_file_db);
-                    DB_Table.sql_con = new SQLiteConnection(s);
-                    DB_Table.sql_con.Open();
-                    Crea_DB();
-                    l.log("DB creato");
+                    count_ref = 0;
+                    String s = "Data Source=";
+                    s += nome_file_db + ";Versione=3;";
+                    if (!File.Exists(nome_file_db))
+                    {
+                        l.log("DB non esistente. Devo crearlo");
+                        SQLiteConnection.CreateFile(nome_file_db);
+                        DB_Table.sql_con = new SQLiteConnection(s);
+                        DB_Table.sql_con.Open();
+                        Crea_DB();
+                        l.log("DB creato");
+                    }
+                    else
+                    {
+                        DB_Table.sql_con = new SQLiteConnection(s);
+                        DB_Table.sql_con.Open();
+                    }
                 }
-                else
-                {
-                    DB_Table.sql_con = new SQLiteConnection(s);
-                    DB_Table.sql_con.Open();
-                }
+                count_ref++;
             }
-            count_ref++;
             this.reader = null;
-
         }
 
         ~DB_Table()
         {
-            count_ref--;
-            if (count_ref == 0) 
+            lock (lockVar)
             {
-                try
+                count_ref--;
+                if (count_ref == 0)
                 {
-                    DB_Table.sql_con.Close();
-                }catch(ObjectDisposedException e)
-                {
-                    l.log("Warning! La connessione è già stata chiusa ma non so come mai -.-. "+e.Message);
+                    try
+                    {
+                        DB_Table.sql_con.Close();
+                    }
+                    catch (ObjectDisposedException e)
+                    {
+                        l.log("Warning! La connessione è già stata chiusa ma non so come mai -.-. " + e.Message);
+                    }
+                    DB_Table.sql_con = null;
                 }
-                DB_Table.sql_con = null;
             }
         }
 
@@ -112,7 +118,10 @@ namespace ProgettoMalnati
         /// </param>
         public void ExecuteQuery(string txtQuery, string[][] parameters = null)
         {
-            command = sql_con.CreateCommand();
+            lock (lockVar)
+            {
+                command = sql_con.CreateCommand();
+            }
             command.CommandText = txtQuery;
             if (parameters != null)
             {
@@ -173,7 +182,10 @@ namespace ProgettoMalnati
 
         public long getLastInsertedId()
         {
-            command = sql_con.CreateCommand();
+            lock(lockVar)
+            {
+                command = sql_con.CreateCommand();
+            }
             string sql = "select last_insert_rowid()";
             command.CommandText = sql;
             return (long)command.ExecuteScalar();
