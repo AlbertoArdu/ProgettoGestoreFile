@@ -1,12 +1,6 @@
-<<<<<<< HEAD
-28-09 20:34:12.285	Command.cs	Line: 57	Function: .ctor	Connected!
-28-09 20:34:12.294	Command.cs	Line: 267	Function: esegui	Data has been sent
-28-09 20:34:17.055	db_interface.cs	Line: 50	Function: .ctor	DB non esistente. Devo crearlo
-28-09 20:34:17.502	db_interface.cs	Line: 55	Function: .ctor	DB creato
-28-09 20:41:51.228	Command.cs	Line: 57	Function: .ctor	Connected!
-28-09 20:45:35.593	Command.cs	Line: 57	Function: .ctor	Connected!
-28-09 20:46:30.484	Command.cs	Line: 57	Function: .ctor	Connected!
-28-09 20:47:35.590	Command.cs	Line: 57	Function: .ctor	Connected!
-=======
-28-09 19:49:39.646	Command.cs	Line: 57	Function: .ctor	Connected!
->>>>>>> 7ad7edf01e75d1738abe273ed4c0d7eb7df32200
+28-09 22:19:01.414	Command.cs	Line: 57	Function: .ctor	Connected!
+28-09 22:19:01.426	Command.cs	Line: 267	Function: esegui	Data has been sent
+28-09 22:19:18.662	db_interface.cs	Line: 52	Function: .ctor	DB non esistente. Devo crearlo
+28-09 22:19:19.505	db_interface.cs	Line: 57	Function: .ctor	DB creato
+28-09 22:22:34.985	Command.cs	Line: 57	Function: .ctor	Connected!
+28-09 22:30:33.946	db_interface.cs	Line: 106	Function: Finalize	Warning! La connessione è già stata chiusa ma non so come mai -.-. Cannot access a disposed object.Object name: 'SQLiteConnection'.

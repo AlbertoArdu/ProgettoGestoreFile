@@ -969,6 +969,8 @@ namespace clientWPF
             sb.Append(nome_comando).Append(Environment.NewLine).
                 Append(Environment.NewLine);
             sendData(sb.ToString());
+            var respEnumerator = getResponses().GetEnumerator();
+            while (!respEnumerator.MoveNext()) ;
             //control_stream_writer.Write(sb.ToString());
             //control_stream_writer.Flush();
             this.control_stream_reader.Close();

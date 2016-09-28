@@ -84,6 +84,7 @@ namespace ProgettoMalnati
                 try
                 {
                     request = reader.ReadLine();
+                    if (request == null) { break; }
                     List<string> data = new List<string>(Properties.ApplicationSettings.Default.max_num_parametri_protocollo);
                     do
                     {
@@ -91,7 +92,7 @@ namespace ProgettoMalnati
                     } while (data.Last() != null && data.Last().Length > 0);
                     l.log(new StringBuilder("Linee lette: ").Append(data.Count).ToString());
                     comando = CommandFactory.creaComando(request);
-                    comando.user = user;
+                    
                     if(comando == null)
                     {
                         //Comando non valido
@@ -103,6 +104,7 @@ namespace ProgettoMalnati
                     }
                     else
                     {
+                        comando.user = user;
                         foreach (string response in comando.esegui(data))
                         {
                             writer.WriteLine(response);

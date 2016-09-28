@@ -38,3 +38,4 @@ C:\Users\c.citera\Documents\GitHub\ProgettoGestoreFile\ProgettoGestoreFile\Proge
 C:\Users\c.citera\Documents\GitHub\ProgettoGestoreFile\ProgettoGestoreFile\ProgettoMalnati\obj\x86\Debug\ProgettoMalnati.csproj.GenerateResource.Cache
 C:\Users\c.citera\Documents\GitHub\ProgettoGestoreFile\ProgettoGestoreFile\ProgettoMalnati\obj\x86\Debug\ProgettoMalnati.exe
 C:\Users\c.citera\Documents\GitHub\ProgettoGestoreFile\ProgettoGestoreFile\ProgettoMalnati\obj\x86\Debug\ProgettoMalnati.pdb
+C:\Users\c.citera\Documents\GitHub\ProgettoGestoreFile\ProgettoGestoreFile\ProgettoMalnati\obj\x86\Debug\ProgettoMalnati.csprojResolveAssemblyReference.cache
