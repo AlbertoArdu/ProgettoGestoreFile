@@ -40,28 +40,31 @@ namespace clientWPF
         public DB_Table()
         {
             l = Log.getLog();
-            if (sql_con == null)
+            lock (lockVar)
             {
-                count_ref = 0;
-                String s = "Data Source=";
-                s += nome_file_db + ";Versione=3;";
-                if (!File.Exists(nome_file_db))
+                if (sql_con == null)
                 {
-                    l.log("DB non esistente. Devo crearlo");
-                    SQLiteConnection.CreateFile(nome_file_db);
-                    DB_Table.sql_con = new SQLiteConnection(s);
-                    DB_Table.sql_con.Open();
-                    Crea_DB();
-                    l.log("DB creato");
+                    count_ref = 0;
+                    String s = "Data Source=";
+                    s += nome_file_db + ";Versione=3;";
+                    if (!File.Exists(nome_file_db))
+                    {
+                        l.log("DB non esistente. Devo crearlo");
+                        SQLiteConnection.CreateFile(nome_file_db);
+                        DB_Table.sql_con = new SQLiteConnection(s);
+                        DB_Table.sql_con.Open();
+                        Crea_DB();
+                        l.log("DB creato");
+                    }
+                    else
+                    {
+                        DB_Table.sql_con = new SQLiteConnection(s);
+                        DB_Table.sql_con.Open();
+                    }
                 }
-                else
-                {
-                    DB_Table.sql_con = new SQLiteConnection(s);
-                    DB_Table.sql_con.Open();
-                }
+                count_ref++;
+                this.reader = null;
             }
-            count_ref++;
-            this.reader = null;
 
         }
 
@@ -89,18 +92,21 @@ namespace clientWPF
 
         ~DB_Table()
         {
-            count_ref--;
-            if (count_ref == 0)
+            lock(lockVar)
             {
-                try
+                count_ref--;
+                if (count_ref == 0)
                 {
-                    DB_Table.sql_con.Close();
+                    try
+                    {
+                        DB_Table.sql_con.Close();
+                    }
+                    catch (ObjectDisposedException e)
+                    {
+                        l.log("Warning! La connessione è già stata chiusa ma non so come mai -.-. " + e.Message);
+                    }
+                    DB_Table.sql_con = null;
                 }
-                catch (ObjectDisposedException e)
-                {
-                    l.log("Warning! La connessione è già stata chiusa ma non so come mai -.-. " + e.Message);
-                }
-                DB_Table.sql_con = null;
             }
         }
 
@@ -108,44 +114,49 @@ namespace clientWPF
         {
             String s = "Data Source=";
             s += nome_file_db + ";Versione=3;";
-            if (DB_Table.sql_con != null)
+            lock (lockVar)
             {
-                DB_Table.sql_con.Close();
-                DB_Table.sql_con.Dispose();
+                if (DB_Table.sql_con != null)
+                {
+                    DB_Table.sql_con.Close();
+                    DB_Table.sql_con.Dispose();
+                }
+                /*
+                if (File.Exists(nome_file_db))
+                {
+                    File.Delete(nome_file_db);
+                }
+                SQLiteConnection.CreateFile(nome_file_db);
+                */
+                DB_Table.sql_con = new SQLiteConnection(s);
+                DB_Table.sql_con.Open();
+                Crea_DB();
             }
-            /*
-            if (File.Exists(nome_file_db))
-            {
-                File.Delete(nome_file_db);
-            }
-            SQLiteConnection.CreateFile(nome_file_db);
-            */
-            DB_Table.sql_con = new SQLiteConnection(s);
-            DB_Table.sql_con.Open();
-            Crea_DB();
         }
 
         static private void Crea_DB()
         {
             SQLiteCommand command;
-            command = sql_con.CreateCommand();
-            foreach (string sql in db_structure)
+            lock(lockVar)
             {
-                command.CommandText = sql;
-                command.ExecuteNonQuery();
+                command = sql_con.CreateCommand();
+                foreach (string sql in db_structure)
+                {
+                    command.CommandText = sql;
+                    command.ExecuteNonQuery();
+                }
+
+                //Alcuni valori di test:
+                Properties.DatiTest.Culture = CultureInfo.CurrentCulture;
+                ResourceSet rs = Properties.DatiTest.ResourceManager
+                                            .GetResourceSet(CultureInfo.CurrentCulture, true, true);
+
+                foreach (DictionaryEntry sql in rs)
+                {
+                    command.CommandText = sql.Value.ToString();
+                    command.ExecuteNonQuery();
+                }
             }
-
-            //Alcuni valori di test:
-            Properties.DatiTest.Culture = CultureInfo.CurrentCulture;
-            ResourceSet rs = Properties.DatiTest.ResourceManager
-                                        .GetResourceSet(CultureInfo.CurrentCulture, true, true);
-
-            foreach (DictionaryEntry sql in rs)
-            {
-                command.CommandText = sql.Value.ToString();
-                command.ExecuteNonQuery();
-            }
-
         }
 
         /// <summary>
@@ -159,7 +170,10 @@ namespace clientWPF
         /// </param>
         public void ExecuteQuery(string txtQuery, string[][] parameters = null)
         {
-            command = sql_con.CreateCommand();
+            lock(lockVar)
+            {
+                command = sql_con.CreateCommand();
+            }
             command.CommandText = txtQuery;
             if (parameters != null)
             {
@@ -220,7 +234,10 @@ namespace clientWPF
 
         public long getLastInsertedId()
         {
-            command = sql_con.CreateCommand();
+            lock (lockVar)
+            {
+                command = sql_con.CreateCommand();
+            }
             string sql = "select last_insert_rowid()";
             command.CommandText = sql;
             return (long)command.ExecuteScalar();

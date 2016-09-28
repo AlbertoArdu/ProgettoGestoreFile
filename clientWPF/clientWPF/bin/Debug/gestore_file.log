@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 28-09 20:34:12.285	Command.cs	Line: 57	Function: .ctor	Connected!
 28-09 20:34:12.294	Command.cs	Line: 267	Function: esegui	Data has been sent
 28-09 20:34:17.055	db_interface.cs	Line: 50	Function: .ctor	DB non esistente. Devo crearlo
@@ -6,3 +7,6 @@
 28-09 20:45:35.593	Command.cs	Line: 57	Function: .ctor	Connected!
 28-09 20:46:30.484	Command.cs	Line: 57	Function: .ctor	Connected!
 28-09 20:47:35.590	Command.cs	Line: 57	Function: .ctor	Connected!
+=======
+28-09 19:49:39.646	Command.cs	Line: 57	Function: .ctor	Connected!
+>>>>>>> 7ad7edf01e75d1738abe273ed4c0d7eb7df32200
