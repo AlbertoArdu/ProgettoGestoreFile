@@ -274,7 +274,7 @@ namespace clientWPF
             }
 
             response = respEnumerator.Current;
-                Monitor.Exit(sharedLock);
+            Monitor.Exit(sharedLock);
             if (response == null)
             { 
                 return false;

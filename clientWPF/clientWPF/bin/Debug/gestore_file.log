@@ -1,4 +1,1 @@
-28-09 11:45:07.554	Command.cs	Line: 67	Function: .ctor	No connection could be made because the target machine actively refused it 127.0.0.1:7777
-28-09 11:45:36.419	Command.cs	Line: 57	Function: .ctor	Connected!
-28-09 11:46:42.691	Command.cs	Line: 121	Function: sendData	Errore di connessione
-28-09 11:46:56.770	db_interface.cs	Line: 101	Function: Finalize	Warning! La connessione è già stata chiusa ma non so come mai -.-. Cannot access a disposed object.Object name: 'SQLiteConnection'.
+28-09 13:36:57.704	Command.cs	Line: 57	Function: .ctor	Connected!
